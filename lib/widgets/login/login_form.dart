@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm(this.submitFn);
+  LoginForm(
+    this.submitFn,
+    this.isLoading,
+  );
+
+  final bool isLoading;
 
   final void Function(
+    String firstName,
+    String lastName,
+    String telephone,
     String email,
-    String login,
     String password,
     bool isLogin,
   ) submitFn;
@@ -17,11 +24,13 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
+
   var _isLogin = true;
+  var _userFirstName = '';
+  var _userLastName = '';
+  var _userTelephone = '';
   var _userEmail = '';
-  var _userLogin = '';
   var _userPassword = '';
-  var _userRepeatPassword = '';
 
   void _trySubmit() {
     final _isValid = _formKey.currentState.validate();
@@ -31,14 +40,13 @@ class _LoginFormState extends State<LoginForm> {
       _formKey.currentState.save();
 
       widget.submitFn(
-        _userEmail,
-        _userLogin,
-        _userPassword,
+        _userFirstName.trim(),
+        _userLastName.trim(),
+        _userTelephone.trim(),
+        _userEmail.trim(),
+        _userPassword.trim(),
         _isLogin,
       );
-
-      //TODO: sending data to Flutter Database
-
     }
   }
 
@@ -57,6 +65,52 @@ class _LoginFormState extends State<LoginForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!_isLogin)
+                    TextFormField(
+                      key: ValueKey('imie'),
+                      decoration: InputDecoration(labelText: 'Imie'),
+                      validator: (value) {
+                        if (value.isEmpty || value.length < 3) {
+                          return 'Proszę podać przynajmniej 3 znaki.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _userFirstName = value;
+                      },
+                    ),
+                  if (!_isLogin)
+                    TextFormField(
+                      key: ValueKey('nazwisko'),
+                      decoration: InputDecoration(labelText: 'Nazwisko'),
+                      validator: (value) {
+                        if (value.isEmpty || value.length < 3) {
+                          return 'Proszę podać przynajmniej 3 znaki.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _userLastName = value;
+                      },
+                    ),
+                  if (!_isLogin)
+                    TextFormField(
+                      key: ValueKey('telephone'),
+                      decoration: InputDecoration(labelText: 'Nr. Telefonu'),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        value = value.replaceAll(' ', '');
+                        if (int.tryParse(value) == null) {
+                          return 'Podaj numer telefonu';
+                        } else if (value.isEmpty || value.length < 9) {
+                          return 'Podaj poprawny numer telefonu';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _userTelephone = value;
+                      },
+                    ),
                   TextFormField(
                     key: ValueKey('email'),
                     decoration: InputDecoration(labelText: 'Email'),
@@ -71,20 +125,6 @@ class _LoginFormState extends State<LoginForm> {
                       _userEmail = value;
                     },
                   ),
-                  if (!_isLogin)
-                    TextFormField(
-                      key: ValueKey('login'),
-                      decoration: InputDecoration(labelText: 'Login'),
-                      onSaved: (value) {
-                        _userLogin = value;
-                      },
-                      validator: (value) {
-                        if (value.isEmpty || value.length < 4) {
-                          return 'Proszę podać przynajmniej 4 znaki.';
-                        }
-                        return null;
-                      },
-                    ),
                   TextFormField(
                     key: ValueKey('password'),
                     controller: _passwordController,
@@ -113,26 +153,26 @@ class _LoginFormState extends State<LoginForm> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
-                        _userRepeatPassword = value;
-                      },
                     ),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    child: Text(_isLogin ? 'Zaloguj' : 'Zarejestruj'),
-                    onPressed: _trySubmit,
-                  ),
-                  TextButton(
-                    child: Text(_isLogin ? 'Zarejestruj się' : 'Zaloguj się'),
-                    style: TextButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
+                  if (widget.isLoading) CircularProgressIndicator(),
+                  if (!widget.isLoading)
+                    ElevatedButton(
+                      child: Text(_isLogin ? 'Zaloguj' : 'Zarejestruj'),
+                      onPressed: _trySubmit,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isLogin = !_isLogin;
-                      });
-                    },
-                  )
+                  if (!widget.isLoading)
+                    TextButton(
+                      child: Text(_isLogin ? 'Zarejestruj się' : 'Zaloguj się'),
+                      style: TextButton.styleFrom(
+                        primary: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                    )
                 ],
               ),
             ),

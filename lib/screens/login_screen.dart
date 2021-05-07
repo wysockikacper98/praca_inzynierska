@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/login/login_form.dart';
+import '../widgets/login/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -11,47 +12,65 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
+  var _isLoading = false;
 
   Future<void> _submitLoginForm(
+    String firstName,
+    String lastName,
+    String telephone,
     String email,
-    String login,
     String password,
     bool isLogin,
   ) async {
     UserCredential authResult;
     try {
+      setState(() {
+        _isLoading = true;
+      });
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
       } else {
+        //Create new User
         authResult = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(authResult.user.uid)
+            .set({
+          'firstName': firstName,
+          'lastName': lastName,
+          'telephone': telephone,
+          'email': email,
+          'avatar': '',
+          'rating': 0,
+        });
       }
     } on FirebaseAuthException catch (error) {
       var errorMessage = 'Wystąpił błąd. Proszę sprawdzić dane logowania.';
       if (error.message != null) {
-        errorMessage = errorMessage;
+        errorMessage = error.message;
       }
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           content: Text(errorMessage),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            )
-          ],
+          duration: Duration(seconds: 3),
+          backgroundColor:Theme.of(context).errorColor,
         ),
       );
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       print(error);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -60,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
     print('build -> login_screen');
 
     return Scaffold(
-      body: LoginForm(_submitLoginForm),
+      body: LoginForm(_submitLoginForm, _isLoading),
     );
   }
 }
