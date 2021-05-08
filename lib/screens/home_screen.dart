@@ -23,7 +23,10 @@ class HomeScreen extends StatelessWidget {
                 child: Container(
                   child: Row(
                     children: [
-                      Icon(Icons.exit_to_app),
+                      Icon(
+                        Icons.exit_to_app,
+                        color: Colors.black,
+                      ),
                       SizedBox(width: 8),
                       Text('Wyloguj'),
                     ],
@@ -32,8 +35,8 @@ class HomeScreen extends StatelessWidget {
                 value: 'logout',
               )
             ],
-            onChanged: (itemIdentifier){
-              if(itemIdentifier == 'logout') {
+            onChanged: (itemIdentifier) {
+              if (itemIdentifier == 'logout') {
                 FirebaseAuth.instance.signOut();
               }
             },

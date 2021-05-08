@@ -29,9 +29,90 @@ class AppDrawer extends StatelessWidget {
               return buildUserInfo(context);
             },
           ),
+          Divider(
+            thickness: 1,
+            height: 25,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.home_outlined,
+              size: 40,
+            ),
+            title: Center(
+              child: Text(
+                "Strona główna",
+                style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+              ),
+            ),
+            onTap: () {
+              //TODO: Go to screen
 
+              Navigator.of(context).pop();
+            },
+          ),
+          Divider(
+            thickness: 1,
+            height: 25,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.email_outlined,
+              size: 40,
+            ),
+            title: Center(
+              child: Text(
+                "Wiadomości",
+                style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+              ),
+            ),
+            onTap: () {
+              //TODO: Go to screen
 
+              Navigator.of(context).pop();
+            },
+          ),
+          Divider(
+            thickness: 1,
+            height: 25,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.search,
+              size: 40,
+            ),
+            title: Center(
+              child: Text(
+                "Wyszukiwarka",
+                style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+              ),
+            ),
+            onTap: () {
+              //TODO: Go to screen
 
+              Navigator.of(context).pop();
+            },
+          ),
+          Divider(
+            thickness: 1,
+            height: 25,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.warning_amber_outlined,
+              size: 40,
+            ),
+            title: Center(
+              child: Text(
+                "Awarie",
+                style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+              ),
+            ),
+            onTap: () {
+              //TODO: Go to screen
+
+              Navigator.of(context).pop();
+            },
+          ),
         ],
       ),
     );
@@ -58,7 +139,7 @@ class AppDrawer extends StatelessWidget {
             ),
             title: Text(
               firstName,
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
             ),
             subtitle: Text(email),
             trailing: IconButton(
