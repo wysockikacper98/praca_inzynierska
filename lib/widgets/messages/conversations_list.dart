@@ -33,15 +33,10 @@ class ConversationsList extends StatelessWidget {
 
         return ListView.builder(
           itemCount: chatDocs.length,
-          itemBuilder: (ctx, index) => GestureDetector(
-            child: ConversationItem(
-              chatDocs[index].data()['userID'],
-              chatDocs[index].data()['messages'][0]['text'],
-              key: ValueKey(chatDocs[index].reference.id),
-            ),
-            onTap: (){
-              print('Pressed: ' + chatDocs[index].reference.id);
-            },
+          itemBuilder: (ctx, index) => ConversationItem(
+            chatDocs[index].data()['userID'],
+            chatDocs[index].data()['messages'][0]['text'],
+            key: ValueKey(chatDocs[index].reference.id),
           ),
         );
       },
