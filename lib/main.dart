@@ -6,7 +6,9 @@ import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -14,44 +16,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("build -> main.dart");
-    final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-    return FutureBuilder(
-      future: _initialization,
-      builder: (context, snapshot) {
-        return MaterialApp(
-          title: 'FixIT!',
-          theme: ThemeData(
-            brightness: Brightness.light,
-            primaryColor: Colors.green,
-            primarySwatch: Colors.deepOrange,
-            scaffoldBackgroundColor: Colors.pink,
-            // backgroundColor: Colors.pink,
-            accentColor: Colors.amber,
-            accentColorBrightness: Brightness.light,
 
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.pink,
-                // textStyle: TextStyle(color: Colors.green),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
+    return MaterialApp(
+      title: 'FixIT!',
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.green,
+        primarySwatch: Colors.deepOrange,
+        scaffoldBackgroundColor: Colors.pink,
+        // backgroundColor: Colors.pink,
+        accentColor: Colors.amber,
+        accentColorBrightness: Brightness.light,
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.pink,
+            // textStyle: TextStyle(color: Colors.green),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
-          home: snapshot.connectionState != ConnectionState.done
-              ? LoginScreen()
-              : StreamBuilder(
-                  stream: FirebaseAuth.instance.authStateChanges(),
-                  builder: (ctx, userSnapshot) {
-                    if (userSnapshot.hasData) {
-                      return HomeScreen();
-                    } else {
-                      return LoginScreen();
-                    }
-                  },
-                ),
-        );
+        ),
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (ctx) => LoginScreen(),
+        HomeScreen.routeName: (ctx) => HomeScreen(),
       },
     );
   }

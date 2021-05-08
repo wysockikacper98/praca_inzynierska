@@ -9,9 +9,10 @@ class AppDrawer extends StatelessWidget {
     print("build -> drawer");
 
     final user = FirebaseAuth.instance.currentUser;
-    print('UserID:' + user.uid);
+
     final Future<DocumentSnapshot> userData =
         FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -47,7 +48,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               //TODO: Go to screen
 
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/');
             },
           ),
           Divider(

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
+  static const routeName = '/home';
+
   @override
   Widget build(BuildContext context) {
     print("build -> home_screen.dart");

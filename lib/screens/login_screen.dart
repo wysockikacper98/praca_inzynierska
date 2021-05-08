@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/home_screen.dart';
 import '../widgets/login/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,14 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
 
-  Future<void> _submitLoginForm(
-    String firstName,
-    String lastName,
-    String telephone,
-    String email,
-    String password,
-    bool isLogin,
-  ) async {
+  Future<void> _submitLoginForm(String firstName,
+      String lastName,
+      String telephone,
+      String email,
+      String password,
+      bool isLogin,) async {
     UserCredential authResult;
     try {
       setState(() {
@@ -59,7 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(
           content: Text(errorMessage),
           duration: Duration(seconds: 3),
-          backgroundColor:Theme.of(context).errorColor,
+          backgroundColor: Theme
+              .of(context)
+              .errorColor,
         ),
       );
 
@@ -77,6 +78,19 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     print('build -> login_screen');
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (ctx, userSnapshot) {
+        if (userSnapshot.hasData) {
+          return HomeScreen();
+        } else {
+          return Scaffold(
+              body: LoginForm(_submitLoginForm, _isLoading)
+          );
+        }
+      },
+    );
+
 
     return Scaffold(
       body: LoginForm(_submitLoginForm, _isLoading),
