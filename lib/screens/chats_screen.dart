@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/screens/messages.dart';
 
 class ChatsScreen extends StatelessWidget {
   static const routeName = '/chat-screen';
@@ -22,6 +24,9 @@ class ChatsScreen extends StatelessWidget {
     final userId = FirebaseAuth.instance.currentUser.uid;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Wiadomości"),
+      ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('chats')
@@ -45,8 +50,21 @@ class ChatsScreen extends StatelessWidget {
               itemCount: chatDocs.length,
               itemBuilder: (ctx, index) => ListTile(
                 title: Text(chatDocs[index]['chatName']),
+                trailing: Text(DateFormat('dd-MM-yyyy hh:mm')
+                    .format(chatDocs[index]['updatedAt'].toDate())),
                 onTap: () {
                   print(chatDocs[index].reference.id);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Message(
+                        chatID: chatDocs[index].reference.id,
+                        chatName: chatDocs[index]['chatName'],
+                      ),
+                    ),
+                  );
+
+
                 },
               ),
             );
