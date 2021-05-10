@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'FixIT!',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.green,

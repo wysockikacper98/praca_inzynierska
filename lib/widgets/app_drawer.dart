@@ -21,6 +21,7 @@ class AppDrawer extends StatelessWidget {
             future: userData,
             builder: (context, snapshotUserData) {
               if (snapshotUserData.connectionState == ConnectionState.done) {
+                final user = snapshotUserData.data()
                 return buildUserInfo(
                   context,
                   snapshotUserData.data.data()['firstName'],
