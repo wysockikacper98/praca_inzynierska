@@ -32,7 +32,7 @@ class _AppDrawerState extends State<AppDrawer> {
     getUser();
   }
 
-  void getUser()async {
+  void getUser() async {
     getUserInfo().then((value) {
       setState(() {
         _currentUser = value;
@@ -87,8 +87,16 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             onTap: () {
               //TODO: Go to screen
-
-              Navigator.of(context).popAndPushNamed(ChatsScreen.routeName);
+              // Navigator.of(context).pushReplacement(ChatsScreen());
+              Navigator.of(context).pop();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatsScreen(
+                            key:
+                                ValueKey(FirebaseAuth.instance.currentUser.uid),
+                            user: _currentUser,
+                          )));
             },
           ),
           Divider(

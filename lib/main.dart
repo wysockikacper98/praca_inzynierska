@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (ctx) => LoginScreen(),
         HomeScreen.routeName: (ctx) => HomeScreen(),
-        ChatsScreen.routeName: (ctx) => ChatsScreen(),
+        // ChatsScreen.routeName: (ctx) => ChatsScreen(),
 
       },
     );
