@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/chats_screen.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
@@ -43,6 +44,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (ctx) => LoginScreen(),
         HomeScreen.routeName: (ctx) => HomeScreen(),
+        ChatsScreen.routeName: (ctx) => ChatsScreen(),
+
       },
     );
   }

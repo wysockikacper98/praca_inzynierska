@@ -1,36 +1,54 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/screens/chats_screen.dart';
+import 'package:praca_inzynierska/widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
+  @override
+  _AppDrawerState createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  var _currentUser = Users(
+    lastName: '',
+    email: '',
+    firstName: '',
+    avatar: '',
+    rating: '',
+    telephone: '',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  void getUser()async {
+    getUserInfo().then((value) {
+      setState(() {
+        _currentUser = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build -> drawer");
-
-    final user = FirebaseAuth.instance.currentUser;
-
-    final Future<DocumentSnapshot> userData =
-        FirebaseFirestore.instance.collection('users').doc(user.uid).get();
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          FutureBuilder(
-            future: userData,
-            builder: (context, snapshotUserData) {
-              if (snapshotUserData.connectionState == ConnectionState.done) {
-                final user = snapshotUserData.data()
-                return buildUserInfo(
-                  context,
-                  snapshotUserData.data.data()['firstName'],
-                  snapshotUserData.data.data()['email'],
-                );
-              }
-              return buildUserInfo(context);
-            },
-          ),
+          buildUserInfo(context, _currentUser),
           Divider(
             thickness: 1,
             height: 25,
@@ -70,7 +88,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               //TODO: Go to screen
 
-              Navigator.of(context).pop();
+              Navigator.of(context).popAndPushNamed(ChatsScreen.routeName);
             },
           ),
           Divider(
@@ -116,43 +134,6 @@ class AppDrawer extends StatelessWidget {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Container buildUserInfo(
-    BuildContext context, [
-    String firstName = '',
-    String email = '',
-    String avatar =
-        'https://firebasestorage.googleapis.com/v0/b/praca-inzynierska-a600c.appspot.com/o/user%20(1).png?alt=media&token=139f0027-4bd3-4a70-8169-207819903975',
-  ]) {
-    return Container(
-      height: 120,
-      child: DrawerHeader(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        decoration: BoxDecoration(color: Colors.blue),
-        child: Center(
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(avatar),
-              radius: 30,
-            ),
-            title: Text(
-              firstName,
-              style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
-            ),
-            subtitle: Text(email),
-            trailing: IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                //TODO: Przejście do ustawień użytkownika
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-        ),
       ),
     );
   }

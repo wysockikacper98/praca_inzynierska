@@ -20,7 +20,7 @@ class Users {
       firstName: parsedJson['firstName'] ?? "",
       lastName: parsedJson['lastName'] ?? "",
       email: parsedJson['email'] ?? "",
-      rating: parsedJson['rating']?? "",
+      rating: parsedJson['rating'] ?? "",
       avatar: parsedJson['avatar'] ?? "",
       telephone: parsedJson['telephone'] ?? "",
     );
@@ -28,12 +28,18 @@ class Users {
 
   @override
   String toString() {
-    return "FirstName:" + this.firstName +
-        "\nLastName:" + this.lastName +
-        "\nEmail:" + this.email +
-        "\nRating:" + this.rating +
-        "\nTelephone:" + this.telephone +
-        "\nAvatar:" + this.avatar;
+    return "FirstName:" +
+        this.firstName +
+        "\nLastName:" +
+        this.lastName +
+        "\nEmail:" +
+        this.email +
+        "\nRating:" +
+        this.rating +
+        "\nTelephone:" +
+        this.telephone +
+        "\nAvatar:" +
+        this.avatar;
   }
 
   Map<String, dynamic> toJson() {

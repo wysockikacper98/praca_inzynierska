@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/home_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../helpers/sharedPreferences.dart';
+import '../screens/home_screen.dart';
 import '../widgets/login/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -57,24 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
           'avatar': '',
           'rating': "0",
         });
-        // //udane utoworznie konta
-        // final user =
-        //     Users(firstName: firstName, email: email, lastName: lastName);
-        // SharedPreferences user_shared = await SharedPreferences.getInstance();
-        // user_shared.setString('user', jsonEncode(user));
-        //
-        // SharedPreferences get_User = await SharedPreferences.getInstance();
-        // print("Wyświetlanie nowego użytkownika");
-        // print(get_User.getString('user'));
-        // Map userMap = jsonDecode(get_User.getString('user'));
-        // var userek = Users.fromJson(userMap);
-        //
-        // print("FirstName:" +
-        //     userek.firstName +
-        //     "\nLastName:" +
-        //     userek.lastName +
-        //     "\nEmail:" +
-        //     userek.email);
 
         await saveUserInfo(authResult.user.uid);
         _isLoading = false;
@@ -119,15 +100,4 @@ class _LoginScreenState extends State<LoginScreen> {
 
   }
 
-  Future<void> saveUserInfo(String uid) async {
-    print("saveUserInfo");
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    final data =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
-    var tempUser = Users.fromJson(data.data());
-
-    sharedPreferences.setString('user', jsonEncode(tempUser));
-  }
 }
