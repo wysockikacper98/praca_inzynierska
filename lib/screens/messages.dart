@@ -35,11 +35,6 @@ class Message extends StatelessWidget {
                   } else if (!messageSnapshot.hasData) {
                     return Center(child: Text("Brak wiadomości tekstowych"));
                   } else {
-                    print("TO SĄ WIADOMOŚCI");
-                    // print(messageSnapshot.data.docs['messages'].toString());
-                    // print(messageSnapshot.data['messages'].docs);
-                    print(messageSnapshot.data.docs.length.toString());
-
                     final messageDoc = messageSnapshot.data.docs;
 
                     return ListView.builder(

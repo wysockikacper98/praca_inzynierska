@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/widgets/login/login_firm_form.dart';
 import '../helpers/sharedPreferences.dart';
 import '../screens/home_screen.dart';
 import '../widgets/login/login_form.dart';
@@ -17,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
+  bool _isSwitched = false;
 
   Future<void> _submitLoginForm(
     String firstName,
@@ -93,10 +95,34 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userSnapshot.hasData) {
           return HomeScreen();
         } else {
-          return Scaffold(body: LoginForm(_submitLoginForm, _isLoading));
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        child: Text(_isSwitched
+                            ? "Zaloguj jako firma"
+                            : "Zaloguj jako użytkownik"),
+                        onPressed: () {
+                          setState(() {
+                            _isSwitched = !_isSwitched;
+                          });
+                        },
+                      ),
+                    ),
+                    _isSwitched
+                        ? LoginFirmForm(_submitLoginForm, _isLoading)
+                        : LoginForm(_submitLoginForm, _isLoading),
+                  ],
+                ),
+              ),
+            ),
+          );
         }
       },
     );
   }
-
 }
