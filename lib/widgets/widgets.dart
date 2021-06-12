@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/models/users.dart';
 
 Container buildUserInfo(BuildContext context, Users user) {
+  print("Buildein container buidUserInfo");
+
   return Container(
     height: 120,
     child: DrawerHeader(
@@ -11,7 +13,7 @@ Container buildUserInfo(BuildContext context, Users user) {
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
-            backgroundImage: user.avatar == ''
+            backgroundImage: user.avatar != null
                 ? AssetImage('assets/images/user.png')
                 : NetworkImage(user.avatar),
             radius: 30,

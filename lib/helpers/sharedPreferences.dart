@@ -1,16 +1,11 @@
-
-
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:praca_inzynierska/models/users.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> saveUserInfo(String uid) async {
-  final data =
-  await FirebaseFirestore.instance.collection('users').doc(uid).get();
+Future<void> saveUserInfo(Users user) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString('user', jsonEncode(data.data()));
+  sharedPreferences.setString('user', jsonEncode(user));
 }
 
 Future<Users> getUserInfo() async {
@@ -19,4 +14,9 @@ Future<Users> getUserInfo() async {
   var user = Users.fromJson(userMap);
 
   return user;
+}
+
+Future<void> clearUserInfo() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.remove('user');
 }
