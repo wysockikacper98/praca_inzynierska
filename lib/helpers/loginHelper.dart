@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
 
@@ -77,6 +78,55 @@ Future<bool> registerUser(BuildContext context,Users user, String userPassword) 
     return false;
   }
 }
+
+Future<bool> registerFirm(BuildContext context, Firm firm, String password) async{
+  //TODO: Delete after testing
+  print("Start delay");
+  await Future.delayed(Duration(seconds: 3), () {
+    print("Stop delay");
+  });
+
+  try{
+    UserCredential authResult;
+    final _auth = FirebaseAuth.instance;
+
+    authResult = await _auth.createUserWithEmailAndPassword(email: firm.email, password: password);
+
+
+    await FirebaseFirestore.instance
+    .collection('firms')
+    .doc(authResult.user.uid)
+    .set(firm.toJson());
+    // .set({
+    //   'firmName': firm.firmName,
+    //   'name': firm.name,
+    //   'lastName': firm.lastName,
+    //   'phoneNumber': firm.phoneNumber,
+    //   'email': firm.email,
+    //   'location': firm.location,
+    //   'range': firm.range,
+    //   'nip': firm.nip,
+    //   'category': firm.category,
+    //   'avatar': firm.avatar,
+    //   'rating': "0",
+    // });
+
+    //TODO: zapisanie obecnie zalogowanej firmy pamięc aplikajci
+    //TODO: zapisanie obecnie zalogowanej firmy w sharedPreference
+
+    print('Zapisana firma:\n'+firm.toString());
+    return true;
+  }on FirebaseAuthException catch(error){
+    handleFirebaseError(context, error);
+    return false;
+  }catch(error){
+    print(error);
+    return false;
+  }
+
+
+}
+
 
 
 
