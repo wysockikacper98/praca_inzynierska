@@ -1,15 +1,11 @@
-import 'dart:convert';
-import 'dart:ffi';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 import 'package:praca_inzynierska/screens/chats_screen.dart';
 import 'package:praca_inzynierska/widgets/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -29,16 +25,9 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   void initState() {
     super.initState();
-    getUser();
+    _currentUser = getCurrentUser();
   }
 
-  void getUser() async {
-    getUserInfo().then((value) {
-      setState(() {
-        _currentUser = value;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

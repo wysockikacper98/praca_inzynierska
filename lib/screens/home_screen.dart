@@ -1,10 +1,7 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -13,7 +10,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build -> home_screen.dart");
+    if (getCurrentUser() == null) {
+      getUserInfo().then((value) => setCurrentUser(value));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -44,6 +43,7 @@ class HomeScreen extends StatelessWidget {
             onChanged: (itemIdentifier) {
               if (itemIdentifier == 'logout') {
                 FirebaseAuth.instance.signOut();
+                clearUserInfo();
               }
             },
           ),
@@ -54,11 +54,5 @@ class HomeScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
     );
-  }
-
-  Future<Users> getCurrentLoggedUser() async {
-    SharedPreferences temp = await SharedPreferences.getInstance();
-    Map userMap = jsonDecode(temp.getString('user'));
-    return Users.fromJson(userMap);
   }
 }
