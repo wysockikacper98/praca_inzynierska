@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/loginHelper.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 class RegisterUserScreen extends StatefulWidget {
   static const routerName = '/register-user';
@@ -37,9 +38,10 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         firstName: _userFirstName,
         lastName: _userLastName,
         email: _userEmail,
-        rating: '',
+        rating: '0',
         telephone: _userTelephone,
         avatar: '',
+        type: UserType.PrivateUser,
       );
 
       registerUser(context, _currentUser, _userPassword).then((value) {

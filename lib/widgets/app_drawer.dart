@@ -1,8 +1,6 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
 import 'package:praca_inzynierska/screens/chats_screen.dart';
 import 'package:praca_inzynierska/widgets/widgets.dart';
@@ -13,21 +11,21 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  var _currentUser = Users(
-    lastName: '',
-    email: '',
-    firstName: '',
-    avatar: '',
-    rating: '',
-    telephone: '',
-  );
+  // var _currentUser = Users(
+  //   lastName: '',
+  //   email: '',
+  //   firstName: '',
+  //   avatar: '',
+  //   rating: '',
+  //   telephone: '',
+  //   type: null,
+  // );
 
-  @override
-  void initState() {
-    super.initState();
-    _currentUser = getCurrentUser();
-  }
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _currentUser = getCurrentUser();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          buildUserInfo(context, _currentUser),
+          buildUserInfo(context, getCurrentUser()),
           Divider(
             thickness: 1,
             height: 25,
@@ -84,7 +82,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       builder: (context) => ChatsScreen(
                             key:
                                 ValueKey(FirebaseAuth.instance.currentUser.uid),
-                            user: _currentUser,
+                            user: getCurrentUser(),
                           )));
             },
           ),
@@ -130,6 +128,46 @@ class _AppDrawerState extends State<AppDrawer> {
               Navigator.of(context).pop();
             },
           ),
+          Divider(
+            thickness: 1,
+            height: 25,
+          ),
+          if (getCurrentUser().type == UserType.Firm)
+            ListTile(
+              leading: Icon(
+                Icons.business_outlined,
+                size: 40,
+              ),
+              title: Center(
+                child: Text(
+                  "Firma",
+                  style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+                ),
+              ),
+              onTap: () {
+                //TODO: Go to screen
+
+                Navigator.of(context).pop();
+              },
+            ),
+          if (getCurrentUser().type == UserType.PrivateUser)
+            ListTile(
+              leading: Icon(
+                Icons.sentiment_very_satisfied_outlined,
+                size: 40,
+              ),
+              title: Center(
+                child: Text(
+                  "Użytkownik",
+                  style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+                ),
+              ),
+              onTap: () {
+                //TODO: Go to screen
+
+                Navigator.of(context).pop();
+              },
+            ),
         ],
       ),
     );

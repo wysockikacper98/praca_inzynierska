@@ -5,7 +5,7 @@ import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart'
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
 
 import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/login/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
+
 class Firm {
   String firmName;
   String firstName;
@@ -10,33 +13,38 @@ class Firm {
   String avatar;
   String rating;
   List<String> category;
-
-  // final String category;
-  // final String email;
-  // final String firstName;
-  // final String secondName;
-  // final String location;
-  // final String phoneNumber;
-  // final String rating;
-  // final String avatar;
+  UserType type;
 
   Firm({
-    this.firmName,
+    @required this.firmName,
     this.firstName,
     this.lastName,
     this.telephone,
     this.email,
     this.location,
     this.range,
-    this.nip,
+    @required this.nip,
     this.category,
     this.avatar,
     this.rating,
+    @required this.type,
   });
 
   @override
   String toString() {
-    return 'Firm:$firmName\nName:$firstName\nLastName:$lastName\nPhone:$telephone\nEmail:$email\nLocation:$location\nRange$range\nNip$nip\nAvatar:$avatar\nRating:$rating\nCategory${category.toString()}';
+    return 'Firm:$firmName' +
+        '\nName:$firstName' +
+        '\nLastName:$lastName' +
+        '\nPhone:$telephone' +
+        '\nEmail:$email' +
+        '\nLocation:$location' +
+        '\nRange$range' +
+        '\nNip$nip' +
+        '\nAvatar:$avatar' +
+        '\nRating:$rating' +
+        '\nCategory:${category.toString()}' +
+        '\nType:' +
+        (this.type == UserType.Firm ? "Firm" : "Private User");
   }
 
   factory Firm.fromJson(Map<String, dynamic> parsedJson) {
@@ -52,6 +60,7 @@ class Firm {
       avatar: parsedJson['avatar'] ?? "",
       rating: parsedJson['rating'] ?? "",
       category: parsedJson['category'] ?? [],
+      type: parsedJson['type'] == 'Firm' ? UserType.Firm : UserType.PrivateUser,
     );
   }
 
@@ -68,6 +77,7 @@ class Firm {
       'avatar': this.avatar,
       'rating': this.rating,
       'category': this.category,
+      'type': UserType.Firm.toString().split('.').last,
     };
   }
 }

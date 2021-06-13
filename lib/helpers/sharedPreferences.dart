@@ -6,14 +6,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> saveUserInfo(dynamic user) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString('user', jsonEncode(user));
-  print('Save User Info'+jsonEncode(user));
-  setCurrentUser(user);
+  await sharedPreferences.setString('user', jsonEncode(user));
+  setCurrentUser(Users(
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    telephone: user.telephone,
+    rating: user.rating,
+    avatar: user.avatar,
+    type: user.type,
+  ));
 
 }
 
 Future<Users> getUserInfo() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  print(sharedPreferences.getString('user'));
   Map userMap = jsonDecode(sharedPreferences.getString('user'));
   print("Mapa:\n$userMap");
   var user = Users.fromJson(userMap);
@@ -23,5 +31,6 @@ Future<Users> getUserInfo() async {
 
 Future<void> clearUserInfo() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.remove('user');
+  await sharedPreferences.remove('user');
+  setCurrentUser(null);
 }

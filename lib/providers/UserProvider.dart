@@ -1,9 +1,13 @@
 import 'package:praca_inzynierska/models/users.dart';
 
-class UserProvider {
-  Users currentUser;
+enum UserType{
+  Firm,
+  PrivateUser,
 }
+
 Users currentUser;
+// UserType userType;
+
 Users getCurrentUser(){
   return currentUser;
 }
@@ -11,3 +15,11 @@ Users getCurrentUser(){
 setCurrentUser(Users givenUser){
   currentUser = givenUser;
 }
+//
+// UserType getCurrentUserType(){
+//   return userType;
+// }
+//
+// setCurrentUserType(UserType type){
+//   userType = type;
+// }

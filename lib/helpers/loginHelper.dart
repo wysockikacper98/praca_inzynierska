@@ -51,21 +51,14 @@ Future<bool> registerUser(
   try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
-
+    print("Test Zapisu użytkownika: ${user.toJson()}");
     authResult = await _auth.createUserWithEmailAndPassword(
         email: user.email, password: userPassword);
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(authResult.user.uid)
-        .set({
-      'firstName': user.firstName,
-      'lastName': user.lastName,
-      'telephone': user.telephone,
-      'email': user.email,
-      'avatar': user.avatar,
-      'rating': "0",
-    });
+        .set(user.toJson());
 
     saveUserInfo(user);
     return true;
@@ -89,6 +82,7 @@ Future<bool> registerFirm(
   try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
+    print("Test Zapisu Firmy: ${firm.toJson()}");
 
     authResult = await _auth.createUserWithEmailAndPassword(
         email: firm.email, password: password);
@@ -97,19 +91,6 @@ Future<bool> registerFirm(
         .collection('firms')
         .doc(authResult.user.uid)
         .set(firm.toJson());
-    // .set({
-    //   'firmName': firm.firmName,
-    //   'name': firm.name,
-    //   'lastName': firm.lastName,
-    //   'phoneNumber': firm.phoneNumber,
-    //   'email': firm.email,
-    //   'location': firm.location,
-    //   'range': firm.range,
-    //   'nip': firm.nip,
-    //   'category': firm.category,
-    //   'avatar': firm.avatar,
-    //   'rating': "0",
-    // });
 
     //TODO: zapisanie obecnie zalogowanej firmy pamięc aplikajci
     //TODO: zapisanie obecnie zalogowanej firmy w sharedPreference

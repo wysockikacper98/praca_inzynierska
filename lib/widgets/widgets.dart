@@ -3,7 +3,9 @@ import 'package:praca_inzynierska/models/users.dart';
 
 Container buildUserInfo(BuildContext context, Users user) {
   print("Buildein container buidUserInfo");
-
+  if(user == null){
+    return Container();
+  }
   return Container(
     height: 120,
     child: DrawerHeader(

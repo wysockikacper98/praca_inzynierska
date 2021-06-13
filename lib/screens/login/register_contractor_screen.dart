@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/loginHelper.dart';
 import 'package:praca_inzynierska/models/firm.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 class RegisterContractorScreen extends StatefulWidget {
   static const routeName = '/register-contractor';
@@ -50,8 +51,9 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     range: "",
     nip: "",
     avatar: "",
-    rating: "",
+    rating: '0',
     category: [],
+    type: UserType.Firm,
   );
   String _userPassword;
 

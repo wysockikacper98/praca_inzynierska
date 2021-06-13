@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 
-import '../screens/home_screen.dart';
-import 'login/login_form_screen.dart';
+import '../home_screen.dart';
+import 'login_form_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -22,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
+          getUserInfo().then((value) => setCurrentUser(value));
           return HomeScreen();
         } else {
           return LoginFormScreen();
