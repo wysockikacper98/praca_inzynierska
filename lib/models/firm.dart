@@ -1,8 +1,8 @@
 class Firm {
   String firmName;
-  String name;
+  String firstName;
   String lastName;
-  String phoneNumber;
+  String telephone;
   String email;
   String location;
   String range;
@@ -22,9 +22,9 @@ class Firm {
 
   Firm({
     this.firmName,
-    this.name,
+    this.firstName,
     this.lastName,
-    this.phoneNumber,
+    this.telephone,
     this.email,
     this.location,
     this.range,
@@ -36,15 +36,15 @@ class Firm {
 
   @override
   String toString() {
-    return 'Firm:$firmName\nName:$name\nLastName:$lastName\nPhone:$phoneNumber\nEmail:$email\nLocation:$location\nRange$range\nNip$nip\nAvatar:$avatar\nRating:$rating\nCategory${category.toString()}';
+    return 'Firm:$firmName\nName:$firstName\nLastName:$lastName\nPhone:$telephone\nEmail:$email\nLocation:$location\nRange$range\nNip$nip\nAvatar:$avatar\nRating:$rating\nCategory${category.toString()}';
   }
 
   factory Firm.fromJson(Map<String, dynamic> parsedJson) {
     return Firm(
       firmName: parsedJson['firmName'] ?? "",
-      name: parsedJson['name'] ?? "",
+      firstName: parsedJson['firstName'] ?? "",
       lastName: parsedJson['lastName'] ?? "",
-      phoneNumber: parsedJson['phoneNumber'] ?? "",
+      telephone: parsedJson['telephone'] ?? "",
       email: parsedJson['email'] ?? "",
       location: parsedJson['location'] ?? "",
       range: parsedJson['range'] ?? "",
@@ -58,9 +58,9 @@ class Firm {
   Map<String, dynamic> toJson() {
     return {
       'firmName': this.firmName,
-      'name': this.name,
+      'firstName': this.firstName,
       'lastName': this.lastName,
-      'phoneNumber': this.phoneNumber,
+      'telephone': this.telephone,
       'email': this.email,
       'location': this.location,
       'range': this.range,

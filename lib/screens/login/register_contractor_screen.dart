@@ -42,9 +42,9 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
 
   Firm _firm = Firm(
     firmName: "",
-    name: "",
+    firstName: "",
     lastName: "",
-    phoneNumber: "",
+    telephone: "",
     email: "",
     location: "",
     range: "",
@@ -175,7 +175,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.name = value;
+                                    _firm.firstName = value;
                                   },
                                 ),
                                 TextFormField(
@@ -209,7 +209,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.phoneNumber = value;
+                                    _firm.telephone = value;
                                   },
                                 ),
                                 TextFormField(

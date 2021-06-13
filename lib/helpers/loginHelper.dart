@@ -1,12 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
-
 
 Future<void> loginUsed(
   BuildContext context,
@@ -23,14 +20,19 @@ Future<void> loginUsed(
     final _auth = FirebaseAuth.instance;
     authResult = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-    final data = await FirebaseFirestore.instance
+    var data = await FirebaseFirestore.instance
         .collection('users')
         .doc(authResult.user.uid)
         .get();
+    if (!data.exists) {
+      data = await FirebaseFirestore.instance
+          .collection('firms')
+          .doc(authResult.user.uid)
+          .get();
+    }
     print("Login as User:" + authResult.user.uid);
-    setCurrentUser(Users.fromJson(data.data()));
+    print('Login helper:' + data.data().toString());
     saveUserInfo(Users.fromJson(data.data()));
-
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
   } catch (error) {
@@ -38,8 +40,8 @@ Future<void> loginUsed(
   }
 }
 
-
-Future<bool> registerUser(BuildContext context,Users user, String userPassword) async {
+Future<bool> registerUser(
+    BuildContext context, Users user, String userPassword) async {
   //TODO: Delete after testing
   print("Start delay");
   await Future.delayed(Duration(seconds: 3), () {
@@ -65,38 +67,36 @@ Future<bool> registerUser(BuildContext context,Users user, String userPassword) 
       'rating': "0",
     });
 
-    setCurrentUser(user);
-    print("User saved successfully!!!");
     saveUserInfo(user);
-    print(user.toString());
     return true;
-  }on FirebaseAuthException catch(error){
+  } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
     return false;
-  }catch(error){
+  } catch (error) {
     print(error);
     return false;
   }
 }
 
-Future<bool> registerFirm(BuildContext context, Firm firm, String password) async{
+Future<bool> registerFirm(
+    BuildContext context, Firm firm, String password) async {
   //TODO: Delete after testing
   print("Start delay");
   await Future.delayed(Duration(seconds: 3), () {
     print("Stop delay");
   });
 
-  try{
+  try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
 
-    authResult = await _auth.createUserWithEmailAndPassword(email: firm.email, password: password);
-
+    authResult = await _auth.createUserWithEmailAndPassword(
+        email: firm.email, password: password);
 
     await FirebaseFirestore.instance
-    .collection('firms')
-    .doc(authResult.user.uid)
-    .set(firm.toJson());
+        .collection('firms')
+        .doc(authResult.user.uid)
+        .set(firm.toJson());
     // .set({
     //   'firmName': firm.firmName,
     //   'name': firm.name,
@@ -114,21 +114,17 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password) asyn
     //TODO: zapisanie obecnie zalogowanej firmy pamięc aplikajci
     //TODO: zapisanie obecnie zalogowanej firmy w sharedPreference
 
-    print('Zapisana firma:\n'+firm.toString());
+    print('Zapisana firma:\n' + firm.toString());
+    saveUserInfo(firm);
     return true;
-  }on FirebaseAuthException catch(error){
+  } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
     return false;
-  }catch(error){
+  } catch (error) {
     print(error);
     return false;
   }
-
-
 }
-
-
-
 
 void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
   String errorMessage = "Wystąpił błąd. Proszę sprawedzić dane logowania.";
