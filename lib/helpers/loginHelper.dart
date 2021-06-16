@@ -61,7 +61,7 @@ Future<bool> registerUser(
         .doc(authResult.user.uid)
         .set(user.toJson());
 
-    saveUserInfo(user);
+    await saveUserInfo(user);
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -94,7 +94,7 @@ Future<bool> registerFirm(
         .set(firm.toJson());
 
     print('Zapisana firma:\n' + firm.toString());
-    saveUserInfo(firm);
+    await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);

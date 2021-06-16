@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -9,6 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build -> home_screen');
 
     return Scaffold(
       appBar: AppBar(
@@ -47,7 +49,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text("Hello from home_screen.dart"),
+        child: Text(getCurrentUser().toString()),
       ),
       drawer: AppDrawer(),
     );

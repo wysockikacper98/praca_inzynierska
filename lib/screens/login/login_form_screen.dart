@@ -19,14 +19,15 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     final _isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
       _formKey.currentState.save();
 
-      await loginUser(context, _userEmail.trim(), _userPassword.trim()).then((value) {
+     await loginUser(context, _userEmail.trim(), _userPassword.trim()).then((value) {
+        print("szybki to jest");
         if (mounted) {
           setState(() {
             _isLoading = false;
@@ -101,7 +102,8 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                           ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            Navigator.of(context).pushNamed(PickRegisterScreen.routerName);
+                            Navigator.of(context)
+                                .pushNamed(PickRegisterScreen.routerName);
                           },
                         ),
                       if (_isLoading) CircularProgressIndicator(),

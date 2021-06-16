@@ -9,15 +9,18 @@ class FirmProfileScreen extends StatelessWidget {
 
   final uid = FirebaseAuth.instance.currentUser.uid;
 
-  getDataAboutFirm() async{
-   // await Future.delayed(Duration(seconds: 3));
-   return FirebaseFirestore.instance.collection('firms').doc(uid).get();
+  getDataAboutFirm() async {
+    // await Future.delayed(Duration(seconds: 3));
+    return FirebaseFirestore.instance.collection('firms').doc(uid).get();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profil Wykonawcy"),centerTitle: true,),
+      appBar: AppBar(
+        title: Text("Profil Wykonawcy"),
+        centerTitle: true,
+      ),
       body: FutureBuilder(
         future: getDataAboutFirm(),
         builder: (ctx, snapshot) {

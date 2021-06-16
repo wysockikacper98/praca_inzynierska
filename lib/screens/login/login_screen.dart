@@ -15,8 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     print('build -> login_screen');
@@ -24,12 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
-          return FutureBuilder(future: getUserInfo(), builder: (ctx, snapshot) {
-            if(snapshot.connectionState != ConnectionState.done){
-              return CircularProgressIndicator();
-            }
-            return HomeScreen();
-          });
+          if(getCurrentUser() == null){
+            getUserInfo();
+          }
+          return HomeScreen();
         } else {
           return LoginFormScreen();
         }

@@ -28,7 +28,7 @@ class Users {
       rating: parsedJson['rating'] ?? '0',
       avatar: parsedJson['avatar'] ?? '',
       telephone: parsedJson['telephone'] ?? '',
-      type: parsedJson['type'] == 'PrivateUser' ? UserType.PrivateUser : null,
+      type: parsedJson['type'] == 'PrivateUser' ? UserType.PrivateUser : UserType.Firm,
     );
   }
 
