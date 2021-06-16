@@ -15,6 +15,7 @@ class HomeScreen extends StatelessWidget {
         title: Text("FixIT!"),
         actions: [
           DropdownButton(
+            underline: Container(),
             icon: Icon(
               Icons.more_vert,
               color: Theme.of(context).primaryIconTheme.color,

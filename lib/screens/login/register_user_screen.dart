@@ -122,6 +122,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         key: ValueKey('email'),
                         decoration: InputDecoration(labelText: 'Email'),
                         keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        enableSuggestions: false,
                         validator: (value) {
                           if (value.isEmpty || !value.contains('@')) {
                             return 'Proszę podać poprawy adres email.';

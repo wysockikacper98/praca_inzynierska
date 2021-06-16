@@ -5,7 +5,7 @@ import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
 
-Future<void> loginUsed(
+Future<void> loginUser(
   BuildContext context,
   String email,
   String password,
@@ -20,6 +20,7 @@ Future<void> loginUsed(
     final _auth = FirebaseAuth.instance;
     authResult = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
+
     var data = await FirebaseFirestore.instance
         .collection('users')
         .doc(authResult.user.uid)
@@ -32,7 +33,7 @@ Future<void> loginUsed(
     }
     print("Login as User:" + authResult.user.uid);
     print('Login helper:' + data.data().toString());
-    saveUserInfo(Users.fromJson(data.data()));
+    await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
   } catch (error) {
@@ -78,12 +79,12 @@ Future<bool> registerFirm(
   await Future.delayed(Duration(seconds: 3), () {
     print("Stop delay");
   });
+  UserCredential authResult;
+  final _auth = FirebaseAuth.instance;
+  print("Test Zapisu Firmy: ${firm.toJson()}");
+  print("Test Zapisu szczegółów: ${firm.details.toJson()}");
 
   try {
-    UserCredential authResult;
-    final _auth = FirebaseAuth.instance;
-    print("Test Zapisu Firmy: ${firm.toJson()}");
-
     authResult = await _auth.createUserWithEmailAndPassword(
         email: firm.email, password: password);
 
@@ -92,17 +93,16 @@ Future<bool> registerFirm(
         .doc(authResult.user.uid)
         .set(firm.toJson());
 
-    //TODO: zapisanie obecnie zalogowanej firmy pamięc aplikajci
-    //TODO: zapisanie obecnie zalogowanej firmy w sharedPreference
-
     print('Zapisana firma:\n' + firm.toString());
     saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
+    authResult.user.delete();
     return false;
   } catch (error) {
     print(error);
+    authResult.user.delete();
     return false;
   }
 }

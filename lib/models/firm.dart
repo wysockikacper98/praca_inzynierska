@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:praca_inzynierska/models/details.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 class Firm {
@@ -14,6 +15,7 @@ class Firm {
   String rating;
   List<String> category;
   UserType type;
+  Details details;
 
   Firm({
     @required this.firmName,
@@ -28,6 +30,7 @@ class Firm {
     this.avatar,
     this.rating,
     @required this.type,
+     this.details,
   });
 
   @override
@@ -44,7 +47,8 @@ class Firm {
         '\nRating:$rating' +
         '\nCategory:${category.toString()}' +
         '\nType:' +
-        (this.type == UserType.Firm ? "Firm" : "Private User");
+        (this.type == UserType.Firm ? "Firm" : "Private User") +
+        '\nDetails:${details.toString()}';
   }
 
   factory Firm.fromJson(Map<String, dynamic> parsedJson) {
@@ -61,6 +65,7 @@ class Firm {
       rating: parsedJson['rating'] ?? "",
       category: parsedJson['category'] ?? [],
       type: parsedJson['type'] == 'Firm' ? UserType.Firm : UserType.PrivateUser,
+      details: Details.fromJson(parsedJson['details']) ?? "",
     );
   }
 
@@ -78,6 +83,7 @@ class Firm {
       'rating': this.rating,
       'category': this.category,
       'type': UserType.Firm.toString().split('.').last,
+      'details': this.details.toJson(),
     };
   }
 }

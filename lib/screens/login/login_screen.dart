@@ -24,8 +24,12 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
-          getUserInfo().then((value) => setCurrentUser(value));
-          return HomeScreen();
+          return FutureBuilder(future: getUserInfo(), builder: (ctx, snapshot) {
+            if(snapshot.connectionState != ConnectionState.done){
+              return CircularProgressIndicator();
+            }
+            return HomeScreen();
+          });
         } else {
           return LoginFormScreen();
         }

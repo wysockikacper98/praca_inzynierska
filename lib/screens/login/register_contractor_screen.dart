@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/loginHelper.dart';
+import 'package:praca_inzynierska/models/details.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
 
@@ -54,6 +55,11 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     rating: '0',
     category: [],
     type: UserType.Firm,
+    details: Details(
+        pictures: List.empty(),
+        calendar: "Not implemented yet ¯\\_(ツ)_/¯",
+        prices: "Brak informacji",
+        description: "Dodaj opis firmy"),
   );
   String _userPassword;
 
@@ -78,6 +84,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
       });
 
       registerFirm(context, _firm, _userPassword).then((value) {
+        print("Wynik zapisania użytkownika:$value");
         if (value) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else {

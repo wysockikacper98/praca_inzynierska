@@ -15,7 +15,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   var _userPassword = '';
   bool _isLoading = false;
 
-  void _trySubmit() {
+  Future<void> _trySubmit() async {
     setState(() {
       _isLoading = true;
     });
@@ -26,7 +26,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_isValid) {
       _formKey.currentState.save();
 
-      loginUsed(context, _userEmail.trim(), _userPassword.trim()).then((value) {
+      await loginUser(context, _userEmail.trim(), _userPassword.trim()).then((value) {
         if (mounted) {
           setState(() {
             _isLoading = false;
