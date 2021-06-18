@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/widgets/build_firm_info.dart';
+import 'package:praca_inzynierska/widgets/firmRelated/build_firm_info.dart';
 
 class FirmProfileScreen extends StatelessWidget {
   static const routeName = '/firm-profile';
