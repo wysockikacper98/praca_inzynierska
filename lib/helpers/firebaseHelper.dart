@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/screens/messages/messages.dart';
 
 Future<void> loginUser(
   BuildContext context,
@@ -121,4 +122,25 @@ void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
       backgroundColor: Theme.of(context).errorColor,
     ),
   );
+}
+
+Future<void> createNewChat(BuildContext context, String userID, firmID) async {
+  CollectionReference chats = FirebaseFirestore.instance.collection('chats');
+
+  chats.add({
+    'chatName': userID.substring(0, 4),
+    'createdAt': DateTime.now(),
+    'users': [userID, firmID]
+  }).then((value) {
+    print('Added chat with id:${value.id}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Message(
+          chatID: value.id,
+          chatName: userID.substring(0, 4),
+        ),
+      ),
+    );
+  }).catchError((error) => print("Failed to add user: $error"));
 }

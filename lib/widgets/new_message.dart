@@ -15,12 +15,13 @@ class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
   var _enterMessage = '';
 
-
   Future<void> _sendMessage() async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
-    final userData = await FirebaseFirestore.instance.collection('users').doc(
-        user.uid).get();
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
     await FirebaseFirestore.instance
         .collection('chats')
@@ -37,7 +38,6 @@ class _NewMessageState extends State<NewMessage> {
       _enterMessage = '';
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +58,9 @@ class _NewMessageState extends State<NewMessage> {
             ),
           ),
           IconButton(
-            color: Theme
-                .of(context)
-                .primaryColor,
+            color: Theme.of(context).primaryColor,
             icon: Icon(Icons.send),
-            onPressed: _enterMessage
-                .trim()
-                .isEmpty ? null : _sendMessage,
+            onPressed: _enterMessage.trim().isEmpty ? null : _sendMessage,
           )
         ],
       ),

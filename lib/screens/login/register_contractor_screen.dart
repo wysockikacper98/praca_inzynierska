@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/loginHelper.dart';
+import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/models/details.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';

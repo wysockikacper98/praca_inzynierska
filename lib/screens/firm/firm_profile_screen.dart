@@ -1,23 +1,25 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class FirmsAuth {
-  final String uid;
+  final String firmID;
 
-  FirmsAuth(this.uid);
+  FirmsAuth(this.firmID);
 }
 
 class FirmProfileScreen extends StatelessWidget {
   static const routeName = '/firm-profile';
 
-  getDataAboutFirm(uid) async {
+  getDataAboutFirm(firmID) async {
     // await Future.delayed(Duration(seconds: 3));
-    return FirebaseFirestore.instance.collection('firms').doc(uid).get();
+    return FirebaseFirestore.instance.collection('firms').doc(firmID).get();
   }
 
   @override
@@ -30,7 +32,7 @@ class FirmProfileScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: getDataAboutFirm(data.uid),
+        future: getDataAboutFirm(data.firmID),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return SingleChildScrollView(
@@ -149,8 +151,6 @@ class FirmProfileScreen extends StatelessWidget {
   }
 
   AlertDialog buildConfirmDialog(BuildContext context, firm) {
-
-
     return AlertDialog(
       title: Text('Nowa wiadomość?'),
       content: Text('Rozpocząć nowy chat z ${firm.data()['firmName']}'),
@@ -163,7 +163,19 @@ class FirmProfileScreen extends StatelessWidget {
         TextButton(
           child: Text('Yes'),
           onPressed: () {
-            print("Create new chat");
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            // createNewChat(FirebaseAuth.instance.currentUser.uid, firm.id);
+            createNewChat(context, FirebaseAuth.instance.currentUser.uid, firm.id);
+            // print(chatDocs[index].reference.id);
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => Message(
+            //       chatID: chatDocs[index].reference.id,
+            //       chatName: chatDocs[index]['chatName'],
+            //     ),
+            //   ),
+            // );
           },
         ),
       ],
