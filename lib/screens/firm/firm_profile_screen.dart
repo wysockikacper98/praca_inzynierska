@@ -50,7 +50,7 @@ class FirmProfileScreen extends StatelessWidget {
                   //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
                   //   child: Text("Lokalizacja", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                   // ),
-                  buildHeadline("Zdjęcia poprzednich projektów:"),
+                  buildHeadline("Zdjęcia:"),
                   CarouselSlider(
                     options: CarouselOptions(
                       aspectRatio: 2,
@@ -89,7 +89,6 @@ class FirmProfileScreen extends StatelessWidget {
                     firstDayOfWeek: 1,
                     minDate: DateTime.utc(dateTime.year, dateTime.month),
                     showDatePickerButton: true,
-                    
                   ),
                   SizedBox(height: 50),
                   Container(
@@ -106,6 +105,7 @@ class FirmProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 50),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -115,6 +115,14 @@ class FirmProfileScreen extends StatelessWidget {
                         color: Colors.white,
                         onPressed: () {
                           print("Create new Message chat");
+                          showDialog(
+                            context: context,
+                            builder: (_) => buildConfirmDialog(
+                              context,
+                              snapshot.data,
+                            ),
+                            barrierDismissible: true,
+                          );
                         },
                       ),
                       IconButton(
@@ -140,11 +148,33 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
+  AlertDialog buildConfirmDialog(BuildContext context, firm) {
+
+
+    return AlertDialog(
+      title: Text('Nowa wiadomość?'),
+      content: Text('Rozpocząć nowy chat z ${firm.data()['firmName']}'),
+      elevation: 24.0,
+      actions: [
+        TextButton(
+          child: Text('No'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          child: Text('Yes'),
+          onPressed: () {
+            print("Create new chat");
+          },
+        ),
+      ],
+    );
+  }
+
   Padding buildHeadline(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
       child: Text(text,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
     );
   }
 }
