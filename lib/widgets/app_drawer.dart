@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
-import 'package:praca_inzynierska/screens/chats_screen.dart';
-import 'package:praca_inzynierska/screens/firm_profile_screen.dart';
+import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
+import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/widgets/build_user_info.dart';
 
 class AppDrawer extends StatefulWidget {

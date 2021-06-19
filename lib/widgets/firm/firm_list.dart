@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/firmRelated/build_firm_info.dart';
 
-Widget createFirmList(BuildContext context) {
+import 'build_firm_info.dart';
 
+Widget createRecommendedFirmList(BuildContext context) {
   getFuture() async {
     // await Future.delayed(Duration(seconds: 2));
     return FirebaseFirestore.instance.collection('firms').get();
@@ -15,13 +15,15 @@ Widget createFirmList(BuildContext context) {
     builder: (ctx, snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
         final firms = snapshot.data.docs;
-        // print("Data"+snapshot.data());
-        return ListView.builder(
-          //TODO: ListView multiple items in debug purposes
-          itemCount: firms.length*4,
-          itemBuilder: (context, index) {
-            return buildFirmInfo(context, firms[index%3].data());
-          },
+        // print(firms[0].id);
+        return Flexible(
+          fit: FlexFit.tight,
+          child: ListView.builder(
+            itemCount: firms.length < 10 ? firms.length : 10,
+            itemBuilder: (context, index) {
+              return buildFirmInfo(context, firms[index]);
+            },
+          ),
         );
       } else {
         return Center(child: CircularProgressIndicator());

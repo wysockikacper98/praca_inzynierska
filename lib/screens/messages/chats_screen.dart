@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/screens/messages.dart';
+
+import 'messages.dart';
 
 class ChatsScreen extends StatelessWidget {
   static const routeName = '/chat-screen';
@@ -34,10 +35,10 @@ class ChatsScreen extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (!chatSnapshot.hasData) {
+          } else if (chatSnapshot.data.docs != []) {
             return Center(child: Text("Brak wiadomości tekstowych"));
           } else {
-            print(chatSnapshot.toString());
+            print(chatSnapshot.data.docs.toString());
             print(chatSnapshot.data.docs.length.toString());
 
             final chatDocs = chatSnapshot.data.docs;
