@@ -29,6 +29,9 @@ dependencies:
   shared_preferences: ^2.0.5
   intl: ^0.17.0
   flutter_rating_bar: ^4.0.0
+  auto_size_text: ^2.1.0
+  carousel_slider: ^3.0.0
+  syncfusion_flutter_calendar: ^19.1.69
 
 
   # The following adds the Cupertino Icons font to your application.

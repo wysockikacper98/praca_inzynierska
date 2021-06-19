@@ -6,8 +6,11 @@ import 'build_firm_info.dart';
 
 Widget createRecommendedFirmList(BuildContext context) {
   getFuture() async {
-    // await Future.delayed(Duration(seconds: 2));
-    return FirebaseFirestore.instance.collection('firms').get();
+    return FirebaseFirestore.instance
+        .collection('firms')
+        .orderBy('rating', descending: true)
+        .limit(10)
+        .get();
   }
 
   return FutureBuilder(
@@ -19,7 +22,7 @@ Widget createRecommendedFirmList(BuildContext context) {
         return Flexible(
           fit: FlexFit.tight,
           child: ListView.builder(
-            itemCount: firms.length < 10 ? firms.length : 10,
+            itemCount: firms.length,
             itemBuilder: (context, index) {
               return buildFirmInfo(context, firms[index]);
             },

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
@@ -11,9 +12,12 @@ ListTile buildFirmInfo(BuildContext context, firm) {
           ? AssetImage('assets/images/fileNotFound.png')
           : NetworkImage(firm.data()['avatar']),
     ),
-    title: Text(
+    title: AutoSizeText(
       firm.data()['firmName'],
-      style: TextStyle(fontSize: 20),
+      style: TextStyle(fontSize: 22),
+      minFontSize: 15,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     ),
     subtitle: Text(firm.data()['location']),
     trailing: RatingBarIndicator(
@@ -25,7 +29,7 @@ ListTile buildFirmInfo(BuildContext context, firm) {
         color: Colors.amber,
       ),
       itemCount: 5,
-      itemSize: 25.0,
+      itemSize: 20.0,
       direction: Axis.horizontal,
     ),
     // isThreeLine: true,
