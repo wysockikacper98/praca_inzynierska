@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
+import 'package:praca_inzynierska/providers/UserProvider.dart';
 import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -26,6 +27,8 @@ class FirmProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final data = ModalRoute.of(context).settings.arguments as FirmsAuth;
     final dateTime = DateTime.now();
+    final userID = FirebaseAuth.instance.currentUser.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil Wykonawcy"),
@@ -121,6 +124,7 @@ class FirmProfileScreen extends StatelessWidget {
                             context: context,
                             builder: (_) => buildConfirmDialog(
                               context,
+                              userID,
                               snapshot.data,
                             ),
                             barrierDismissible: true,
@@ -150,36 +154,38 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  AlertDialog buildConfirmDialog(BuildContext context, firm) {
-    return AlertDialog(
-      title: Text('Nowa wiadomość?'),
-      content: Text('Rozpocząć nowy chat z ${firm.data()['firmName']}'),
-      elevation: 24.0,
-      actions: [
-        TextButton(
-          child: Text('No'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        TextButton(
-          child: Text('Yes'),
-          onPressed: () {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-            // createNewChat(FirebaseAuth.instance.currentUser.uid, firm.id);
-            createNewChat(context, FirebaseAuth.instance.currentUser.uid, firm.id);
-            // print(chatDocs[index].reference.id);
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => Message(
-            //       chatID: chatDocs[index].reference.id,
-            //       chatName: chatDocs[index]['chatName'],
-            //     ),
-            //   ),
-            // );
-          },
-        ),
-      ],
-    );
+  AlertDialog buildConfirmDialog(BuildContext context, String userID, firm) {
+    print(firm.id);
+    return userID != firm.id
+        ? AlertDialog(
+            title: Text('Nowa wiadomość?'),
+            content: Text('Rozpocząć chat z ${firm.data()['firmName']}'),
+            elevation: 24.0,
+            actions: [
+              TextButton(
+                child: Text('Nie'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: Text('Tak'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  createNewChat(context, getCurrentUser(), firm);
+                },
+              ),
+            ],
+          )
+        : AlertDialog(
+            title: Text('Nowa wiadomosć'),
+            content: Text('Nie można rozpocząć czatu z samym sobą.'),
+            elevation: 24,
+            actions: [
+              TextButton(
+                child: Text('Wróć'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
   }
 
   Padding buildHeadline(String text) {

@@ -124,23 +124,60 @@ void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
   );
 }
 
-Future<void> createNewChat(BuildContext context, String userID, firmID) async {
+Future<void> createNewChat(BuildContext context, Users user, firm) async {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
+  String userID = FirebaseAuth.instance.currentUser.uid;
 
-  chats.add({
-    'chatName': userID.substring(0, 4),
-    'createdAt': DateTime.now(),
-    'users': [userID, firmID]
-  }).then((value) {
-    print('Added chat with id:${value.id}');
+  final List<String> chatName = [
+    user.lastName + ' ' + user.firstName,
+    firm.data()['lastName'] + ' ' + firm.data()['firstName'] + ', ' +firm.data()['firmName']
+  ];
+
+  final chatData = await chats.where('users', arrayContains: userID).get();
+  bool ifChatExist = false;
+  var pickedChat;
+
+  for (int i = 0; i < chatData.docs.length; i++) {
+    if(chatData.docs[i]['users'].contains(firm.id)){
+      pickedChat = chatData.docs[i];
+      ifChatExist = true;
+      break;
+    }
+  }
+
+
+  if (!ifChatExist) {
+    print('Dodawanie nowego chatu');
+
+    chats.add({
+      'chatName': chatName,
+      'updatedAt': DateTime.now(),
+      'users': [userID, firm.id]
+    }).then((value) {
+      print('Added chat with id:${value.id}');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Message(
+            chatID: value.id,
+            chatName: chatName.last,
+          ),
+        ),
+      );
+    }).catchError((error) => print("Failed to add user: $error"));
+  } else {
+    print('Otwieranie starego chatu');
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Message(
-          chatID: value.id,
-          chatName: userID.substring(0, 4),
+          chatID: pickedChat.reference.id,
+          chatName: pickedChat['users'][0] == userID
+              ? pickedChat['chatName'][1]
+              : pickedChat['chatName'][0],
         ),
       ),
     );
-  }).catchError((error) => print("Failed to add user: $error"));
+  }
 }

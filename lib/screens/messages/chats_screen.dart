@@ -35,34 +35,44 @@ class ChatsScreen extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (chatSnapshot.data.docs != []) {
+            // } else if (chatSnapshot.data.docs != []) {
+          } else if (chatSnapshot.data.docs.length == 0) {
             return Center(child: Text("Brak wiadomości tekstowych"));
           } else {
-            print(chatSnapshot.data.docs.toString());
             print(chatSnapshot.data.docs.length.toString());
 
             final chatDocs = chatSnapshot.data.docs;
             //TODO: sortowanie listy przed budowaniem
+            // print('Zobaczymy co tu się takiego dzieje');
+            // print(chatSnapshot.data.docs[0]['chatName']);
+            // print(chatSnapshot.data.docs[0]['chatName'][0]);
             return ListView.builder(
-              itemCount: chatDocs.length,
-              itemBuilder: (ctx, index) => ListTile(
-                title: Text(chatDocs[index]['chatName']),
-                trailing: Text(DateFormat('dd-MM-yyyy hh:mm')
-                    .format(chatDocs[index]['updatedAt'].toDate())),
-                onTap: () {
-                  print(chatDocs[index].reference.id);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Message(
-                        chatID: chatDocs[index].reference.id,
-                        chatName: chatDocs[index]['chatName'],
-                      ),
-                    ),
+                itemCount: chatDocs.length,
+                itemBuilder: (ctx, index) {
+
+                  final String currentChatName =
+                      chatDocs[index]['users'][0] == userId
+                          ? chatDocs[index]['chatName'][1]
+                          : chatDocs[index]['chatName'][0];
+
+                  return ListTile(
+                    title: Text(currentChatName),
+                    trailing: Text(DateFormat('dd-MM-yyyy hh:mm')
+                        .format(chatDocs[index]['updatedAt'].toDate())),
+                    onTap: () {
+                      print(chatDocs[index].reference.id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Message(
+                            chatID: chatDocs[index].reference.id,
+                            chatName: currentChatName,
+                          ),
+                        ),
+                      );
+                    },
                   );
-                },
-              ),
-            );
+                });
           }
         },
       ),
