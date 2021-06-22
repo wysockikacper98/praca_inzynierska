@@ -10,6 +10,8 @@ import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../full_screen_image.dart';
+
 class FirmsAuth {
   final String firmID;
 
@@ -26,7 +28,10 @@ class FirmProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = ModalRoute.of(context).settings.arguments as FirmsAuth;
+    final data = ModalRoute
+        .of(context)
+        .settings
+        .arguments as FirmsAuth;
     final dateTime = DateTime.now();
     final userID = FirebaseAuth.instance.currentUser.uid;
 
@@ -57,44 +62,62 @@ class FirmProfileScreen extends StatelessWidget {
                   //   child: Text("Lokalizacja", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                   // ),
                   buildHeadline("Zdjęcia:"),
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      aspectRatio: 2.5,
-                      disableCenter: true,
-                      autoPlayInterval: Duration(seconds: 8),
-                      enlargeCenterPage: true,
-                      autoPlay: true,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        aspectRatio: 2.5,
+                        disableCenter: true,
+                        autoPlayInterval: const Duration(seconds: 8),
+                        enlargeCenterPage: true,
+                        autoPlay: true,
+                      ),
+                      items: [
+                        GestureDetector(
+                            child: Hero(
+                              tag: 'first',
+                              child: Container(
+                                child: Image.asset(
+                                    'assets/images/tempPicture1.png'),
+                                color: Colors.white30,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (_) {
+                                return FullScreenImage('assets/images/tempPicture1.png');
+                              }));
+                            }
+                        ),
+                        Container(
+                          child: Image.asset('assets/images/tempPicture2.png'),
+                          color: Colors.white30,
+                        ),
+                        Container(
+                          child: Image.asset('assets/images/tempPicture3.png'),
+                          color: Colors.white30,
+                        ),
+                        Container(
+                          child: Image.asset('assets/images/tempPicture4.png'),
+                          color: Colors.white30,
+                        ),
+                        Container(
+                          child: Image.asset('assets/images/tempPicture5.png'),
+                          color: Colors.white30,
+                        ),
+                      ],
                     ),
-                    items: [
-                      Container(
-                        child: Image.asset('assets/images/tempPicture1.png'),
-                        color: Colors.white30,
-                      ),
-                      Container(
-                        child: Image.asset('assets/images/tempPicture2.png'),
-                        color: Colors.white30,
-                      ),
-                      Container(
-                        child: Image.asset('assets/images/tempPicture3.png'),
-                        color: Colors.white30,
-                      ),
-                      Container(
-                        child: Image.asset('assets/images/tempPicture4.png'),
-                        color: Colors.white30,
-                      ),
-                      Container(
-                        child: Image.asset('assets/images/tempPicture5.png'),
-                        color: Colors.white30,
-                      ),
-                    ],
                   ),
                   buildHeadline("Kalendarz:"),
-                  SfCalendar(
-                    view: CalendarView.month,
-                    backgroundColor: Colors.white30,
-                    firstDayOfWeek: 1,
-                    minDate: DateTime.utc(dateTime.year, dateTime.month),
-                    showDatePickerButton: true,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: SfCalendar(
+                      view: CalendarView.month,
+                      backgroundColor: Colors.white30,
+                      firstDayOfWeek: 1,
+                      minDate: DateTime.utc(dateTime.year, dateTime.month),
+                      showDatePickerButton: true,
+                    ),
                   ),
                   SizedBox(height: 50),
                   Container(
@@ -122,11 +145,12 @@ class FirmProfileScreen extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (_) => buildConfirmNewMessageDialog(
-                              context,
-                              userID,
-                              snapshot.data,
-                            ),
+                            builder: (_) =>
+                                buildConfirmNewMessageDialog(
+                                  context,
+                                  userID,
+                                  snapshot.data,
+                                ),
                             barrierDismissible: true,
                           );
                         },
@@ -138,11 +162,12 @@ class FirmProfileScreen extends StatelessWidget {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (_) => buildConfirmNewEmailDialog(
-                              context,
-                              snapshot.data.data()['email'],
-                              snapshot.data.data()['firmName'],
-                            ),
+                            builder: (_) =>
+                                buildConfirmNewEmailDialog(
+                                  context,
+                                  snapshot.data.data()['email'],
+                                  snapshot.data.data()['firmName'],
+                                ),
                           );
                         },
                       ),
@@ -160,43 +185,44 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  AlertDialog buildConfirmNewMessageDialog(
-      BuildContext context, String userID, firm) {
+  AlertDialog buildConfirmNewMessageDialog(BuildContext context, String userID,
+      firm) {
     print(firm.id);
     return userID != firm.id
         ? AlertDialog(
-            title: Text('Nowa wiadomość?'),
-            content: Text('Rozpocząć chat z ${firm.data()['firmName']}'),
-            elevation: 24.0,
-            actions: [
-              TextButton(
-                child: Text('Nie'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              TextButton(
-                child: Text('Tak'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  createNewChat(context, getCurrentUser(), firm);
-                },
-              ),
-            ],
-          )
+      title: Text('Nowa wiadomość?'),
+      content: Text('Rozpocząć chat z ${firm.data()['firmName']}'),
+      elevation: 24.0,
+      actions: [
+        TextButton(
+          child: Text('Nie'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          child: Text('Tak'),
+          onPressed: () {
+            Navigator.of(context).pop();
+            createNewChat(context, getCurrentUser(), firm);
+          },
+        ),
+      ],
+    )
         : AlertDialog(
-            title: Text('Nowa wiadomosć'),
-            content: Text('Nie można rozpocząć czatu z samym sobą.'),
-            elevation: 24,
-            actions: [
-              TextButton(
-                child: Text('Wróć'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
+      title: Text('Nowa wiadomosć'),
+      content: Text('Nie można rozpocząć czatu z samym sobą.'),
+      elevation: 24,
+      actions: [
+        TextButton(
+          child: Text('Wróć'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
   }
 
-  AlertDialog buildConfirmNewEmailDialog(BuildContext context, String email, String firmName) {
-    print(firmName+' -> '+email);
+  AlertDialog buildConfirmNewEmailDialog(BuildContext context, String email,
+      String firmName) {
+    print(firmName + ' -> ' + email);
     return AlertDialog(
       title: Text('Otowrzyć domyślną aplikację Email'),
       content: Text('Czy chcesz utworzyć nową wiadomość do $firmName'),
