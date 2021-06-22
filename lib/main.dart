@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/emergency_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
         RegisterContractorScreen.routeName: (ctx) => RegisterContractorScreen(),
         FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
+        EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
         // ChatsScreen.routeName: (ctx) => ChatsScreen(),
 
       },

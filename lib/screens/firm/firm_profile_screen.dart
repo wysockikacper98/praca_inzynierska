@@ -8,6 +8,7 @@ import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
 import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FirmsAuth {
   final String firmID;
@@ -42,7 +43,7 @@ class FirmProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 30),
+                  SizedBox(height: 15),
                   buildFirmInfo(context, snapshot.data),
                   buildHeadline("O nas"),
                   Padding(
@@ -58,7 +59,7 @@ class FirmProfileScreen extends StatelessWidget {
                   buildHeadline("Zdjęcia:"),
                   CarouselSlider(
                     options: CarouselOptions(
-                      aspectRatio: 2,
+                      aspectRatio: 2.5,
                       disableCenter: true,
                       autoPlayInterval: Duration(seconds: 8),
                       enlargeCenterPage: true,
@@ -119,10 +120,9 @@ class FirmProfileScreen extends StatelessWidget {
                         iconSize: 80,
                         color: Colors.white,
                         onPressed: () {
-                          print("Create new Message chat");
                           showDialog(
                             context: context,
-                            builder: (_) => buildConfirmDialog(
+                            builder: (_) => buildConfirmNewMessageDialog(
                               context,
                               userID,
                               snapshot.data,
@@ -136,12 +136,18 @@ class FirmProfileScreen extends StatelessWidget {
                         iconSize: 80,
                         color: Colors.white,
                         onPressed: () {
-                          print("Send new Email");
+                          showDialog(
+                            context: context,
+                            builder: (_) => buildConfirmNewEmailDialog(
+                              context,
+                              snapshot.data.data()['email'],
+                              snapshot.data.data()['firmName'],
+                            ),
+                          );
                         },
                       ),
                     ],
                   ),
-
                   SizedBox(height: 50),
                 ],
               ),
@@ -154,7 +160,8 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  AlertDialog buildConfirmDialog(BuildContext context, String userID, firm) {
+  AlertDialog buildConfirmNewMessageDialog(
+      BuildContext context, String userID, firm) {
     print(firm.id);
     return userID != firm.id
         ? AlertDialog(
@@ -188,11 +195,42 @@ class FirmProfileScreen extends StatelessWidget {
           );
   }
 
+  AlertDialog buildConfirmNewEmailDialog(BuildContext context, String email, String firmName) {
+    print(firmName+' -> '+email);
+    return AlertDialog(
+      title: Text('Otowrzyć domyślną aplikację Email'),
+      content: Text('Czy chcesz utworzyć nową wiadomość do $firmName'),
+      elevation: 24.0,
+      actions: [
+        TextButton(
+          child: Text('Nie'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          child: Text('Tak'),
+          onPressed: () {
+            Navigator.of(context).pop();
+            final Uri _emailLaunchUri = Uri(scheme: 'mailto', path: email);
+            sendEmail(_emailLaunchUri.toString());
+          },
+        ),
+      ],
+    );
+  }
+
   Padding buildHeadline(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
       child: Text(text,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
     );
+  }
+}
+
+Future<void> sendEmail(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

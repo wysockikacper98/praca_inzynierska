@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:praca_inzynierska/screens/emergency_screen.dart';
 import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/widgets/build_user_info.dart';
@@ -37,8 +38,6 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             onTap: () {
-              //TODO: Go to screen
-
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
@@ -46,7 +45,6 @@ class _AppDrawerState extends State<AppDrawer> {
             thickness: 1,
             height: 25,
           ),
-
           if (getCurrentUser().type == UserType.Firm)
             ListTile(
               leading: Icon(
@@ -60,7 +58,8 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               ),
               onTap: () {
-                Navigator.of(context).popAndPushNamed(FirmProfileScreen.routeName);
+                Navigator.of(context)
+                    .popAndPushNamed(FirmProfileScreen.routeName);
               },
             ),
           if (getCurrentUser().type == UserType.PrivateUser)
@@ -97,10 +96,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             onTap: () {
-              //TODO: Go to screen
-              // Navigator.of(context).pushReplacement(ChatsScreen());
-              Navigator.of(context).pop();
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChatsScreen(
@@ -147,9 +143,7 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             onTap: () {
-              //TODO: Go to screen
-
-              Navigator.of(context).pop();
+              Navigator.of(context).popAndPushNamed(EmergencyScreen.routeName);
             },
           ),
           Divider(
