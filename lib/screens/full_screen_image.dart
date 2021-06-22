@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class FullScreenImage extends StatelessWidget {
   final String imageAssetsPath;
-
-  FullScreenImage(this.imageAssetsPath);
+  final int tag;
+  FullScreenImage({this.imageAssetsPath, this.tag});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        child: Container(
-          color: Colors.white30,
-          child: Center(
-            child: Hero(
-              tag: "first",
-              child: Image.asset(imageAssetsPath),
-            ),
+      body: Container(
+        color: Colors.white30,
+        child: Hero(
+          tag: tag,
+          child: PhotoView(
+            minScale: 0.8,
+            maxScale: 2.0,
+            imageProvider: AssetImage(imageAssetsPath),
           ),
         ),
-        onTap:() => Navigator.of(context).pop(),
       ),
     );
   }
