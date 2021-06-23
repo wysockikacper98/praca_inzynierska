@@ -17,21 +17,20 @@ class PickRegisterScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Zarejestruj jako:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                Text("Zarejestruj jako:", style: Theme.of(context).textTheme.headline5),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
                       child: Text("Użytkownik"),
-                      style: ElevatedButton.styleFrom(primary: Colors.redAccent),
                       onPressed: (){
                         Navigator.of(context).pushNamed(RegisterUserScreen.routerName);
                       },
                     ),
                     ElevatedButton(
                       child: Text("Wykonawca"),
-                      style: ElevatedButton.styleFrom(primary: Colors.amber),
+                      style: ElevatedButton.styleFrom(primary: Theme.of(context).primaryColorDark),
                       onPressed: (){
                         Navigator.of(context).pushNamed(RegisterContractorScreen.routeName);
                       },

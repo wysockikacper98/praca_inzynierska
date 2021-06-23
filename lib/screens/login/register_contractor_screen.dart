@@ -41,6 +41,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _repeatPasswordController = TextEditingController();
+  final _scrollController = ScrollController();
 
   Firm _firm = Firm(
     firmName: "",
@@ -106,6 +107,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
       body: Center(
         child: SafeArea(
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Card(
               margin: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
               child: Padding(
@@ -113,9 +115,10 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(height: 10),
                     Text(
                       'Rejestracja jako wykonawca',
-                      style: TextStyle(fontSize: 20),
+                      style: Theme.of(context).textTheme.headline5,
                     ),
                     SizedBox(height: 20),
                     if (_pickCategory)
@@ -124,6 +127,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                         child: Text(
                           'Zaznacz, czym się zajmujesz:',
                           textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ),
                     SizedBox(height: 20),
@@ -322,21 +326,35 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                           ElevatedButton(
                             child: const Text("Cofnij"),
                             style:
-                                ElevatedButton.styleFrom(primary: Colors.green),
+                                ElevatedButton.styleFrom(primary: Theme.of(context).accentColor),
                             onPressed: _pickCategory
                                 ? () => Navigator.of(context).pop()
-                                : () => setState(() {
+                                : () {
+                                    _scrollController.animateTo(
+                                      0,
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.easeOut,
+                                    );
+                                    setState(() {
                                       _pickCategory = !_pickCategory;
-                                    }),
+                                    });
+                                  },
                           ),
                           if (_pickCategory)
                             ElevatedButton(
                               child: Text('Dalej ($_countSelected)'),
                               onPressed: _countSelected == 0
                                   ? null
-                                  : () => setState(() {
+                                  : () {
+                                      _scrollController.animateTo(
+                                        0,
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.easeOut,
+                                      );
+                                      setState(() {
                                         _pickCategory = !_pickCategory;
-                                      }),
+                                      });
+                                    },
                             ),
                           if (!_pickCategory)
                             ElevatedButton(
@@ -356,5 +374,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+    _passwordController.dispose();
+    _repeatPasswordController.dispose();
   }
 }

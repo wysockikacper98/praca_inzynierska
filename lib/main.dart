@@ -5,6 +5,8 @@ import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
@@ -23,25 +25,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FixIT!',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.green,
-        primarySwatch: Colors.deepOrange,
-        scaffoldBackgroundColor: Colors.pink,
-        // backgroundColor: Colors.pink,
-        accentColor: Colors.amber,
-        accentColorBrightness: Brightness.light,
-
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.pink,
-            // textStyle: TextStyle(color: Colors.green),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-      ),
+      darkTheme: themeDark(),
+      theme: themeLight(),
+      // theme: ThemeData(
+      //   brightness: Brightness.light,
+      //   primaryColor: Colors.green,
+      //   primarySwatch: Colors.deepOrange,
+      //   scaffoldBackgroundColor: Colors.pink,
+      //
+      //   accentColor: Colors.amber,
+      //   accentColorBrightness: Brightness.light,
+      //
+      //   elevatedButtonTheme: ElevatedButtonThemeData(
+      //     style: ElevatedButton.styleFrom(
+      //       primary: Colors.pink,
+      //       // textStyle: TextStyle(color: Colors.green),
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(20),
+      //       ),
+      //     ),
+      //   ),
+      // ),
       initialRoute: '/',
       routes: {
         '/': (ctx) => LoginScreen(),

@@ -26,7 +26,8 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_isValid) {
       _formKey.currentState.save();
 
-     await loginUser(context, _userEmail.trim(), _userPassword.trim()).then((value) {
+      await loginUser(context, _userEmail.trim(), _userPassword.trim())
+          .then((value) {
         print("szybki to jest");
         if (mounted) {
           setState(() {
@@ -97,9 +98,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                       if (!_isLoading)
                         TextButton(
                           child: Text('Zarejestruj się'),
-                          style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                          ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();
                             Navigator.of(context)

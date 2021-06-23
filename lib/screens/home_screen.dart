@@ -17,29 +17,22 @@ class HomeScreen extends StatelessWidget {
   }
 
   final color = [
-    Colors.green,
-    Colors.blue,
-    Colors.yellow,
-    Colors.deepOrange,
-    Colors.deepPurple,
-    Colors.greenAccent,
+    Color(0xFFCF6B59),
+    Color(0xFF196F64),
+    Color(0xFF8E4169),
+    Color(0xFF2F4496),
+    Color(0xFFECBC9F),
+    Color(0xFFBFB051),
   ];
 
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
-    color.shuffle();
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          "FixIT!",
-          style: TextStyle(
-              fontSize: 30,
-              fontFamily: 'Dancing Script',
-              fontWeight: FontWeight.w700),
-        ),
+        title: Text("FixIT!"),
         actions: [
           DropdownButton(
             underline: Container(),
@@ -114,12 +107,16 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {},
               ),
               ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Usługi finansowe'))),
+                child:
+                    Center(child: FittedBox(child: Text('Usługi finansowe'))),
                 style: style(4),
                 onPressed: () {},
               ),
               ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Meble i zabudowa'),)),
+                child: Center(
+                    child: FittedBox(
+                  child: Text('Meble i zabudowa'),
+                )),
                 style: style(5),
                 onPressed: () {},
               ),
