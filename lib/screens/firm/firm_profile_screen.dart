@@ -110,18 +110,16 @@ class FirmProfileScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 50),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.white30,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 7.5),
-                      child: AutoSizeText(
-                        'Napisz do nas w razie pytań lub chęci współpracy',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20),
-                        maxLines: 2,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 7.5,
+                    ),
+                    child: AutoSizeText(
+                      'Napisz do nas w razie pytań lub chęci współpracy',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5,
+                      maxLines: 2,
                     ),
                   ),
                   SizedBox(height: 50),
@@ -131,7 +129,7 @@ class FirmProfileScreen extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.question_answer_outlined),
                         iconSize: 80,
-                        color: Colors.white,
+                        color: Theme.of(context).primaryColor,
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -147,7 +145,7 @@ class FirmProfileScreen extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.email_outlined),
                         iconSize: 80,
-                        color: Colors.white,
+                        color: Theme.of(context).primaryColor,
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -235,8 +233,10 @@ class FirmProfileScreen extends StatelessWidget {
   Padding buildHeadline(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-      child: Text(text,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

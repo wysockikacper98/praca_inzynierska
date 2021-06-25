@@ -14,8 +14,9 @@ class FullScreenImage extends StatelessWidget {
         child: Hero(
           tag: tag,
           child: PhotoView(
-            minScale: 0.8,
+            minScale: 0.5,
             maxScale: 2.0,
+            initialScale: 0.75,
             imageProvider: AssetImage(imageAssetsPath),
           ),
         ),

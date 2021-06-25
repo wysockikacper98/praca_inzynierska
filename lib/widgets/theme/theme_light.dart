@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 const MaterialColor kOrangeColor = const MaterialColor(
   0xFFE64A19,
   const <int, Color>{
-    50: const Color(0xFFE64A19),
-    100: const Color(0xFFE64A19),
-    200: const Color(0xFFE64A19),
-    300: const Color(0xFFE64A19),
-    400: const Color(0xFFE64A19),
+    50: const Color(0xFFfcede8),
+    100: const Color(0xFFf7c8ba),
+    200: const Color(0xFFf2a48c),
+    300: const Color(0xFFed805e),
+    400: const Color(0xFFeb6d47),
     500: const Color(0xFFE64A19),
-    600: const Color(0xFFE64A19),
-    700: const Color(0xFFE64A19),
-    800: const Color(0xFFE64A19),
-    900: const Color(0xFFE64A19),
+    600: const Color(0xFFcf4217),
+    700: const Color(0xFFa13312),
+    800: const Color(0xFF73250d),
+    900: const Color(0xFF451608),
   },
 );
 
@@ -47,20 +47,24 @@ const MaterialColor kDeepGreenColor = const MaterialColor(
   },
 );
 
+const Color primaryColorLight = Color(0xFFFFF3E2);
+const Color primaryColor = Color(0xFFFBAD59);
+
 ThemeData themeLight() {
   return ThemeData(
     brightness: Brightness.light,
-    primaryColor: Color(0xFFFFF3E2),
+    primaryColorLight: primaryColorLight,
+    primaryColor: primaryColor,
     primaryColorDark: Color(0xFF222222),
     accentColor: kOrangeColor,
     primarySwatch: kDeepGreenColor,
     toggleableActiveColor: kGreenColor,
 
-    primaryIconTheme: IconThemeData(color: Color(0xFFFFF3E2)),
-
+    primaryIconTheme: IconThemeData(color: primaryColorLight),
+    // iconTheme: IconThemeData(color: primaryColorLight),
     appBarTheme: appBarTheme(),
 
-    scaffoldBackgroundColor: Color(0xFFFFF3E2),
+    scaffoldBackgroundColor: primaryColorLight,
     // textTheme: TextTheme(subtitle1: TextStyle(color: Color(0xFF222222))),
     cardTheme: cardTheme(),
     //Buttons Theme
@@ -69,23 +73,22 @@ ThemeData themeLight() {
   );
 }
 
-AppBarTheme appBarTheme() {
-  return AppBarTheme(
-    textTheme: TextTheme(
-      headline6: TextStyle(
-        color: Color(0xFFFFF3E2),
-        fontSize: 30,
-        fontFamily: 'Dancing Script',
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-    backgroundColor: Color(0xFFFBAD59),centerTitle: true,
-  );
-}
+//Text Styles
 
 TextStyle textFormStyle() {
   return TextStyle(color: Colors.white);
 }
+
+TextStyle textDrawerStyle() {
+  return TextStyle(
+    fontSize: 20,
+    fontStyle: FontStyle.italic,
+    color: primaryColorLight,
+  );
+}
+
+
+//Buttons Styles
 
 TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(
@@ -102,10 +105,40 @@ ElevatedButtonThemeData elevatedButtonTheme() {
   );
 }
 
+// Widgets Styles
 CardTheme cardTheme() {
   return CardTheme(
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20))),
     color: Color(0xFFFEC674),
+  );
+}
+
+AppBarTheme appBarTheme() {
+  return AppBarTheme(
+    textTheme: TextTheme(
+      headline6: TextStyle(
+        color: primaryColorLight,
+        fontSize: 30,
+        fontFamily: 'Dancing Script',
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    backgroundColor: primaryColor,
+    centerTitle: true,
+  );
+}
+
+//Colors Styles
+
+LinearGradient defaultLinearGradient() {
+  return LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    // transform: GradientTransform,
+    colors: [
+      primaryColor,
+      primaryColorLight,
+    ],
   );
 }

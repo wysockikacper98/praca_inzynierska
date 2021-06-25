@@ -130,7 +130,11 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
 
   final List<String> chatName = [
     user.lastName + ' ' + user.firstName,
-    firm.data()['lastName'] + ' ' + firm.data()['firstName'] + ', ' +firm.data()['firmName']
+    firm.data()['lastName'] +
+        ' ' +
+        firm.data()['firstName'] +
+        ', ' +
+        firm.data()['firmName']
   ];
 
   final chatData = await chats.where('users', arrayContains: userID).get();
@@ -138,13 +142,12 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
   var pickedChat;
 
   for (int i = 0; i < chatData.docs.length; i++) {
-    if(chatData.docs[i]['users'].contains(firm.id)){
+    if (chatData.docs[i]['users'].contains(firm.id)) {
       pickedChat = chatData.docs[i];
       ifChatExist = true;
       break;
     }
   }
-
 
   if (!ifChatExist) {
     print('Dodawanie nowego chatu');
@@ -180,4 +183,20 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
       ),
     );
   }
+}
+
+Future<DocumentSnapshot> getUserInfoFromFirebase(
+  BuildContext context,
+  String userID,
+) async {
+  await Future.delayed(Duration(seconds: 2));
+  var data =
+      await FirebaseFirestore.instance.collection('users').doc(userID).get();
+  if (!data.exists) {
+    data =
+        await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+  }
+
+  return data;
+
 }

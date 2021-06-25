@@ -4,6 +4,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 
 ListTile buildFirmInfo(BuildContext context, firm) {
+  final rating = double.tryParse(firm.data()['rating']) != null
+      ? double.parse(firm.data()['rating'])
+      : 0;
+
   return ListTile(
     leading: CircleAvatar(
       radius: 30,
@@ -20,17 +24,22 @@ ListTile buildFirmInfo(BuildContext context, firm) {
       overflow: TextOverflow.ellipsis,
     ),
     subtitle: Text(firm.data()['location']),
-    trailing: RatingBarIndicator(
-      rating: double.tryParse(firm.data()['rating']) != null
-          ? double.parse(firm.data()['rating'])
-          : 0,
-      itemBuilder: (context, index) => Icon(
-        Icons.star,
-        color: Colors.amber,
-      ),
-      itemCount: 5,
-      itemSize: 20.0,
-      direction: Axis.horizontal,
+    trailing: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        RatingBarIndicator(
+          rating: rating,
+          itemBuilder: (context, index) =>
+              Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+          itemCount: 5,
+          itemSize: 20.0,
+          direction: Axis.horizontal,
+        ),
+        Text(rating.toString()),
+      ],
     ),
     // isThreeLine: true,
     onTap: () {

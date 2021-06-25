@@ -166,9 +166,20 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       ),
                       SizedBox(height: 20),
                       if (!_isLoading)
-                        ElevatedButton(
-                          child: const Text("Zarejestruj"),
-                          onPressed: () => _trySubmit(context),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              child: const Text("Cofnij"),
+                              style: ElevatedButton.styleFrom(
+                                  primary: Theme.of(context).accentColor),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            ElevatedButton(
+                              child: const Text("Zarejestruj"),
+                              onPressed: () => _trySubmit(context),
+                            ),
+                          ],
                         ),
                       if (_isLoading) CircularProgressIndicator(),
                     ],

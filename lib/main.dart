@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/screens/emergency_screen.dart';
+import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
@@ -10,6 +11,7 @@ import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/user/user_edit_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,25 +29,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       darkTheme: themeDark(),
       theme: themeLight(),
-      // theme: ThemeData(
-      //   brightness: Brightness.light,
-      //   primaryColor: Colors.green,
-      //   primarySwatch: Colors.deepOrange,
-      //   scaffoldBackgroundColor: Colors.pink,
-      //
-      //   accentColor: Colors.amber,
-      //   accentColorBrightness: Brightness.light,
-      //
-      //   elevatedButtonTheme: ElevatedButtonThemeData(
-      //     style: ElevatedButton.styleFrom(
-      //       primary: Colors.pink,
-      //       // textStyle: TextStyle(color: Colors.green),
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.circular(20),
-      //       ),
-      //     ),
-      //   ),
-      // ),
       initialRoute: '/',
       routes: {
         '/': (ctx) => LoginScreen(),
@@ -56,6 +39,8 @@ class MyApp extends StatelessWidget {
         RegisterContractorScreen.routeName: (ctx) => RegisterContractorScreen(),
         FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
         EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
+        UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
+        FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
         // ChatsScreen.routeName: (ctx) => ChatsScreen(),
 
       },

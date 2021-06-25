@@ -74,7 +74,8 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: Text(
               'Najczęstrze kategorie',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              // style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headline6,
             ),
           ),
           GridView.count(
@@ -125,7 +126,7 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child:
-                Text('Polecane', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Polecane', style: Theme.of(context).textTheme.headline6),
           ),
           createRecommendedFirmList(context),
         ],
