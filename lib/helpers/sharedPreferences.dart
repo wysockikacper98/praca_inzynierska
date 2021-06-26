@@ -14,21 +14,27 @@ Future<void> saveUserInfo(dynamic user) async {
     avatar: user.avatar,
     type: user.type,
   );
+  // print('User to save in memory:' + user.toString());
+
   setCurrentUser(user);
 
-  SharedPreferences.getInstance().then((value) => value.setString('user', jsonEncode(user)));
+  SharedPreferences.getInstance().then((value) {
+    // print('\n\nTest1:\n'+user.toString());
+    value.setString('user', jsonEncode(user));
+    // print('\n\nTest2\n'+value.getString('user').toString());
+    // print('\n\nTest3\n'+user.toJson().toString());
+  });
 }
 
 Future<Users> getUserInfo() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  print("Pobrany string z shared Preferences:" +
-      sharedPreferences.getString('user').toString());
+  // print("Pobrany string z shared Preferences:" +
+  //     sharedPreferences.getString('user').toString());
   Map userMap = jsonDecode(sharedPreferences.getString('user'));
-  print("Mapa:\n$userMap");
+  // print("Mapa:\n$userMap");
   var user = Users.fromJson(userMap);
   return user;
-
 }
 
 Future<void> clearUserInfo() async {

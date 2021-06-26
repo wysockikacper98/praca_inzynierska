@@ -40,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 functionTemp() async {
-  print(getCurrentUser().toString());
   if (getCurrentUser() == null) {
     setCurrentUser(await getUserInfo());
   }

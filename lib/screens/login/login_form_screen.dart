@@ -28,7 +28,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
 
       await loginUser(context, _userEmail.trim(), _userPassword.trim())
           .then((value) {
-        print("szybki to jest");
         if (mounted) {
           setState(() {
             _isLoading = false;

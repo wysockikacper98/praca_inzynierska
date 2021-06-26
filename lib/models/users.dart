@@ -50,7 +50,7 @@ class Users {
         "\nAvatar:" +
         this.avatar +
         "\nType:" +
-        (this.type == UserType.Firm ? "Firm" : "Private User");
+        (this.type == UserType.Firm ? 'Firm' : 'Private User');
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +61,7 @@ class Users {
       'rating': this.rating,
       'avatar': this.avatar,
       'telephone': this.telephone,
-      'type': UserType.PrivateUser.toString().split('.').last,
+      'type': this.type.toString().split('.').last,
     };
   }
 }

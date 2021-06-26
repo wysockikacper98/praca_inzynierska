@@ -47,7 +47,7 @@ class FirmProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 15),
-                  buildFirmInfo(context, snapshot.data),
+                  buildFirmInfo(context, snapshot.data, true),
                   buildHeadline("O nas"),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -173,7 +173,7 @@ class FirmProfileScreen extends StatelessWidget {
 
   AlertDialog buildConfirmNewMessageDialog(
       BuildContext context, String userID, firm) {
-    print(firm.id);
+    // print(firm.id);
     return userID != firm.id
         ? AlertDialog(
             title: Text('Nowa wiadomość?'),

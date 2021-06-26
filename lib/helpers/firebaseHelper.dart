@@ -32,8 +32,8 @@ Future<void> loginUser(
           .doc(authResult.user.uid)
           .get();
     }
-    print("Login as User:" + authResult.user.uid);
-    print('Login helper:' + data.data().toString());
+    // print("Login as User:" + authResult.user.uid);
+    // print('Login helper:' + data.data().toString());
     await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -53,7 +53,7 @@ Future<bool> registerUser(
   try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
-    print("Test Zapisu użytkownika: ${user.toJson()}");
+    // print("Test Zapisu użytkownika: ${user.toJson()}");
     authResult = await _auth.createUserWithEmailAndPassword(
         email: user.email, password: userPassword);
 
@@ -82,8 +82,8 @@ Future<bool> registerFirm(
   });
   UserCredential authResult;
   final _auth = FirebaseAuth.instance;
-  print("Test Zapisu Firmy: ${firm.toJson()}");
-  print("Test Zapisu szczegółów: ${firm.details.toJson()}");
+  // print("Test Zapisu Firmy: ${firm.toJson()}");
+  // print("Test Zapisu szczegółów: ${firm.details.toJson()}");
 
   try {
     authResult = await _auth.createUserWithEmailAndPassword(
@@ -94,7 +94,7 @@ Future<bool> registerFirm(
         .doc(authResult.user.uid)
         .set(firm.toJson());
 
-    print('Zapisana firma:\n' + firm.toString());
+    // print('Zapisana firma:\n' + firm.toString());
     await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {

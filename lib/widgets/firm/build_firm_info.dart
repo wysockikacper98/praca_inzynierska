@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 
-ListTile buildFirmInfo(BuildContext context, firm) {
+ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
   final rating = double.tryParse(firm.data()['rating']) != null
       ? double.parse(firm.data()['rating'])
       : 0;
@@ -29,11 +29,10 @@ ListTile buildFirmInfo(BuildContext context, firm) {
       children: [
         RatingBarIndicator(
           rating: rating,
-          itemBuilder: (context, index) =>
-              Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
+          itemBuilder: (context, index) => Icon(
+            Icons.star,
+            color: Colors.amber,
+          ),
           itemCount: 5,
           itemSize: 20.0,
           direction: Axis.horizontal,
@@ -42,11 +41,13 @@ ListTile buildFirmInfo(BuildContext context, firm) {
       ],
     ),
     // isThreeLine: true,
-    onTap: () {
-      Navigator.of(context).pushNamed(
-        FirmProfileScreen.routeName,
-        arguments: FirmsAuth(firm.id),
-      );
-    },
+    onTap: disable
+        ? null
+        : () {
+            Navigator.of(context).pushNamed(
+              FirmProfileScreen.routeName,
+              arguments: FirmsAuth(firm.id),
+            );
+          },
   );
 }

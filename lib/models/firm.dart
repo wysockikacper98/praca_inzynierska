@@ -82,7 +82,7 @@ class Firm {
       'avatar': this.avatar,
       'rating': this.rating,
       'category': this.category,
-      'type': UserType.Firm.toString().split('.').last,
+      'type': this.type.toString().split('.').last,
       'details': this.details.toJson(),
     };
   }
