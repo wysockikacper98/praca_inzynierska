@@ -19,7 +19,7 @@ Container buildUserInfo(BuildContext context, Users user) {
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
-            backgroundImage: user.avatar != null
+            backgroundImage: user.avatar == ''
                 ? AssetImage('assets/images/user.png')
                 : NetworkImage(user.avatar),
             radius: 30,

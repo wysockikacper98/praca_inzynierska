@@ -20,8 +20,8 @@ class HomeScreen extends StatelessWidget {
     Color(0xFFCF6B59),
     Color(0xFF196F64),
     Color(0xFF8E4169),
-    Color(0xFF2F4496),
     Color(0xFFECBC9F),
+    Color(0xFF2F4496),
     Color(0xFFBFB051),
   ];
 

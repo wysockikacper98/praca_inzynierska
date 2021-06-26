@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:praca_inzynierska/widgets/pickers/image_picker.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   static const routeName = '/user-edit-profile';
@@ -38,30 +39,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                 children: [
                   // Text(snapshot.data.data().toString()),
                   SizedBox(height: 20),
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: user['avatar'] == ''
-                            ? AssetImage('assets/images/user.png')
-                            : NetworkImage(user['avatar']),
-                        backgroundColor: Colors.orangeAccent.shade100,
-                        radius: width * 0.15,
-                      ),
-                      Positioned(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.insert_photo,
-                            size: width * 0.08,
-                          ),
-                          onPressed: () {
-                            print('Pick new Photo');
-                          },
-                        ),
-                        bottom: 0,
-                        right: 0,
-                      ),
-                    ],
-                  ),
+                  imagePicker(user, width),
                   SizedBox(height: 15),
                   RatingBarIndicator(
                     rating: double.parse(user['rating']),
