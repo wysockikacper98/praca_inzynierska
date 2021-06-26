@@ -70,6 +70,7 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Text(getCurrentUser().toString()),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(

@@ -22,14 +22,26 @@ class _LoginScreenState extends State<LoginScreen> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
-          if(getCurrentUser() == null){
-            getUserInfo();
-          }
-          return HomeScreen();
+          return FutureBuilder(
+            future: functionTemp(),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(body: Center(child: CircularProgressIndicator()));
+              }
+              return HomeScreen();
+            },
+          );
         } else {
           return LoginFormScreen();
         }
       },
     );
+  }
+}
+
+functionTemp() async {
+  print(getCurrentUser().toString());
+  if (getCurrentUser() == null) {
+    setCurrentUser(await getUserInfo());
   }
 }
