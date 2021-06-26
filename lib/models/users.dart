@@ -6,6 +6,7 @@ class Users {
   final String firstName;
   final String lastName;
   final String rating;
+  final String ratingNumber;
   final String telephone;
   final String avatar;
   final UserType type;
@@ -15,6 +16,7 @@ class Users {
     this.firstName,
     this.lastName,
     this.rating,
+    this.ratingNumber,
     this.telephone,
     this.avatar,
     @required this.type,
@@ -26,6 +28,7 @@ class Users {
       lastName: parsedJson['lastName'] ?? '',
       email: parsedJson['email'] ?? '',
       rating: parsedJson['rating'] ?? '0',
+      ratingNumber: parsedJson['ratingNumber'] ?? '0',
       avatar: parsedJson['avatar'] ?? '',
       telephone: parsedJson['telephone'] ?? '',
       type: parsedJson['type'] == 'PrivateUser' ? UserType.PrivateUser : UserType.Firm,

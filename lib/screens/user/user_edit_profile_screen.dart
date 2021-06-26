@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   static const routeName = '/user-edit-profile';
@@ -35,10 +36,14 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Text(snapshot.data.data().toString()),
                   SizedBox(height: 20),
                   Stack(
                     children: [
                       CircleAvatar(
+                        backgroundImage: user['avatar'] == ''
+                            ? AssetImage('assets/images/user.png')
+                            : NetworkImage(user['avatar']),
                         backgroundColor: Colors.orangeAccent.shade100,
                         radius: width * 0.15,
                       ),
@@ -58,12 +63,44 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                     ],
                   ),
                   SizedBox(height: 15),
+                  RatingBarIndicator(
+                    rating: double.parse(user['rating']),
+                    itemBuilder: (_, index) =>
+                        Icon(Icons.star, color: Colors.amber),
+                    itemCount: 5,
+                    itemSize: 40.0,
+                  ),
+                  Text(
+                    user['rating'] + ' (' + user['ratingNumber'] + ')',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  SizedBox(height: 15),
+                  Text('Imie i Nazwisko:'),
                   Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
                       Text(
                         user['firstName'] + ' ' + user['lastName'],
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Positioned(
+                        child: IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        right: -40,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  Text('Numer Telefonu:'),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        _formatPhoneNumber(user['telephone']),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       Positioned(
@@ -86,5 +123,14 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
         },
       ),
     );
+  }
+
+  String _formatPhoneNumber(String phone) {
+    String temp = phone.substring(0, 3) +
+        '-' +
+        phone.substring(3, 6) +
+        '-' +
+        phone.substring(6);
+    return temp;
   }
 }

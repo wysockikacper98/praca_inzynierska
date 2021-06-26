@@ -39,6 +39,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         lastName: _userLastName,
         email: _userEmail,
         rating: '0',
+        ratingNumber: '0',
         telephone: _userTelephone,
         avatar: '',
         type: UserType.PrivateUser,
