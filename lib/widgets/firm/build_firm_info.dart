@@ -12,9 +12,8 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
     leading: CircleAvatar(
       radius: 30,
       backgroundColor: Colors.white,
-      backgroundImage: firm.data()['avatar'] == ''
-          ? AssetImage('assets/images/fileNotFound.png')
-          : NetworkImage(firm.data()['avatar']),
+      backgroundImage: AssetImage('assets/images/fileNotFound.png'),
+      foregroundImage: firm.data()['avatar'] != ''? NetworkImage(firm.data()['avatar']) : null,
     ),
     title: AutoSizeText(
       firm.data()['firmName'],

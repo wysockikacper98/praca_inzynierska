@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/models/users.dart';
 
 Container buildUserInfo(BuildContext context, Users user) {
-  var screenSize = MediaQuery.of(context).size;
+  var screenSize = MediaQuery
+      .of(context)
+      .size;
   var height = screenSize.height;
 
   print("Buildein container buidUserInfo");
@@ -14,14 +16,15 @@ Container buildUserInfo(BuildContext context, Users user) {
     height: height * 0.2,
     child: DrawerHeader(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+      decoration: BoxDecoration(color: Theme
+          .of(context)
+          .primaryColor),
       child: Center(
         child: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
-            backgroundImage: user.avatar == ''
-                ? AssetImage('assets/images/user.png')
-                : NetworkImage(user.avatar),
+            backgroundImage: AssetImage('assets/images/user.png'),
+            foregroundImage: user.avatar != '' ? NetworkImage(user.avatar) : null,
             radius: 30,
           ),
           title: AutoSizeText(
@@ -33,7 +36,9 @@ Container buildUserInfo(BuildContext context, Users user) {
             style: TextStyle(
               fontSize: 20,
               fontStyle: FontStyle.italic,
-              color: Theme.of(context).primaryColorLight,
+              color: Theme
+                  .of(context)
+                  .primaryColorLight,
             ),
           ),
           subtitle: AutoSizeText(
@@ -45,7 +50,9 @@ Container buildUserInfo(BuildContext context, Users user) {
           ),
           trailing: IconButton(
             icon: Icon(Icons.settings),
-            color: Theme.of(context).primaryColorLight,
+            color: Theme
+                .of(context)
+                .primaryColorLight,
             onPressed: () {
               //TODO: Przejście do ustawień użytkownika
               Navigator.of(context).pop();

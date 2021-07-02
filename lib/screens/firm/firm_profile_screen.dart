@@ -144,6 +144,22 @@ class FirmProfileScreen extends StatelessWidget {
                         },
                       ),
                       IconButton(
+                        icon: Icon(Icons.phone),
+                        iconSize: 80,
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => buildConfirmPhoneCall(
+                              context,
+                              userID,
+                              snapshot.data,
+                            ),
+                            barrierDismissible: true,
+                          );
+                        },
+                      ),
+                      IconButton(
                         icon: Icon(Icons.email_outlined),
                         iconSize: 80,
                         color: Theme.of(context).primaryColor,
@@ -152,8 +168,8 @@ class FirmProfileScreen extends StatelessWidget {
                             context: context,
                             builder: (_) => buildConfirmNewEmailDialog(
                               context,
-                              snapshot.data.data()['email'],
-                              snapshot.data.data()['firmName'],
+                              userID,
+                              snapshot.data,
                             ),
                           );
                         },
@@ -210,27 +226,76 @@ class FirmProfileScreen extends StatelessWidget {
   }
 
   AlertDialog buildConfirmNewEmailDialog(
-      BuildContext context, String email, String firmName) {
-    print(firmName + ' -> ' + email);
-    return AlertDialog(
-      title: Text('Otowrzyć domyślną aplikację Email'),
-      content: Text('Czy chcesz utworzyć nową wiadomość do $firmName'),
-      elevation: 24.0,
-      actions: [
-        TextButton(
-          child: Text('Nie'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        TextButton(
-          child: Text('Tak'),
-          onPressed: () {
-            Navigator.of(context).pop();
-            final Uri _emailLaunchUri = Uri(scheme: 'mailto', path: email);
-            sendEmail(_emailLaunchUri.toString());
-          },
-        ),
-      ],
-    );
+      BuildContext context, String userID, firm) {
+    return userID != firm.id
+        ? AlertDialog(
+            title: Text('Otowrzyć domyślną aplikację Email'),
+            content: Text(
+                'Czy chcesz utworzyć nową wiadomość do ${firm.data()['firmName']}'),
+            elevation: 24.0,
+            actions: [
+              TextButton(
+                child: Text('Nie'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: Text('Tak'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  final Uri _emailLaunchUri =
+                      Uri(scheme: 'mailto', path: firm.data()['email']);
+                  sendEmail(_emailLaunchUri.toString());
+                },
+              ),
+            ],
+          )
+        : AlertDialog(
+            title: Text('Nowa wiadomosć'),
+            content:
+                Text('Nie można wysłać wiadomości email do samego siebie.'),
+            elevation: 24,
+            actions: [
+              TextButton(
+                child: Text('Wróć'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+  }
+
+  AlertDialog buildConfirmPhoneCall(BuildContext context, String userID, firm) {
+    return userID != firm.id
+        ? AlertDialog(
+            title: Text('Nowe połączenie'),
+            content: Text(
+                'Wybrać numer do ${firm.data()['firmName']}'),
+            elevation: 24.0,
+            actions: [
+              TextButton(
+                child: Text('Nie'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: Text('Tak'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  callPhone('tel:' + firm.data()['telephone'].toString());
+                },
+              ),
+            ],
+          )
+        : AlertDialog(
+            title: Text('Nowe połączenie'),
+            content:
+                Text('Nie można wysłać rozpocząć połączenia z samym sobą.'),
+            elevation: 24,
+            actions: [
+              TextButton(
+                child: Text('Wróć'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
   }
 
   Padding buildHeadline(String text) {
@@ -245,6 +310,14 @@ class FirmProfileScreen extends StatelessWidget {
 }
 
 Future<void> sendEmail(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+Future<void> callPhone(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {

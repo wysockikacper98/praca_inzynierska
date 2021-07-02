@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:praca_inzynierska/models/users.dart';
 
-Widget imagePicker(user, double width, UserProvider provider) {
+Widget imagePicker(UserProvider provider, double width) {
   // PickedFile _pickedImage = null;
 
   return Stack(
     children: [
       CircleAvatar(
-        backgroundImage: user['avatar'] == ''
+        backgroundImage: provider.user.avatar == ''
             ? AssetImage('assets/images/user.png')
-            : NetworkImage(user['avatar']),
+            : NetworkImage(provider.user.avatar),
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),
@@ -44,10 +44,10 @@ Future<void> _pickImage(UserProvider provider) async {
   final pickedImageFile = File(pickedImage.path);
   print(pickedImageFile);
 
-  _pickedImage(pickedImageFile);
+  _pickedImage(pickedImageFile, provider);
 }
 
-Future<void> _pickedImage(File image) async {
+Future<void> _pickedImage(File image, UserProvider provider) async {
   final userID = FirebaseAuth.instance.currentUser.uid;
   final ref = FirebaseStorage.instance
       .ref()
@@ -60,5 +60,7 @@ Future<void> _pickedImage(File image) async {
       .collection('users')
       .doc(userID)
       .update({'avatar': url});
-  //TODO: zapisywanie zaktualizowanego użytkownika w SharedPreferences
+  
+  final data = await FirebaseFirestore.instance.collection('users').doc(userID).get();
+  provider.user = Users.fromJson(data.data());
 }
