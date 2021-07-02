@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:praca_inzynierska/models/details.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:praca_inzynierska/models/users.dart';
 
 class Firm {
   String firmName;

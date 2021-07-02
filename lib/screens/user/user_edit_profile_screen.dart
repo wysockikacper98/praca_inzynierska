@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/widgets/pickers/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   static const routeName = '/user-edit-profile';
@@ -19,7 +21,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
     final sizeMediaQuery = MediaQuery.of(context).size;
     final width = sizeMediaQuery.width;
     // final height = sizeMediaQuery.height;
-
+    final provider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Profil Użytkownika"),
@@ -39,7 +41,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                 children: [
                   // Text(snapshot.data.data().toString()),
                   SizedBox(height: 20),
-                  imagePicker(user, width),
+                  imagePicker(user, width, provider),
                   SizedBox(height: 15),
                   RatingBarIndicator(
                     rating: double.parse(user['rating']),

@@ -1,5 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:flutter/foundation.dart';
+
+enum UserType {
+  Firm,
+  PrivateUser,
+}
 
 class Users {
   final String email;
@@ -31,7 +35,9 @@ class Users {
       ratingNumber: parsedJson['ratingNumber'] ?? '0',
       avatar: parsedJson['avatar'] ?? '',
       telephone: parsedJson['telephone'] ?? '',
-      type: parsedJson['type'] == 'PrivateUser' ? UserType.PrivateUser : UserType.Firm,
+      type: parsedJson['type'] == 'PrivateUser'
+          ? UserType.PrivateUser
+          : UserType.Firm,
     );
   }
 
@@ -63,5 +69,30 @@ class Users {
       'telephone': this.telephone,
       'type': this.type.toString().split('.').last,
     };
+  }
+}
+
+class UserProvider with ChangeNotifier {
+  Users _user;
+
+  Users get user {
+    return _user;
+  }
+
+
+  set user(Users value) {
+    print("user id updated !!!!!!!!!!!!!!");
+    _user = value;
+    notifyListeners();
+  }
+
+  void updateUser(Users updatedUser) {
+    _user = updatedUser;
+    notifyListeners();
+  }
+
+  void clearUserInfo() {
+    _user = null;
+    notifyListeners();
   }
 }

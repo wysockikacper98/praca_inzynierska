@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
 
 class RegisterUserScreen extends StatefulWidget {
   static const routerName = '/register-user';

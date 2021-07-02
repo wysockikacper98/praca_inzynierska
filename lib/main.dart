@@ -8,7 +8,9 @@ import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart'
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
+import 'package:provider/provider.dart';
 
+import 'models/users.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/user/user_edit_profile_screen.dart';
@@ -24,26 +26,31 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     print("build -> main.dart");
 
-    return MaterialApp(
-      title: 'FixIT!',
-      debugShowCheckedModeBanner: false,
-      darkTheme: themeDark(),
-      theme: themeLight(),
-      initialRoute: '/',
-      routes: {
-        '/': (ctx) => LoginScreen(),
-        HomeScreen.routeName: (ctx) => HomeScreen(),
-        LoginScreen.routeName: (ctx) => LoginScreen(),
-        PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
-        RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
-        RegisterContractorScreen.routeName: (ctx) => RegisterContractorScreen(),
-        FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
-        EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
-        UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
-        FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
-        // ChatsScreen.routeName: (ctx) => ChatsScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => UserProvider()),
+      ],
+      child: MaterialApp(
+        title: 'FixIT!',
+        debugShowCheckedModeBanner: false,
+        darkTheme: themeDark(),
+        theme: themeLight(),
+        initialRoute: '/',
+        routes: {
+          '/': (ctx) => LoginScreen(),
+          HomeScreen.routeName: (ctx) => HomeScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
+          PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
+          RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
+          RegisterContractorScreen.routeName: (ctx) => RegisterContractorScreen(),
+          FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
+          EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
+          UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
+          FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
+          // ChatsScreen.routeName: (ctx) => ChatsScreen(),
 
-      },
+        },
+      ),
     );
   }
 }

@@ -5,8 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -173,6 +174,7 @@ class FirmProfileScreen extends StatelessWidget {
 
   AlertDialog buildConfirmNewMessageDialog(
       BuildContext context, String userID, firm) {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
     // print(firm.id);
     return userID != firm.id
         ? AlertDialog(
@@ -188,7 +190,8 @@ class FirmProfileScreen extends StatelessWidget {
                 child: Text('Tak'),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  createNewChat(context, getCurrentUser(), firm);
+                  // createNewChat(context, getCurrentUser(), firm);
+                  createNewChat(context, user, firm);
                 },
               ),
             ],

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
+import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/widgets/firm/firm_list.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/app_drawer.dart';
 
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
-
+    final provider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -61,7 +62,8 @@ class HomeScreen extends StatelessWidget {
             onChanged: (itemIdentifier) {
               if (itemIdentifier == 'logout') {
                 FirebaseAuth.instance.signOut();
-                clearUserInfo();
+                provider.clearUserInfo();
+                // clearUserInfo();
               }
             },
           ),

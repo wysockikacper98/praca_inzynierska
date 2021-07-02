@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/models/details.dart';
 import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:praca_inzynierska/models/users.dart';
 
 class RegisterContractorScreen extends StatefulWidget {
   static const routeName = '/register-contractor';

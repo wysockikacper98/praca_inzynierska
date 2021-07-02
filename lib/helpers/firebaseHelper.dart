@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/sharedPreferences.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/screens/messages/messages.dart';
+import 'package:provider/provider.dart';
 
 Future<void> loginUser(
   BuildContext context,
@@ -34,7 +34,8 @@ Future<void> loginUser(
     }
     // print("Login as User:" + authResult.user.uid);
     // print('Login helper:' + data.data().toString());
-    await saveUserInfo(Users.fromJson(data.data()));
+    Provider.of<UserProvider>(context, listen: false).user = Users.fromJson(data.data());
+    // await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
   } catch (error) {
@@ -62,7 +63,8 @@ Future<bool> registerUser(
         .doc(authResult.user.uid)
         .set(user.toJson());
 
-    await saveUserInfo(user);
+    Provider.of<UserProvider>(context, listen: false).user = user;
+    // await saveUserInfo(user);
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -95,7 +97,8 @@ Future<bool> registerFirm(
         .set(firm.toJson());
 
     // print('Zapisana firma:\n' + firm.toString());
-    await saveUserInfo(firm);
+    Provider.of<UserProvider>(context, listen: false).user = Users.fromJson(firm.toJson());
+    // await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -185,18 +188,20 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
   }
 }
 
-Future<DocumentSnapshot> getUserInfoFromFirebase(
+Future<void> getUserInfoFromFirebase(
   BuildContext context,
   String userID,
 ) async {
-  await Future.delayed(Duration(seconds: 2));
+  // await Future.delayed(Duration(seconds: 2));
+  final provider = Provider.of<UserProvider>(context, listen: false);
   var data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();
   if (!data.exists) {
     data =
         await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+    provider.user = Users.fromJson(data.data());
+  }else{
+    provider.user = Users.fromJson(data.data());
   }
-
-  return data;
 
 }

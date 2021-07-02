@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:provider/provider.dart';
 
 class NewMessage extends StatefulWidget {
   final chatsID;
@@ -17,10 +17,10 @@ class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
   var _enterMessage = '';
 
-  Future<void> _sendMessage() async {
+  Future<void> _sendMessage(UserProvider provider) async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
-    final Users userData = getCurrentUser();
+    final Users userData = provider.user;
 
     await FirebaseFirestore.instance
         .collection('chats')
@@ -40,6 +40,7 @@ class _NewMessageState extends State<NewMessage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context, listen: false);
     return Container(
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
@@ -59,7 +60,7 @@ class _NewMessageState extends State<NewMessage> {
           IconButton(
             color: Theme.of(context).primaryColor,
             icon: Icon(Icons.send),
-            onPressed: _enterMessage.trim().isEmpty ? null : _sendMessage,
+            onPressed: _enterMessage.trim().isEmpty ? null : () => _sendMessage(provider),
           )
         ],
       ),

@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/providers/UserProvider.dart';
+import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/screens/emergency_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
 import 'package:praca_inzynierska/screens/user/user_edit_profile_screen.dart';
 import 'package:praca_inzynierska/widgets/build_user_info.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -17,14 +18,14 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     print("build -> drawer");
-
+    final provider = Provider.of<UserProvider>(context);
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColorLight,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            buildUserInfo(context, getCurrentUser()),
+            buildUserInfo(context, provider.user),
             ListTile(
               leading: buildIcon(icon: Icons.home),
               title: Center(child: buildText(text: "Strona główna")),
@@ -36,7 +37,7 @@ class _AppDrawerState extends State<AppDrawer> {
               thickness: 1,
               height: 25,
             ),
-            if (getCurrentUser().type == UserType.Firm)
+            if (provider.user.type == UserType.Firm)
               ListTile(
                 leading: buildIcon(icon: Icons.business_outlined),
                 title: Center(child: buildText(text: "Firma")),
@@ -45,7 +46,7 @@ class _AppDrawerState extends State<AppDrawer> {
                       .popAndPushNamed(FirmEditProfileScreen.routeName);
                 },
               ),
-            if (getCurrentUser().type == UserType.PrivateUser)
+            if (provider.user.type == UserType.PrivateUser)
               ListTile(
                 leading: buildIcon(icon: Icons.person),
                 title: Center(child: buildText(text: "Użytkownik")),
@@ -71,7 +72,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         builder: (context) => ChatsScreen(
                               key:
                                   ValueKey(FirebaseAuth.instance.currentUser.uid),
-                              user: getCurrentUser(),
+                              user: provider.user,
                             )));
               },
             ),
