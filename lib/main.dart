@@ -1,11 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:praca_inzynierska/screens/emergency_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
+import 'package:praca_inzynierska/screens/search/search_screen.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,12 @@ import 'screens/user/user_edit_profile_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      // systemNavigationBarColor: Colors.transparent,
+    ),
+  );
   runApp(MyApp());
 }
 
@@ -42,13 +50,14 @@ class MyApp extends StatelessWidget {
           LoginScreen.routeName: (ctx) => LoginScreen(),
           PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
           RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
-          RegisterContractorScreen.routeName: (ctx) => RegisterContractorScreen(),
+          RegisterContractorScreen.routeName: (ctx) =>
+              RegisterContractorScreen(),
           FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
           EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
           UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
           FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
+          SearchScreen.routeName: (ctx) => SearchScreen(),
           // ChatsScreen.routeName: (ctx) => ChatsScreen(),
-
         },
       ),
     );

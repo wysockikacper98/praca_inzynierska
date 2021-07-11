@@ -87,8 +87,7 @@ TextStyle textDrawerStyle() {
   );
 }
 
-
-//Buttons Styles
+//Buttons Styles Theme
 
 TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(
@@ -104,6 +103,17 @@ ElevatedButtonThemeData elevatedButtonTheme() {
     style: ElevatedButton.styleFrom(shape: StadiumBorder()),
   );
 }
+
+// Custom Button Style
+
+ButtonStyle elevatedButtonFilterStyle() {
+  return ElevatedButton.styleFrom(
+    primary: kDeepGreenColor.shade100,
+    onPrimary: Colors.black54,
+    elevation: 5,
+  );
+}
+
 
 // Widgets Styles
 CardTheme cardTheme() {

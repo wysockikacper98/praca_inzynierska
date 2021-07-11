@@ -8,3 +8,12 @@ ThemeData themeDark() {
 TextStyle textFormStyle(){
   return TextStyle(color: Colors.black);
 }
+
+
+// Custom Button Style
+
+ButtonStyle elevatedButtonFilterStyle() {
+  return ElevatedButton.styleFrom(
+    primary: Colors.brown,
+  );
+}
