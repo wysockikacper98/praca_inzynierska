@@ -34,7 +34,8 @@ Future<void> loginUser(
     }
     // print("Login as User:" + authResult.user.uid);
     // print('Login helper:' + data.data().toString());
-    Provider.of<UserProvider>(context, listen: false).user = Users.fromJson(data.data());
+    Provider.of<UserProvider>(context, listen: false).user =
+        Users.fromJson(data.data());
     // await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -97,7 +98,8 @@ Future<bool> registerFirm(
         .set(firm.toJson());
 
     // print('Zapisana firma:\n' + firm.toString());
-    Provider.of<UserProvider>(context, listen: false).user = Users.fromJson(firm.toJson());
+    Provider.of<UserProvider>(context, listen: false).user =
+        Users.fromJson(firm.toJson());
     // await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
@@ -200,8 +202,12 @@ Future<void> getUserInfoFromFirebase(
     data =
         await FirebaseFirestore.instance.collection('firms').doc(userID).get();
     provider.user = Users.fromJson(data.data());
-  }else{
+  } else {
     provider.user = Users.fromJson(data.data());
   }
+}
 
+Future<QuerySnapshot> getFirmList() async {
+  final data = await FirebaseFirestore.instance.collection('firms').get();
+  return data;
 }
