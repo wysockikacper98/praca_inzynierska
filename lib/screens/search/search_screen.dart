@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/widgets/search/build_firm_list_with_filter.dart';
 import 'package:praca_inzynierska/widgets/search/filter.dart';
