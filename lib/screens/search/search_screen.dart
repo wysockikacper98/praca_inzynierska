@@ -13,21 +13,21 @@ class SearchScreen extends StatelessWidget {
         centerTitle: true,
         title: Text('Wyszukaj'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildFilter(context),
-            SizedBox(height: 20),
-            Text(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buildFilter(context),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
               'Wyszukane firmy:',
               style: Theme.of(context).textTheme.headline5,
             ),
-            SizedBox(height: 20),
-            buildFirmListWithFilter(),
-          ],
-        ),
+          ),
+          SizedBox(height: 20),
+          buildFirmListWithFilter(),
+        ],
       ),
     );
   }
