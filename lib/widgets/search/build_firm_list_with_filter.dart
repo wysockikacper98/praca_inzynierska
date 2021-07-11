@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 
 Widget buildFirmListWithFilter() {
   getFirmList();
