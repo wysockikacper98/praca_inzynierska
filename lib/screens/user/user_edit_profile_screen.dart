@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/widgets/pickers/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -14,14 +15,51 @@ class UserEditProfileScreen extends StatefulWidget {
 
 class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   final userID = FirebaseAuth.instance.currentUser.uid;
+  final _formKey = GlobalKey<FormState>();
 
   bool _userNameEdit = false;
   bool _userPhoneEdit = false;
+  bool _isLoading = false;
 
   var _nameController = TextEditingController();
   var _surnameController = TextEditingController();
   var _phoneController = TextEditingController();
 
+  var _name;
+  var _surname;
+  var _phone;
+
+  Future<void> _trySubmit(BuildContext context, UserProvider provider, ) async {
+    final _isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+
+    if (_isValid) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      _formKey.currentState.save();
+      print("Name:"+_name.toString());
+      print("Surname:"+_surname.toString());
+      print("Phone:"+_phone.toString());
+
+      if(_name == null || _surname == null){
+        _name = provider.user.firstName;
+        _surname = provider.user.lastName;
+      }
+      if(_phone == null){
+        _phone = provider.user.telephone;
+      }
+
+      await updateUserInFirebase(context, _name, _surname, _phone);
+
+      setState(() {
+        _isLoading = false;
+        _userNameEdit = !_userNameEdit;
+      });
+
+    }
+  }
 
   @override
   void dispose() {
@@ -91,11 +129,11 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      key: _formKey,
+                      child: Column(
                         children: [
                           Container(
-                            width: width * 0.40,
+                            width: width * 0.80,
                             child: TextFormField(
                               key: ValueKey("imie"),
                               controller: _nameController,
@@ -106,10 +144,19 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                   onPressed: _nameController.clear,
                                 ),
                               ),
+                              validator: (value) {
+                                if (value.isEmpty || value.length < 3) {
+                                  return 'Proszę podać przynajmniej 3 znaki.';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _name = value;
+                              },
                             ),
                           ),
                           Container(
-                            width: width * 0.40,
+                            width: width * 0.80,
                             child: TextFormField(
                               key: ValueKey("nazwisko"),
                               controller: _surnameController,
@@ -120,8 +167,32 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                   onPressed: _surnameController.clear,
                                 ),
                               ),
+                              validator: (value) {
+                                if (value.isEmpty || value.length < 3) {
+                                  return 'Proszę podać przynajmniej 3 znaki.';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _surname = value;
+                              },
                             ),
                           ),
+                          SizedBox(height: 20),
+                          _isLoading
+                              ? Center(child: CircularProgressIndicator())
+                              : ElevatedButton(
+                                  child: SizedBox(
+                                    width: width * 0.8,
+                                    child: Text(
+                                      "Zapisz",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _trySubmit(context, provider);
+                                  },
+                                ),
                         ],
                       ),
                     ),
@@ -137,6 +208,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                 _formatPhoneNumber(provider.user.telephone),
                 style: Theme.of(context).textTheme.headline6,
               ),
+              SizedBox(height: 50),
             ],
           ),
         ),

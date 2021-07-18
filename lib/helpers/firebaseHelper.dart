@@ -211,3 +211,20 @@ Future<QuerySnapshot> getFirmList() async {
   final data = await FirebaseFirestore.instance.collection('firms').get();
   return data;
 }
+
+Future<void> updateUserInFirebase(
+  BuildContext context,
+  String firstName,
+  String lastName,
+  String telephone,
+) async {
+  final userId = FirebaseAuth.instance.currentUser.uid;
+  await FirebaseFirestore.instance.collection('users').doc(userId).update({
+    'firstName': firstName,
+    'lastName': lastName,
+    'telephone': telephone
+  });
+
+  await getUserInfoFromFirebase(context, userId);
+
+}
