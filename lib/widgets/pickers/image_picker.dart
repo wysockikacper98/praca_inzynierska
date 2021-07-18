@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
 
 Widget imagePicker(UserProvider provider, double width) {
@@ -34,6 +35,37 @@ Widget imagePicker(UserProvider provider, double width) {
   );
 }
 
+
+
+Widget imagePickerFirm(FirmProvider provider, double width) {
+  print("To działa?");
+  print(provider.firm.toString());
+  print("Tak działa");
+
+  return Stack(
+    children: [
+      CircleAvatar(
+        backgroundImage: provider.firm.avatar == ''
+            ? AssetImage('assets/images/user.png')
+            : NetworkImage(provider.firm.avatar),
+        backgroundColor: Colors.orangeAccent.shade100,
+        radius: width * 0.15,
+      ),
+      Positioned(
+        child: IconButton(
+          icon: Icon(
+            Icons.insert_photo,
+            size: width * 0.08,
+          ),
+          onPressed: () => _pickImageFirm(provider),
+        ),
+        bottom: 0,
+        right: 0,
+      ),
+    ],
+  );
+}
+
 Future<void> _pickImage(UserProvider provider) async {
   final picker = ImagePicker();
   final pickedImage = await picker.getImage(
@@ -46,6 +78,19 @@ Future<void> _pickImage(UserProvider provider) async {
   print(pickedImageFile);
 
   _pickedImage(pickedImageFile, provider);
+}
+Future<void> _pickImageFirm(FirmProvider provider) async {
+  final picker = ImagePicker();
+  final pickedImage = await picker.getImage(
+    source: ImageSource.gallery,
+    imageQuality: 50,
+    maxWidth: 200,
+  );
+  if (pickedImage == null) return;
+  final pickedImageFile = File(pickedImage.path);
+  print(pickedImageFile);
+
+  _pickedImageFirm(pickedImageFile, provider);
 }
 
 Future<void> _pickedImage(File image, UserProvider provider) async {
@@ -65,4 +110,24 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
   final data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();
   provider.user = Users.fromJson(data.data());
+}
+
+
+Future<void> _pickedImageFirm(File image, FirmProvider provider) async {
+  final userID = FirebaseAuth.instance.currentUser.uid;
+  final ref = FirebaseStorage.instance
+      .ref()
+      .child('user_avatars')
+      .child(userID + '.jpg');
+  await ref.putFile(image);
+  final url = await ref.getDownloadURL();
+
+  await FirebaseFirestore.instance
+      .collection('firms')
+      .doc(userID)
+      .update({'avatar': url});
+
+  final data =
+      await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+  provider.firm = Firm.fromJson(data.data());
 }

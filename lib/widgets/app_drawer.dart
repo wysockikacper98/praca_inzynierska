@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/screens/emergency_screen.dart';
-import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
 import 'package:praca_inzynierska/screens/search/search_screen.dart';
-import 'package:praca_inzynierska/screens/user/user_edit_profile_screen.dart';
 import 'package:praca_inzynierska/widgets/build_user_info.dart';
 import 'package:provider/provider.dart';
 

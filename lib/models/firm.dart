@@ -52,6 +52,22 @@ class Firm {
   }
 
   factory Firm.fromJson(Map<String, dynamic> parsedJson) {
+
+    print(parsedJson['firmName']);
+    print(parsedJson['firstName']);
+    print(parsedJson['lastName']);
+    print(parsedJson['telephone']);
+    print(parsedJson['email']);
+    print(parsedJson['location']);
+    print(parsedJson['range']);
+    print(parsedJson['nip']);
+    print(parsedJson['avatar']);
+    print(parsedJson['rating']);
+    print(parsedJson['category']);
+    print(parsedJson['type']);
+
+
+
     return Firm(
       firmName: parsedJson['firmName'] ?? "",
       firstName: parsedJson['firstName'] ?? "",
@@ -86,4 +102,30 @@ class Firm {
       'details': this.details.toJson(),
     };
   }
+}
+
+
+class FirmProvider with ChangeNotifier{
+  Firm _firm;
+
+  Firm get firm {
+    return _firm;
+  }
+
+  set firm(Firm value){
+    print("Firm Updated");
+    _firm = value;
+    notifyListeners();
+  }
+
+  void updateFirm(Firm updatedFirm){
+    _firm = updatedFirm;
+    notifyListeners();
+  }
+
+  void clearFirmInfo(){
+    _firm = null;
+    notifyListeners();
+  }
+
 }

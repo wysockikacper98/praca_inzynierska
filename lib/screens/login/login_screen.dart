@@ -43,8 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 functionTemp(UserProvider user, BuildContext context) async {
+  final userId = FirebaseAuth.instance.currentUser.uid;
   if (user.user == null) {
-    await getUserInfoFromFirebase(
-        context, FirebaseAuth.instance.currentUser.uid);
+    await getUserInfoFromFirebase(context, userId);
+  }
+  if (user.user.type == UserType.Firm) {
+    print("GetFirm info provider: "+ userId);
+    await getFirmInfoFromFirebase(context, userId);
   }
 }

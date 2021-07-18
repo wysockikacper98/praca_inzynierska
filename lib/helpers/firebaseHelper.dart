@@ -201,10 +201,22 @@ Future<void> getUserInfoFromFirebase(
   if (!data.exists) {
     data =
         await FirebaseFirestore.instance.collection('firms').doc(userID).get();
-    provider.user = Users.fromJson(data.data());
-  } else {
-    provider.user = Users.fromJson(data.data());
   }
+  provider.user = Users.fromJson(data.data());
+}
+
+Future<void> getFirmInfoFromFirebase(
+  BuildContext context,
+  String userID,
+) async {
+  print("czy to działa");
+  final provider = Provider.of<FirmProvider>(context, listen: false);
+  final data =
+      await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+
+  print("Data:" + data.data().toString());
+
+  provider.firm = Firm.fromJson(data.data());
 }
 
 Future<QuerySnapshot> getFirmList() async {
@@ -219,12 +231,8 @@ Future<void> updateUserInFirebase(
   String telephone,
 ) async {
   final userId = FirebaseAuth.instance.currentUser.uid;
-  await FirebaseFirestore.instance.collection('users').doc(userId).update({
-    'firstName': firstName,
-    'lastName': lastName,
-    'telephone': telephone
-  });
+  await FirebaseFirestore.instance.collection('users').doc(userId).update(
+      {'firstName': firstName, 'lastName': lastName, 'telephone': telephone});
 
   await getUserInfoFromFirebase(context, userId);
-
 }

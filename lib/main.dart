@@ -12,6 +12,7 @@ import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
 
+import 'models/firm.dart';
 import 'models/users.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => UserProvider()),
+        ChangeNotifierProvider(create: (ctx) => FirmProvider()),
       ],
       child: MaterialApp(
         title: 'FixIT!',

@@ -256,11 +256,6 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                 }
                                 return null;
                               },
-                              // onChanged: (value){
-                              //   final length = value.length;
-                              //   if(length)
-                              //   print(value);
-                              // },
                               onSaved: (value) {
                                 _phone = value.replaceAll(' ', '');
                               },

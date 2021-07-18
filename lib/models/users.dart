@@ -81,7 +81,7 @@ class UserProvider with ChangeNotifier {
 
 
   set user(Users value) {
-    print("user id updated !!!!!!!!!!!!!!");
+    print("User Updated");
     _user = value;
     notifyListeners();
   }
