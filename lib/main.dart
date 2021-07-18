@@ -22,7 +22,7 @@ void main() async {
   await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      // statusBarColor: Colors.transparent,
       // systemNavigationBarColor: Colors.transparent,
     ),
   );

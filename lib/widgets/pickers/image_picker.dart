@@ -25,7 +25,7 @@ Widget imagePicker(UserProvider provider, double width) {
             Icons.insert_photo,
             size: width * 0.08,
           ),
-          onPressed:() =>  _pickImage(provider),
+          onPressed: () => _pickImage(provider),
         ),
         bottom: 0,
         right: 0,
@@ -41,6 +41,7 @@ Future<void> _pickImage(UserProvider provider) async {
     imageQuality: 50,
     maxWidth: 200,
   );
+  if (pickedImage == null) return;
   final pickedImageFile = File(pickedImage.path);
   print(pickedImageFile);
 
@@ -60,7 +61,8 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
       .collection('users')
       .doc(userID)
       .update({'avatar': url});
-  
-  final data = await FirebaseFirestore.instance.collection('users').doc(userID).get();
+
+  final data =
+      await FirebaseFirestore.instance.collection('users').doc(userID).get();
   provider.user = Users.fromJson(data.data());
 }

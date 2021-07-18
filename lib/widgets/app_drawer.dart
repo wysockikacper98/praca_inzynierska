@@ -38,49 +38,6 @@ class _AppDrawerState extends State<AppDrawer> {
               thickness: 1,
               height: 25,
             ),
-            if (provider.user.type == UserType.Firm)
-              ListTile(
-                leading: buildIcon(icon: Icons.business_outlined),
-                title: Center(child: buildText(text: "Firma")),
-                onTap: () {
-                  Navigator.of(context)
-                      .popAndPushNamed(FirmEditProfileScreen.routeName);
-                },
-              ),
-            if (provider.user.type == UserType.PrivateUser)
-              ListTile(
-                leading: buildIcon(icon: Icons.person),
-                title: Center(child: buildText(text: "Użytkownik")),
-                onTap: () {
-                  //TODO: Go to screen
-                  Navigator.of(context).popAndPushNamed(UserEditProfileScreen.routeName);
-                },
-              ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
-            ListTile(
-              leading: buildIcon(icon: Icons.email),
-              title: Center(
-                child: buildText(text: "Wiadomości"),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChatsScreen(
-                              key:
-                                  ValueKey(FirebaseAuth.instance.currentUser.uid),
-                              user: provider.user,
-                            )));
-              },
-            ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
             ListTile(
               leading: buildIcon(icon: Icons.search),
               title: Center(child: buildText(text: "Wyszukiwarka")),
@@ -94,10 +51,33 @@ class _AppDrawerState extends State<AppDrawer> {
               height: 25,
             ),
             ListTile(
+              leading: buildIcon(icon: Icons.email),
+              title: Center(
+                child: buildText(text: "Wiadomości"),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatsScreen(
+                      key: ValueKey(FirebaseAuth.instance.currentUser.uid),
+                      user: provider.user,
+                    ),
+                  ),
+                );
+              },
+            ),
+            Divider(
+              thickness: 1,
+              height: 25,
+            ),
+            ListTile(
               leading: buildIcon(icon: Icons.warning_outlined),
               title: Center(child: buildText(text: "Awarie")),
               onTap: () {
-                Navigator.of(context).popAndPushNamed(EmergencyScreen.routeName);
+                Navigator.of(context)
+                    .popAndPushNamed(EmergencyScreen.routeName);
               },
             ),
             Divider(
