@@ -15,7 +15,8 @@ class UserEditProfileScreen extends StatefulWidget {
 
 class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   final userID = FirebaseAuth.instance.currentUser.uid;
-  final _formKey = GlobalKey<FormState>();
+  final _formPersonalDataKey = GlobalKey<FormState>();
+  final _formPhoneKey = GlobalKey<FormState>();
 
   bool _userNameEdit = false;
   bool _userPhoneEdit = false;
@@ -25,12 +26,16 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   var _surnameController = TextEditingController();
   var _phoneController = TextEditingController();
 
-  var _name;
-  var _surname;
-  var _phone;
+  String _name;
+  String _surname;
+  String _phone;
 
-  Future<void> _trySubmit(BuildContext context, UserProvider provider, ) async {
-    final _isValid = _formKey.currentState.validate();
+  Future<void> _trySubmit(
+    BuildContext context,
+    UserProvider provider,
+    GlobalKey<FormState> formKey,
+  ) async {
+    final _isValid = formKey.currentState.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
@@ -38,16 +43,16 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
         _isLoading = true;
       });
 
-      _formKey.currentState.save();
-      print("Name:"+_name.toString());
-      print("Surname:"+_surname.toString());
-      print("Phone:"+_phone.toString());
+      formKey.currentState.save();
+      print("Name:" + _name.toString());
+      print("Surname:" + _surname.toString());
+      print("Phone:" + _phone.toString());
 
-      if(_name == null || _surname == null){
+      if (_name == null || _surname == null) {
         _name = provider.user.firstName;
         _surname = provider.user.lastName;
       }
-      if(_phone == null){
+      if (_phone == null) {
         _phone = provider.user.telephone;
       }
 
@@ -55,9 +60,9 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
 
       setState(() {
         _isLoading = false;
-        _userNameEdit = !_userNameEdit;
+        _userNameEdit = false;
+        _userPhoneEdit = false;
       });
-
     }
   }
 
@@ -105,23 +110,24 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ListTile(
                 title: Text("Imie i nazwisko:"),
                 trailing: IconButton(
-                    color: _userNameEdit
-                        ? Theme.of(context).errorColor
-                        : Theme.of(context).primaryColor,
-                    icon: _userNameEdit ? Icon(Icons.close) : Icon(Icons.edit),
-                    onPressed: _userNameEdit
-                        ? () {
-                            setState(() {
-                              _userNameEdit = !_userNameEdit;
-                            });
-                          }
-                        : () {
-                            _nameController.text = provider.user.firstName;
-                            _surnameController.text = provider.user.lastName;
-                            setState(() {
-                              _userNameEdit = !_userNameEdit;
-                            });
-                          }),
+                  color: _userNameEdit
+                      ? Theme.of(context).errorColor
+                      : Theme.of(context).primaryColor,
+                  icon: _userNameEdit ? Icon(Icons.close) : Icon(Icons.edit),
+                  onPressed: _userNameEdit
+                      ? () {
+                          setState(() {
+                            _userNameEdit = !_userNameEdit;
+                          });
+                        }
+                      : () {
+                          _nameController.text = provider.user.firstName;
+                          _surnameController.text = provider.user.lastName;
+                          setState(() {
+                            _userNameEdit = !_userNameEdit;
+                          });
+                        },
+                ),
               ),
               !_userNameEdit
                   ? Text(
@@ -129,7 +135,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(
-                      key: _formKey,
+                      key: _formPersonalDataKey,
                       child: Column(
                         children: [
                           Container(
@@ -190,7 +196,8 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _trySubmit(context, provider);
+                                    _trySubmit(context, provider,
+                                        _formPersonalDataKey);
                                   },
                                 ),
                         ],
@@ -200,14 +207,83 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ListTile(
                 title: Text('Numer Telefonu:'),
                 trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => print("Hello"),
+                  color: _userPhoneEdit
+                      ? Theme.of(context).errorColor
+                      : Theme.of(context).primaryColor,
+                  icon: _userPhoneEdit ? Icon(Icons.close) : Icon(Icons.edit),
+                  onPressed: _userPhoneEdit
+                      ? () {
+                          setState(() {
+                            _userPhoneEdit = !_userPhoneEdit;
+                          });
+                        }
+                      : () {
+                          _phoneController.text = provider.user.telephone;
+                          setState(() {
+                            _userPhoneEdit = !_userPhoneEdit;
+                          });
+                        },
                 ),
               ),
-              Text(
-                _formatPhoneNumber(provider.user.telephone),
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              !_userPhoneEdit
+                  ? Text(
+                      _formatPhoneNumber(provider.user.telephone),
+                      style: Theme.of(context).textTheme.headline6,
+                    )
+                  : Form(
+                      key: _formPhoneKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: width * 0.8,
+                            child: TextFormField(
+                              textAlign: TextAlign.center,
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                hintText: "Numer Telefonu",
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: _phoneController.clear,
+                                ),
+                              ),
+                              validator: (value) {
+                                value = value.replaceAll(' ', '');
+                                if (int.tryParse(value) == null) {
+                                  return 'Podaj numer telefonu';
+                                } else if (value.isEmpty || value.length < 9) {
+                                  return 'Podaj poprawny numer telefonu';
+                                }
+                                return null;
+                              },
+                              // onChanged: (value){
+                              //   final length = value.length;
+                              //   if(length)
+                              //   print(value);
+                              // },
+                              onSaved: (value) {
+                                _phone = value.replaceAll(' ', '');
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          _isLoading
+                              ? Center(child: CircularProgressIndicator())
+                              : ElevatedButton(
+                                  child: SizedBox(
+                                    width: width * 0.8,
+                                    child: Text(
+                                      "Zapisz",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _trySubmit(context, provider, _formPhoneKey);
+                                  },
+                                ),
+                        ],
+                      ),
+                    ),
               SizedBox(height: 50),
             ],
           ),
