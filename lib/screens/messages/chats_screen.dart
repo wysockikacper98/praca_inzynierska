@@ -49,7 +49,6 @@ class ChatsScreen extends StatelessWidget {
             return ListView.builder(
                 itemCount: chatDocs.length,
                 itemBuilder: (ctx, index) {
-
                   final String currentChatName =
                       chatDocs[index]['users'][0] == userId
                           ? chatDocs[index]['chatName'][1]

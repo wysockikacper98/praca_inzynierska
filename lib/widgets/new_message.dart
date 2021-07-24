@@ -60,7 +60,9 @@ class _NewMessageState extends State<NewMessage> {
           IconButton(
             color: Theme.of(context).primaryColor,
             icon: Icon(Icons.send),
-            onPressed: _enterMessage.trim().isEmpty ? null : () => _sendMessage(provider),
+            onPressed: _enterMessage.trim().isEmpty
+                ? null
+                : () => _sendMessage(provider),
           )
         ],
       ),

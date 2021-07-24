@@ -79,7 +79,6 @@ class UserProvider with ChangeNotifier {
     return _user;
   }
 
-
   set user(Users value) {
     print("User Updated");
     _user = value;

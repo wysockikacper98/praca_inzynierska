@@ -114,7 +114,6 @@ ButtonStyle elevatedButtonFilterStyle() {
   );
 }
 
-
 // Widgets Styles
 CardTheme cardTheme() {
   return CardTheme(

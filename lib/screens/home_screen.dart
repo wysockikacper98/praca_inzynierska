@@ -29,7 +29,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
-    final provider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -62,8 +61,6 @@ class HomeScreen extends StatelessWidget {
             onChanged: (itemIdentifier) {
               if (itemIdentifier == 'logout') {
                 FirebaseAuth.instance.signOut();
-                provider.clearUserInfo();
-                // clearUserInfo();
               }
             },
           ),
@@ -131,7 +128,10 @@ class HomeScreen extends StatelessWidget {
             child:
                 Text('Polecane', style: Theme.of(context).textTheme.headline6),
           ),
-          createRecommendedFirmList(context),
+          Consumer<UserProvider>(
+            builder: (context, userProvider, _) =>
+                createRecommendedFirmList(context),
+          ),
         ],
       ),
       drawer: AppDrawer(),

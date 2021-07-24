@@ -273,7 +273,8 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _trySubmit(context, provider, _formPhoneKey);
+                                    _trySubmit(
+                                        context, provider, _formPhoneKey);
                                   },
                                 ),
                         ],

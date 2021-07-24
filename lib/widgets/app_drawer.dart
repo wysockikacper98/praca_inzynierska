@@ -24,7 +24,9 @@ class _AppDrawerState extends State<AppDrawer> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            buildUserInfo(context, provider.user),
+            Consumer<UserProvider>(
+                builder: (ctx, provider, _) =>
+                    buildUserInfo(context, provider.user)),
             ListTile(
               leading: buildIcon(icon: Icons.home),
               title: Center(child: buildText(text: "Strona główna")),

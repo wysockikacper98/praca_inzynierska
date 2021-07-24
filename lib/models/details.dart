@@ -1,6 +1,6 @@
 class Details {
   String description;
-  List<String> pictures;
+  List<dynamic> pictures;
   String prices;
   String calendar = "calendar";
 

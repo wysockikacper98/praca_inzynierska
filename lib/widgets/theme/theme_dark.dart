@@ -4,11 +4,9 @@ ThemeData themeDark() {
   return ThemeData.dark();
 }
 
-
-TextStyle textFormStyle(){
+TextStyle textFormStyle() {
   return TextStyle(color: Colors.black);
 }
-
 
 // Custom Button Style
 

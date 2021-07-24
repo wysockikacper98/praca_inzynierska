@@ -267,8 +267,7 @@ class FirmProfileScreen extends StatelessWidget {
     return userID != firm.id
         ? AlertDialog(
             title: Text('Nowe połączenie'),
-            content: Text(
-                'Wybrać numer do ${firm.data()['firmName']}'),
+            content: Text('Wybrać numer do ${firm.data()['firmName']}'),
             elevation: 24.0,
             actions: [
               TextButton(

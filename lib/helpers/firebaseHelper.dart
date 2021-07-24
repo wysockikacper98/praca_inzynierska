@@ -209,14 +209,17 @@ Future<void> getFirmInfoFromFirebase(
   BuildContext context,
   String userID,
 ) async {
+  Future.delayed(Duration(seconds: 2));
   print("czy to działa");
   final provider = Provider.of<FirmProvider>(context, listen: false);
+  final providerUser = Provider.of<UserProvider>(context, listen: false);
   final data =
       await FirebaseFirestore.instance.collection('firms').doc(userID).get();
 
-  print("Data:" + data.data().toString());
+  // print("Data:" + data.data().toString());
 
   provider.firm = Firm.fromJson(data.data());
+  providerUser.user = Users.fromJson(data.data());
 }
 
 Future<QuerySnapshot> getFirmList() async {
