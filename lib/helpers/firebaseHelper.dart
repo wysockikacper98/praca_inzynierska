@@ -251,6 +251,7 @@ Future<void> updateFirmInFirebase(
     'lastName': firm.lastName,
     'telephone': firm.telephone,
     'location': firm.location,
+    'details': firm.details.toJson(),
   });
 
   await getFirmInfoFromFirebase(context, userId);
