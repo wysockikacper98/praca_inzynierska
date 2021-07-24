@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/widgets/firm/edit_firm_form.dart';
 
 class FirmEditProfileScreen extends StatelessWidget {
@@ -20,7 +19,7 @@ class FirmEditProfileScreen extends StatelessWidget {
         // future: getFirmInfoFromFirebase(context, userID),
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return EditFirmForm(context, Firm.fromJson(snapshot.data.data()));
+            return EditFirmForm();
           } else if (snapshot.data == null) {
             return Center(child: Text("Firm not found"));
           } else {

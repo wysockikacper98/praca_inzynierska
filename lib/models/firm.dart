@@ -13,6 +13,7 @@ class Firm {
   String nip;
   String avatar;
   String rating;
+  String ratingNumber;
   List<dynamic> category;
   UserType type;
   Details details;
@@ -29,6 +30,7 @@ class Firm {
     this.category,
     this.avatar,
     this.rating,
+    this.ratingNumber,
     @required this.type,
     this.details,
   });
@@ -45,6 +47,7 @@ class Firm {
         '\nNip$nip' +
         '\nAvatar:$avatar' +
         '\nRating:$rating' +
+        '\nRating Number:$ratingNumber' +
         '\nCategory:${category.toString()}' +
         '\nType:' +
         (this.type == UserType.Firm ? "Firm" : "Private User") +
@@ -63,6 +66,7 @@ class Firm {
       nip: parsedJson['nip'] ?? "",
       avatar: parsedJson['avatar'] ?? "",
       rating: parsedJson['rating'] ?? "",
+      ratingNumber: parsedJson['ratingNumber'] ?? "",
       category: parsedJson['category'] ?? [],
       type: parsedJson['type'] == 'Firm' ? UserType.Firm : UserType.PrivateUser,
       details: Details.fromJson(parsedJson['details']) ?? "",
@@ -81,6 +85,7 @@ class Firm {
       'nip': this.nip,
       'avatar': this.avatar,
       'rating': this.rating,
+      'ratingNumber': this.ratingNumber,
       'category': this.category,
       'type': this.type.toString().split('.').last,
       'details': this.details.toJson(),

@@ -54,6 +54,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     nip: "",
     avatar: "",
     rating: '0',
+    ratingNumber: '0',
     category: [],
     type: UserType.Firm,
     details: Details(

@@ -209,8 +209,8 @@ Future<void> getFirmInfoFromFirebase(
   BuildContext context,
   String userID,
 ) async {
-  Future.delayed(Duration(seconds: 2));
-  print("czy to działa");
+  // Future.delayed(Duration(seconds: 2));
+  // print("czy to działa");
   final provider = Provider.of<FirmProvider>(context, listen: false);
   final providerUser = Provider.of<UserProvider>(context, listen: false);
   final data =
@@ -238,4 +238,20 @@ Future<void> updateUserInFirebase(
       {'firstName': firstName, 'lastName': lastName, 'telephone': telephone});
 
   await getUserInfoFromFirebase(context, userId);
+}
+
+Future<void> updateFirmInFirebase(
+  BuildContext context,
+  Firm firm,
+) async {
+  final userId = FirebaseAuth.instance.currentUser.uid;
+  await FirebaseFirestore.instance.collection('firms').doc(userId).update({
+    'firmName': firm.firmName,
+    'firstName': firm.firstName,
+    'lastName': firm.lastName,
+    'telephone': firm.telephone,
+    'location': firm.location,
+  });
+
+  await getFirmInfoFromFirebase(context, userId);
 }
