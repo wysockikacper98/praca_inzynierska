@@ -16,11 +16,13 @@ class _EditFirmFormState extends State<EditFirmForm> {
   final _formNameAndSurnameKey = GlobalKey<FormState>();
   final _formPhoneNumberKey = GlobalKey<FormState>();
   final _formLocationKey = GlobalKey<FormState>();
+  final _formDescriptionKey = GlobalKey<FormState>();
 
   bool _editFirmName = false;
   bool _editNameAndSurname = false;
   bool _editPhoneNumber = false;
   bool _editLocation = false;
+  bool _editDescription = false;
 
   bool _isLoading = false;
 
@@ -29,6 +31,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   var _surnameController = TextEditingController();
   var _phoneController = TextEditingController();
   var _locationController = TextEditingController();
+  var _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -38,6 +41,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
     _surnameController.dispose();
     _phoneController.dispose();
     _locationController.dispose();
+    _descriptionController.dispose();
   }
 
   String _firmName;
@@ -45,6 +49,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   String _surname;
   String _phone;
   String _location;
+  String _description;
 
   Future<void> _trySubmit(
     BuildContext context,
@@ -76,8 +81,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
       if (_phone != null) {
         updatedFirm.telephone = _phone;
       }
-      if(_location != null){
+      if (_location != null) {
         updatedFirm.location = _location;
+      }
+      if (_description != null) {
+        updatedFirm.details.description = _description;
       }
 
       await updateFirmInFirebase(context, updatedFirm);
@@ -90,6 +98,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
         _editNameAndSurname = false;
         _editPhoneNumber = false;
         _editLocation = false;
+        _editDescription = false;
       });
     }
   }
@@ -151,6 +160,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                         child: TextFormField(
                           key: ValueKey("firmName"),
                           controller: _firmNameController,
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             hintText: "Nazwa Firmy",
                             suffixIcon: IconButton(
@@ -226,10 +236,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
                       Container(
                         width: width * 0.80,
                         child: TextFormField(
-                          key: ValueKey("firmName"),
+                          key: ValueKey("name"),
                           controller: _nameController,
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            hintText: "Nazwa Firmy",
+                            hintText: "Imie",
                             suffixIcon: IconButton(
                               icon: Icon(Icons.clear),
                               onPressed: _nameController.clear,
@@ -253,10 +264,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
                       Container(
                         width: width * 0.80,
                         child: TextFormField(
-                          key: ValueKey("firmName"),
+                          key: ValueKey("surname"),
                           controller: _surnameController,
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            hintText: "Nazwa Firmy",
+                            hintText: "Nazwisko",
                             suffixIcon: IconButton(
                               icon: Icon(Icons.clear),
                               onPressed: _surnameController.clear,
@@ -404,6 +416,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                         child: TextFormField(
                           key: ValueKey("location"),
                           controller: _locationController,
+                          textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             hintText: "Lokalizacja",
                             suffixIcon: IconButton(
@@ -439,6 +452,91 @@ class _EditFirmFormState extends State<EditFirmForm> {
                                 _trySubmit(
                                   context,
                                   _formLocationKey,
+                                );
+                              },
+                            ),
+                    ],
+                  ),
+                ),
+          SizedBox(height: 15),
+          ListTile(
+            title: Text("Opis firmy:"),
+            trailing: IconButton(
+              color: _editDescription
+                  ? Theme.of(context).errorColor
+                  : Theme.of(context).primaryColor,
+              icon: _editDescription ? Icon(Icons.close) : Icon(Icons.edit),
+              onPressed: () {
+                if (!_editDescription) {
+                  _descriptionController.text =
+                      firmProvider.firm.details.description;
+                }
+                setState(() {
+                  _editDescription = !_editDescription;
+                });
+              },
+            ),
+          ),
+          !_editDescription
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: firmProvider.firm.details.description),
+                      ],
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                )
+              : Form(
+                  key: _formDescriptionKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: width * 0.90,
+                        child: TextFormField(
+                          key: ValueKey("description"),
+                          controller: _descriptionController,
+                          keyboardType: TextInputType.multiline,
+                          textCapitalization: TextCapitalization.sentences,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: "Opis firmy",
+                            // suffixIcon: IconButton(
+                            //   icon: Icon(Icons.clear),
+                            //   onPressed: _descriptionController.clear,
+                            // ),
+                          ),
+                          validator: (value) {
+                            value = value.trimRight();
+
+                            if (value.isEmpty || value.length < 30) {
+                              return 'Proszę podać przynajmniej 30 znaki.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _description = value.trimRight();
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : ElevatedButton(
+                              child: SizedBox(
+                                width: width * 0.8,
+                                child: Text(
+                                  "Zapisz",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              onPressed: () {
+                                _trySubmit(
+                                  context,
+                                  _formDescriptionKey,
                                 );
                               },
                             ),
