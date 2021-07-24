@@ -44,9 +44,6 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
       });
 
       formKey.currentState.save();
-      print("Name:" + _name.toString());
-      print("Surname:" + _surname.toString());
-      print("Phone:" + _phone.toString());
 
       if (_name == null || _surname == null) {
         _name = provider.user.firstName;
@@ -78,7 +75,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   Widget build(BuildContext context) {
     final sizeMediaQuery = MediaQuery.of(context).size;
     final width = sizeMediaQuery.width;
-    final height = sizeMediaQuery.height;
+    // final height = sizeMediaQuery.height;
     final provider = Provider.of<UserProvider>(context);
 
     return Scaffold(

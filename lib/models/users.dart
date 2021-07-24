@@ -51,6 +51,8 @@ class Users {
         this.email +
         "\nRating:" +
         this.rating +
+        "\nRating Number:" +
+        this.ratingNumber +
         "\nTelephone:" +
         this.telephone +
         "\nAvatar:" +
@@ -65,6 +67,7 @@ class Users {
       'lastName': this.lastName,
       'email': this.email,
       'rating': this.rating,
+      'ratingNumber': this.ratingNumber,
       'avatar': this.avatar,
       'telephone': this.telephone,
       'type': this.type.toString().split('.').last,
