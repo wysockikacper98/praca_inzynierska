@@ -1,8 +1,10 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/screens/full_screen_image.dart';
 import 'package:praca_inzynierska/widgets/pickers/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +25,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   bool _editPhoneNumber = false;
   bool _editLocation = false;
   bool _editDescription = false;
+  bool _editPicture = false;
 
   bool _isLoading = false;
 
@@ -50,6 +53,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   String _phone;
   String _location;
   String _description;
+  List<String> _picture;
 
   Future<void> _trySubmit(
     BuildContext context,
@@ -542,6 +546,59 @@ class _EditFirmFormState extends State<EditFirmForm> {
                             ),
                     ],
                   ),
+                ),
+          SizedBox(height: 15),
+          ListTile(
+            title: Text("Zdjęcia:"),
+            trailing: IconButton(
+              color: _editPicture
+                  ? Theme.of(context).errorColor
+                  : Theme.of(context).primaryColor,
+              icon: _editPicture ? Icon(Icons.close) : Icon(Icons.edit),
+              onPressed: () {
+                if (!_editPicture) {
+                  _descriptionController.text =
+                      firmProvider.firm.details.description;
+                }
+                setState(() {
+                  _editPicture = !_editPicture;
+                });
+              },
+            ),
+          ),
+          firmProvider.firm.details.pictures.length > 0
+              ? CarouselSlider.builder(
+                  options: CarouselOptions(
+                    aspectRatio: 2.5,
+                    disableCenter: true,
+                    autoPlayInterval: const Duration(seconds: 8),
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                  ),
+                  itemCount: firmProvider.firm.details.pictures.length,
+                  itemBuilder: (ctx, index, tag) {
+                    return GestureDetector(
+                      child: Hero(
+                        tag: tag,
+                        child: Container(
+                          child: Image.asset(firmProvider.firm.details.pictures[index]),
+                          color: Colors.white30,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) {
+                            return FullScreenImage(
+                                imageAssetsPath: firmProvider.firm.details.pictures[index], tag: tag);
+                          }),
+                        );
+                      },
+                    );
+                  },
+                )
+              : Center(
+                  child: Text('Brak zdjęć.'),
                 ),
           SizedBox(height: 15),
           Text(firmProvider.firm.toString()),
