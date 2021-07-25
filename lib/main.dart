@@ -9,6 +9,7 @@ import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart'
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
 import 'package:praca_inzynierska/screens/search/search_screen.dart';
 import 'package:praca_inzynierska/screens/settings_screen.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
@@ -41,28 +42,38 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => UserProvider()),
         ChangeNotifierProvider(create: (ctx) => FirmProvider()),
       ],
-      child: MaterialApp(
-        title: 'FixIT!',
-        debugShowCheckedModeBanner: false,
-        darkTheme: themeDark(),
-        theme: themeLight(),
-        initialRoute: '/',
-        routes: {
-          '/': (ctx) => LoginScreen(),
-          HomeScreen.routeName: (ctx) => HomeScreen(),
-          LoginScreen.routeName: (ctx) => LoginScreen(),
-          PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
-          RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
-          RegisterContractorScreen.routeName: (ctx) =>
-              RegisterContractorScreen(),
-          FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
-          EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
-          UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
-          FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
-          SearchScreen.routeName: (ctx) => SearchScreen(),
-          SettingsScreen.routeName: (ctx) => SettingsScreen(),
-          // ChatsScreen.routeName: (ctx) => ChatsScreen(),
-        },
+      child: ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+          builder: (context, _) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+
+            return MaterialApp(
+              title: 'FixIT!',
+              debugShowCheckedModeBanner: false,
+              themeMode: themeProvider.themeMode,
+              darkTheme: themeDark(),
+              theme: themeLight(),
+              initialRoute: '/',
+              routes: {
+                '/': (ctx) => LoginScreen(),
+                HomeScreen.routeName: (ctx) => HomeScreen(),
+                LoginScreen.routeName: (ctx) => LoginScreen(),
+                PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
+                RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
+                RegisterContractorScreen.routeName: (ctx) =>
+                    RegisterContractorScreen(),
+                FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
+                EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
+                UserEditProfileScreen.routeName: (ctx) =>
+                    UserEditProfileScreen(),
+                FirmEditProfileScreen.routeName: (ctx) =>
+                    FirmEditProfileScreen(),
+                SearchScreen.routeName: (ctx) => SearchScreen(),
+                SettingsScreen.routeName: (ctx) => SettingsScreen(),
+                // ChatsScreen.routeName: (ctx) => ChatsScreen(),
+              },
+            );
+          }
       ),
     );
   }

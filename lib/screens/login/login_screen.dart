@@ -1,14 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
+import 'package:praca_inzynierska/helpers/storage_manager.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
 import '../home_screen.dart';
 import 'login_form_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key}) : super(key: key);
   static const routeName = '/login';
 
   @override
@@ -44,11 +45,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
 functionTemp(UserProvider user, BuildContext context) async {
   final userId = FirebaseAuth.instance.currentUser.uid;
+  final provider = Provider.of<ThemeProvider>(context, listen: false);
+
   if (user.user == null) {
     await getUserInfoFromFirebase(context, userId);
   }
   if (user.user.type == UserType.Firm) {
     print("GetFirm info provider: " + userId);
     await getFirmInfoFromFirebase(context, userId);
+  }
+
+  final String themeMode = await StorageManager.readData('themeMode');
+  if (themeMode == null) {
+    provider.themeMode = ThemeMode.system;
+      print('Hello themeMode is: $themeMode');
+  } else if (themeMode == 'dark') {
+    provider.themeMode = ThemeMode.dark;
+      print('Hello themeMode is: $themeMode');
+  } else if (themeMode == 'light') {
+    provider.themeMode = ThemeMode.light;
+      print('Hello themeMode is: $themeMode');
+  } else {
+    provider.themeMode = ThemeMode.system;
+      print('Hello themeMode is: $themeMode');
   }
 }
