@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:praca_inzynierska/screens/user/user_edit_profile_screen.dart';
 import 'package:provider/provider.dart';
@@ -47,15 +49,16 @@ Container buildUserInfo(BuildContext context, Users user) {
             overflow: TextOverflow.fade,
             minFontSize: 14,
           ),
-          // trailing: IconButton(
-          //   icon: Icon(Icons.settings),
-          //   color: Theme.of(context).primaryColorLight,
-          //   onPressed: () {
-          //     //TODO: Przejście do ustawień użytkownika
-          //     print("Ustawienia użytkownika");
-          //     Navigator.of(context).pop();
-          //   },
-          // ),
+          trailing: IconButton(
+            icon: FaIcon(FontAwesomeIcons.userEdit),
+            color: Theme.of(context).accentColor,
+            onPressed: () {
+              provider.user.type == UserType.Firm
+                  ? Navigator.of(context)
+                      .pushNamed(FirmEditProfileScreen.routeName)
+                  : Navigator.of(context).pop();
+            },
+          ),
           onTap: () {
             provider.user.type == UserType.PrivateUser
                 ? Navigator.of(context)

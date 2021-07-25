@@ -115,494 +115,780 @@ class _EditFirmFormState extends State<EditFirmForm> {
     final width = sizeMediaQuery.width;
 
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(height: 15),
-          imagePickerFirm(firmProvider, userProvider, width),
-          SizedBox(height: 15),
-          RatingBarIndicator(
-            rating: double.parse(userProvider.user.rating),
-            itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
-            itemCount: 5,
-            itemSize: 40.0,
-          ),
-          Text(
-            firmProvider.firm.rating +
-                ' (' +
-                firmProvider.firm.ratingNumber +
-                ')',
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          SizedBox(height: 15),
-          ListTile(
-            title: Text("Nazwa Firmy:"),
-            trailing: IconButton(
-              color: _editFirmName
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editFirmName ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editFirmName)
-                  _firmNameController.text = firmProvider.firm.firmName;
-                setState(() {
-                  _editFirmName = !_editFirmName;
-                });
-              },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        child: Column(
+          children: [
+            imagePickerFirm(firmProvider, userProvider, width),
+            SizedBox(height: 15),
+            RatingBarIndicator(
+              rating: double.parse(userProvider.user.rating),
+              itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
+              itemCount: 5,
+              itemSize: 40.0,
             ),
-          ),
-          !_editFirmName
-              ? Text(
-                  firmProvider.firm.firmName,
+            Text(
+              firmProvider.firm.rating +
+                  ' (' +
+                  firmProvider.firm.ratingNumber +
+                  ')',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Nazwa Firmy:',
                   style: Theme.of(context).textTheme.headline6,
-                )
-              : Form(
-                  key: _formFirmNameKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * 0.80,
-                        child: TextFormField(
-                          key: ValueKey("firmName"),
-                          controller: _firmNameController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Nazwa Firmy",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: _firmNameController.clear,
-                            ),
-                          ),
-                          validator: (value) {
-                            value = value.trim();
-
-                            if (value.isEmpty || value.length < 3) {
-                              return 'Proszę podać przynajmniej 3 znaki.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            value = value.trim();
-
-                            _firmName = value;
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : ElevatedButton(
-                              child: SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  "Zapisz",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              onPressed: () {
-                                _trySubmit(
-                                  context,
-                                  _formFirmNameKey,
-                                );
-                              },
-                            ),
-                    ],
-                  ),
                 ),
-          ListTile(
-            title: Text("Właściciel:"),
-            trailing: IconButton(
-              color: _editNameAndSurname
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editNameAndSurname ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editNameAndSurname) {
-                  _nameController.text = firmProvider.firm.firstName;
-                  _surnameController.text = firmProvider.firm.lastName;
-                }
-                setState(() {
-                  _editNameAndSurname = !_editNameAndSurname;
-                });
-              },
+                !_editFirmName
+                    ? TextButton(
+                        child: Text(
+                          firmProvider.firm.firmName,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        onPressed: () {
+                          _firmNameController.text = firmProvider.firm.firmName;
+                          setState(() {
+                            _editFirmName = !_editFirmName;
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _editFirmName = !_editFirmName;
+                          });
+                        },
+                      ),
+              ],
             ),
-          ),
-          !_editNameAndSurname
-              ? Text(
-                  firmProvider.firm.firstName +
-                      " " +
-                      firmProvider.firm.lastName,
-                  style: Theme.of(context).textTheme.headline6,
-                )
-              : Form(
-                  key: _formNameAndSurnameKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * 0.80,
-                        child: TextFormField(
-                          key: ValueKey("name"),
-                          controller: _nameController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Imie",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: _nameController.clear,
-                            ),
+            if (_editFirmName)
+              Form(
+                key: _formFirmNameKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("firmName"),
+                        controller: _firmNameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          hintText: "Nazwa Firmy",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: _firmNameController.clear,
                           ),
-                          validator: (value) {
-                            value = value.trim();
+                        ),
+                        validator: (value) {
+                          value = value.trim();
 
-                            if (value.isEmpty || value.length < 3) {
-                              return 'Proszę podać przynajmniej 3 znaki.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            value = value.trim();
+                          if (value.isEmpty || value.length < 3) {
+                            return 'Proszę podać przynajmniej 3 znaki.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          value = value.trim();
 
-                            _name = value;
-                          },
-                        ),
+                          _firmName = value;
+                        },
                       ),
-                      Container(
-                        width: width * 0.80,
-                        child: TextFormField(
-                          key: ValueKey("surname"),
-                          controller: _surnameController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Nazwisko",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: _surnameController.clear,
-                            ),
-                          ),
-                          validator: (value) {
-                            value = value.trim();
-                            if (value.isEmpty || value.length < 3) {
-                              return 'Proszę podać przynajmniej 3 znaki.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            value = value.trim();
-                            _surname = value;
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : ElevatedButton(
-                              child: SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  "Zapisz",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              onPressed: () {
-                                _trySubmit(
-                                  context,
-                                  _formNameAndSurnameKey,
-                                );
-                              },
-                            ),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15),
-          ListTile(
-            title: Text("Numer Telefonu:"),
-            trailing: IconButton(
-              color: _editPhoneNumber
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editPhoneNumber ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editPhoneNumber) {
-                  _phoneController.text = firmProvider.firm.telephone;
-                }
-                setState(() {
-                  _editPhoneNumber = !_editPhoneNumber;
-                });
-              },
-            ),
-          ),
-          !_editPhoneNumber
-              ? Text(
-                  _formatPhoneNumber(firmProvider.firm.telephone),
-                  style: Theme.of(context).textTheme.headline6,
-                )
-              : Form(
-                  key: _formPhoneNumberKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * 0.80,
-                        child: TextFormField(
-                          key: ValueKey("phone"),
-                          controller: _phoneController,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            hintText: "Numer Telefonu",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: _phoneController.clear,
-                            ),
-                          ),
-                          validator: (value) {
-                            value = value.replaceAll(' ', '');
-                            if (int.tryParse(value) == null) {
-                              return 'Podaj numer telefonu';
-                            } else if (value.isEmpty || value.length < 9) {
-                              return 'Podaj poprawny numer telefonu';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _phone = value.replaceAll(' ', '');
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : ElevatedButton(
-                              child: SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  "Zapisz",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              onPressed: () {
-                                _trySubmit(
-                                  context,
-                                  _formPhoneNumberKey,
-                                );
-                              },
-                            ),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15),
-          ListTile(
-            title: Text("Lokalizacja:"),
-            trailing: IconButton(
-              color: _editLocation
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editLocation ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editLocation) {
-                  _locationController.text = firmProvider.firm.location;
-                }
-                setState(() {
-                  _editLocation = !_editLocation;
-                });
-              },
-            ),
-          ),
-          !_editLocation
-              ? Text(
-                  firmProvider.firm.location,
-                  style: Theme.of(context).textTheme.headline6,
-                )
-              : Form(
-                  key: _formLocationKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * 0.80,
-                        child: TextFormField(
-                          key: ValueKey("location"),
-                          controller: _locationController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            hintText: "Lokalizacja",
-                            suffixIcon: IconButton(
-                              icon: Icon(Icons.clear),
-                              onPressed: _locationController.clear,
-                            ),
-                          ),
-                          validator: (value) {
-                            value = value.trim();
-
-                            if (value.isEmpty || value.length < 3) {
-                              return 'Proszę podać przynajmniej 3 znaki.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _location = value.trim();
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : ElevatedButton(
-                              child: SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  "Zapisz",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              onPressed: () {
-                                _trySubmit(
-                                  context,
-                                  _formLocationKey,
-                                );
-                              },
-                            ),
-                    ],
-                  ),
-                ),
-          SizedBox(height: 15),
-          ListTile(
-            title: Text("Opis firmy:"),
-            trailing: IconButton(
-              color: _editDescription
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editDescription ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editDescription) {
-                  _descriptionController.text =
-                      firmProvider.firm.details.description;
-                }
-                setState(() {
-                  _editDescription = !_editDescription;
-                });
-              },
-            ),
-          ),
-          !_editDescription
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(text: firmProvider.firm.details.description),
-                      ],
-                      style: Theme.of(context).textTheme.bodyText2,
                     ),
-                    textAlign: TextAlign.justify,
-                  ),
-                )
-              : Form(
-                  key: _formDescriptionKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: width * 0.90,
-                        child: TextFormField(
-                          key: ValueKey("description"),
-                          controller: _descriptionController,
-                          keyboardType: TextInputType.multiline,
-                          textCapitalization: TextCapitalization.sentences,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            hintText: "Opis firmy",
-                            // suffixIcon: IconButton(
-                            //   icon: Icon(Icons.clear),
-                            //   onPressed: _descriptionController.clear,
-                            // ),
-                          ),
-                          validator: (value) {
-                            value = value.trimRight();
-
-                            if (value.isEmpty || value.length < 30) {
-                              return 'Proszę podać przynajmniej 30 znaki.';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _description = value.trimRight();
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      _isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : ElevatedButton(
-                              child: SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  "Zapisz",
-                                  textAlign: TextAlign.center,
-                                ),
+                    SizedBox(height: 20),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            child: SizedBox(
+                              width: width * 0.8,
+                              child: Text(
+                                "Zapisz",
+                                textAlign: TextAlign.center,
                               ),
-                              onPressed: () {
-                                _trySubmit(
-                                  context,
-                                  _formDescriptionKey,
-                                );
-                              },
                             ),
-                    ],
-                  ),
+                            onPressed: () {
+                              _trySubmit(
+                                context,
+                                _formFirmNameKey,
+                              );
+                            },
+                          ),
+                  ],
                 ),
-          SizedBox(height: 15),
-          ListTile(
-            title: Text("Zdjęcia:"),
-            trailing: IconButton(
-              color: _editPicture
-                  ? Theme.of(context).errorColor
-                  : Theme.of(context).primaryColor,
-              icon: _editPicture ? Icon(Icons.close) : Icon(Icons.edit),
-              onPressed: () {
-                if (!_editPicture) {
-                  _descriptionController.text =
-                      firmProvider.firm.details.description;
-                }
-                setState(() {
-                  _editPicture = !_editPicture;
-                });
-              },
-            ),
-          ),
-          firmProvider.firm.details.pictures.length > 0
-              ? CarouselSlider.builder(
-                  options: CarouselOptions(
-                    aspectRatio: 2.5,
-                    disableCenter: true,
-                    autoPlayInterval: const Duration(seconds: 8),
-                    enlargeCenterPage: true,
-                    autoPlay: true,
-                  ),
-                  itemCount: firmProvider.firm.details.pictures.length,
-                  itemBuilder: (ctx, index, tag) {
-                    return GestureDetector(
-                      child: Hero(
-                        tag: tag,
-                        child: Container(
-                          child: Image.asset(firmProvider.firm.details.pictures[index]),
-                          color: Colors.white30,
+              ),
+            // ListTile(
+            //   title: Text("Nazwa Firmy:"),
+            //   trailing: IconButton(
+            //     color: _editFirmName
+            //         ? Theme.of(context).errorColor
+            //         : Theme.of(context).primaryColor,
+            //     icon: _editFirmName ? Icon(Icons.close) : Icon(Icons.edit),
+            //     onPressed: () {
+            //       if (!_editFirmName)
+            //         _firmNameController.text = firmProvider.firm.firmName;
+            //       setState(() {
+            //         _editFirmName = !_editFirmName;
+            //       });
+            //     },
+            //   ),
+            // ),
+            // !_editFirmName
+            //     ? Text(
+            //         firmProvider.firm.firmName,
+            //         style: Theme.of(context).textTheme.headline6,
+            //       )
+            //     : Form(
+            //         key: _formFirmNameKey,
+            //         child: Column(
+            //           children: [
+            //             Container(
+            //               width: width * 0.80,
+            //               child: TextFormField(
+            //                 key: ValueKey("firmName"),
+            //                 controller: _firmNameController,
+            //                 textCapitalization: TextCapitalization.words,
+            //                 decoration: InputDecoration(
+            //                   hintText: "Nazwa Firmy",
+            //                   suffixIcon: IconButton(
+            //                     icon: Icon(Icons.clear),
+            //                     onPressed: _firmNameController.clear,
+            //                   ),
+            //                 ),
+            //                 validator: (value) {
+            //                   value = value.trim();
+            //
+            //                   if (value.isEmpty || value.length < 3) {
+            //                     return 'Proszę podać przynajmniej 3 znaki.';
+            //                   }
+            //                   return null;
+            //                 },
+            //                 onSaved: (value) {
+            //                   value = value.trim();
+            //
+            //                   _firmName = value;
+            //                 },
+            //               ),
+            //             ),
+            //             SizedBox(height: 20),
+            //             _isLoading
+            //                 ? Center(child: CircularProgressIndicator())
+            //                 : ElevatedButton(
+            //                     child: SizedBox(
+            //                       width: width * 0.8,
+            //                       child: Text(
+            //                         "Zapisz",
+            //                         textAlign: TextAlign.center,
+            //                       ),
+            //                     ),
+            //                     onPressed: () {
+            //                       _trySubmit(
+            //                         context,
+            //                         _formFirmNameKey,
+            //                       );
+            //                     },
+            //                   ),
+            //           ],
+            //         ),
+            //       ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Właściciel:",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                !_editNameAndSurname
+                    ? TextButton(
+                        child: Text(
+                          firmProvider.firm.firstName +
+                              " " +
+                              firmProvider.firm.lastName,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
+                        onPressed: () {
+                          if (!_editNameAndSurname) {
+                            _nameController.text = firmProvider.firm.firstName;
+                            _surnameController.text =
+                                firmProvider.firm.lastName;
+                          }
+                          setState(() {
+                            _editNameAndSurname = !_editNameAndSurname;
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _editNameAndSurname = !_editNameAndSurname;
+                          });
+                        }),
+              ],
+            ),
+            if (_editNameAndSurname)
+              Form(
+                key: _formNameAndSurnameKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("name"),
+                        controller: _nameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          hintText: "Imie",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: _nameController.clear,
+                          ),
+                        ),
+                        validator: (value) {
+                          value = value.trim();
+
+                          if (value.isEmpty || value.length < 3) {
+                            return 'Proszę podać przynajmniej 3 znaki.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          value = value.trim();
+
+                          _name = value;
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) {
-                            return FullScreenImage(
-                                imageAssetsPath: firmProvider.firm.details.pictures[index], tag: tag);
-                          }),
-                        );
-                      },
-                    );
-                  },
-                )
-              : Center(
-                  child: Text('Brak zdjęć.'),
+                    ),
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("surname"),
+                        controller: _surnameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          hintText: "Nazwisko",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: _surnameController.clear,
+                          ),
+                        ),
+                        validator: (value) {
+                          value = value.trim();
+                          if (value.isEmpty || value.length < 3) {
+                            return 'Proszę podać przynajmniej 3 znaki.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          value = value.trim();
+                          _surname = value;
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            child: SizedBox(
+                              width: width * 0.8,
+                              child: Text(
+                                "Zapisz",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            onPressed: () {
+                              _trySubmit(
+                                context,
+                                _formNameAndSurnameKey,
+                              );
+                            },
+                          ),
+                  ],
                 ),
-          SizedBox(height: 15),
-          Text(firmProvider.firm.toString()),
-        ],
+              ),
+            // ListTile(
+            //   title: Text("Właściciel:"),
+            //   trailing: IconButton(
+            //     color: _editNameAndSurname
+            //         ? Theme.of(context).errorColor
+            //         : Theme.of(context).primaryColor,
+            //     icon:
+            //         _editNameAndSurname ? Icon(Icons.close) : Icon(Icons.edit),
+            //     onPressed: () {
+            //       if (!_editNameAndSurname) {
+            //         _nameController.text = firmProvider.firm.firstName;
+            //         _surnameController.text = firmProvider.firm.lastName;
+            //       }
+            //       setState(() {
+            //         _editNameAndSurname = !_editNameAndSurname;
+            //       });
+            //     },
+            //   ),
+            // ),
+            // !_editNameAndSurname
+            //     ? Text(
+            //         firmProvider.firm.firstName +
+            //             " " +
+            //             firmProvider.firm.lastName,
+            //         style: Theme.of(context).textTheme.headline6,
+            //       )
+            //     : Form(
+            //         key: _formNameAndSurnameKey,
+            //         child: Column(
+            //           children: [
+            //             Container(
+            //               width: width * 0.80,
+            //               child: TextFormField(
+            //                 key: ValueKey("name"),
+            //                 controller: _nameController,
+            //                 textCapitalization: TextCapitalization.words,
+            //                 decoration: InputDecoration(
+            //                   hintText: "Imie",
+            //                   suffixIcon: IconButton(
+            //                     icon: Icon(Icons.clear),
+            //                     onPressed: _nameController.clear,
+            //                   ),
+            //                 ),
+            //                 validator: (value) {
+            //                   value = value.trim();
+            //
+            //                   if (value.isEmpty || value.length < 3) {
+            //                     return 'Proszę podać przynajmniej 3 znaki.';
+            //                   }
+            //                   return null;
+            //                 },
+            //                 onSaved: (value) {
+            //                   value = value.trim();
+            //
+            //                   _name = value;
+            //                 },
+            //               ),
+            //             ),
+            //             Container(
+            //               width: width * 0.80,
+            //               child: TextFormField(
+            //                 key: ValueKey("surname"),
+            //                 controller: _surnameController,
+            //                 textCapitalization: TextCapitalization.words,
+            //                 decoration: InputDecoration(
+            //                   hintText: "Nazwisko",
+            //                   suffixIcon: IconButton(
+            //                     icon: Icon(Icons.clear),
+            //                     onPressed: _surnameController.clear,
+            //                   ),
+            //                 ),
+            //                 validator: (value) {
+            //                   value = value.trim();
+            //                   if (value.isEmpty || value.length < 3) {
+            //                     return 'Proszę podać przynajmniej 3 znaki.';
+            //                   }
+            //                   return null;
+            //                 },
+            //                 onSaved: (value) {
+            //                   value = value.trim();
+            //                   _surname = value;
+            //                 },
+            //               ),
+            //             ),
+            //             SizedBox(height: 20),
+            //             _isLoading
+            //                 ? Center(child: CircularProgressIndicator())
+            //                 : ElevatedButton(
+            //                     child: SizedBox(
+            //                       width: width * 0.8,
+            //                       child: Text(
+            //                         "Zapisz",
+            //                         textAlign: TextAlign.center,
+            //                       ),
+            //                     ),
+            //                     onPressed: () {
+            //                       _trySubmit(
+            //                         context,
+            //                         _formNameAndSurnameKey,
+            //                       );
+            //                     },
+            //                   ),
+            //           ],
+            //         ),
+            //       ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Numer Telefonu:',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                !_editPhoneNumber
+                    ? TextButton(
+                        child: Text(
+                          _formatPhoneNumber(firmProvider.firm.telephone),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        onPressed: () {
+                          _phoneController.text = firmProvider.firm.telephone;
+                          setState(() {
+                            _editPhoneNumber = !_editPhoneNumber;
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _editPhoneNumber = !_editPhoneNumber;
+                          });
+                        },
+                      ),
+              ],
+            ),
+            if (_editPhoneNumber)
+              Form(
+                key: _formPhoneNumberKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("phone"),
+                        controller: _phoneController,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: "Numer Telefonu",
+                        ),
+                        validator: (value) {
+                          value = value.replaceAll(' ', '');
+                          if (int.tryParse(value) == null) {
+                            return 'Podaj numer telefonu';
+                          } else if (value.isEmpty || value.length < 9) {
+                            return 'Podaj poprawny numer telefonu';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _phone = value.replaceAll(' ', '');
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            child: SizedBox(
+                              width: width * 0.8,
+                              child: Text(
+                                "Zapisz",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            onPressed: () {
+                              _trySubmit(
+                                context,
+                                _formPhoneNumberKey,
+                              );
+                            },
+                          ),
+                  ],
+                ),
+              ),
+            // SizedBox(height: 15),
+            // ListTile(
+            //   title: Text("Numer Telefonu:"),
+            //   trailing: IconButton(
+            //     color: _editPhoneNumber
+            //         ? Theme.of(context).errorColor
+            //         : Theme.of(context).primaryColor,
+            //     icon: _editPhoneNumber ? Icon(Icons.close) : Icon(Icons.edit),
+            //     onPressed: () {
+            //       if (!_editPhoneNumber) {
+            //         _phoneController.text = firmProvider.firm.telephone;
+            //       }
+            //       setState(() {
+            //         _editPhoneNumber = !_editPhoneNumber;
+            //       });
+            //     },
+            //   ),
+            // ),
+            // !_editPhoneNumber
+            //     ? Text(
+            //         _formatPhoneNumber(firmProvider.firm.telephone),
+            //         style: Theme.of(context).textTheme.headline6,
+            //       )
+            //     : Form(
+            //         key: _formPhoneNumberKey,
+            //         child: Column(
+            //           children: [
+            //             Container(
+            //               width: width * 0.80,
+            //               child: TextFormField(
+            //                 key: ValueKey("phone"),
+            //                 controller: _phoneController,
+            //                 textAlign: TextAlign.center,
+            //                 keyboardType: TextInputType.phone,
+            //                 decoration: InputDecoration(
+            //                   hintText: "Numer Telefonu",
+            //                   suffixIcon: IconButton(
+            //                     icon: Icon(Icons.clear),
+            //                     onPressed: _phoneController.clear,
+            //                   ),
+            //                 ),
+            //                 validator: (value) {
+            //                   value = value.replaceAll(' ', '');
+            //                   if (int.tryParse(value) == null) {
+            //                     return 'Podaj numer telefonu';
+            //                   } else if (value.isEmpty || value.length < 9) {
+            //                     return 'Podaj poprawny numer telefonu';
+            //                   }
+            //                   return null;
+            //                 },
+            //                 onSaved: (value) {
+            //                   _phone = value.replaceAll(' ', '');
+            //                 },
+            //               ),
+            //             ),
+            //             SizedBox(height: 20),
+            //             _isLoading
+            //                 ? Center(child: CircularProgressIndicator())
+            //                 : ElevatedButton(
+            //                     child: SizedBox(
+            //                       width: width * 0.8,
+            //                       child: Text(
+            //                         "Zapisz",
+            //                         textAlign: TextAlign.center,
+            //                       ),
+            //                     ),
+            //                     onPressed: () {
+            //                       _trySubmit(
+            //                         context,
+            //                         _formPhoneNumberKey,
+            //                       );
+            //                     },
+            //                   ),
+            //           ],
+            //         ),
+            //       ),
+            SizedBox(height: 15),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text("Lokalizacja:"),
+              trailing: IconButton(
+                color: _editLocation
+                    ? Theme.of(context).errorColor
+                    : Theme.of(context).primaryColor,
+                icon: _editLocation ? Icon(Icons.close) : Icon(Icons.edit),
+                onPressed: () {
+                  if (!_editLocation) {
+                    _locationController.text = firmProvider.firm.location;
+                  }
+                  setState(() {
+                    _editLocation = !_editLocation;
+                  });
+                },
+              ),
+            ),
+            !_editLocation
+                ? Text(
+                    firmProvider.firm.location,
+                    style: Theme.of(context).textTheme.headline6,
+                  )
+                : Form(
+                    key: _formLocationKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width * 0.80,
+                          child: TextFormField(
+                            key: ValueKey("location"),
+                            controller: _locationController,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: InputDecoration(
+                              hintText: "Lokalizacja",
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.clear),
+                                onPressed: _locationController.clear,
+                              ),
+                            ),
+                            validator: (value) {
+                              value = value.trim();
+
+                              if (value.isEmpty || value.length < 3) {
+                                return 'Proszę podać przynajmniej 3 znaki.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _location = value.trim();
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ElevatedButton(
+                                child: SizedBox(
+                                  width: width * 0.8,
+                                  child: Text(
+                                    "Zapisz",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _trySubmit(
+                                    context,
+                                    _formLocationKey,
+                                  );
+                                },
+                              ),
+                      ],
+                    ),
+                  ),
+            SizedBox(height: 15),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text("Opis firmy:"),
+              trailing: IconButton(
+                color: _editDescription
+                    ? Theme.of(context).errorColor
+                    : Theme.of(context).primaryColor,
+                icon: _editDescription ? Icon(Icons.close) : Icon(Icons.edit),
+                onPressed: () {
+                  if (!_editDescription) {
+                    _descriptionController.text =
+                        firmProvider.firm.details.description;
+                  }
+                  setState(() {
+                    _editDescription = !_editDescription;
+                  });
+                },
+              ),
+            ),
+            !_editDescription
+                ? RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(text: firmProvider.firm.details.description),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  textAlign: TextAlign.justify,
+                )
+                : Form(
+                    key: _formDescriptionKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width * 0.90,
+                          child: TextFormField(
+                            key: ValueKey("description"),
+                            controller: _descriptionController,
+                            keyboardType: TextInputType.multiline,
+                            textCapitalization: TextCapitalization.sentences,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              hintText: "Opis firmy",
+                              // suffixIcon: IconButton(
+                              //   icon: Icon(Icons.clear),
+                              //   onPressed: _descriptionController.clear,
+                              // ),
+                            ),
+                            validator: (value) {
+                              value = value.trimRight();
+
+                              if (value.isEmpty || value.length < 30) {
+                                return 'Proszę podać przynajmniej 30 znaki.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _description = value.trimRight();
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : ElevatedButton(
+                                child: SizedBox(
+                                  width: width * 0.8,
+                                  child: Text(
+                                    "Zapisz",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _trySubmit(
+                                    context,
+                                    _formDescriptionKey,
+                                  );
+                                },
+                              ),
+                      ],
+                    ),
+                  ),
+            SizedBox(height: 15),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text("Zdjęcia:"),
+              trailing: IconButton(
+                color: _editPicture
+                    ? Theme.of(context).errorColor
+                    : Theme.of(context).primaryColor,
+                icon: _editPicture ? Icon(Icons.close) : Icon(Icons.edit),
+                onPressed: () {
+                  if (!_editPicture) {
+                    _descriptionController.text =
+                        firmProvider.firm.details.description;
+                  }
+                  setState(() {
+                    _editPicture = !_editPicture;
+                  });
+                },
+              ),
+            ),
+            firmProvider.firm.details.pictures.length > 0
+                ? CarouselSlider.builder(
+                    options: CarouselOptions(
+                      aspectRatio: 2.5,
+                      disableCenter: true,
+                      autoPlayInterval: const Duration(seconds: 8),
+                      enlargeCenterPage: true,
+                      autoPlay: true,
+                    ),
+                    itemCount: firmProvider.firm.details.pictures.length,
+                    itemBuilder: (ctx, index, tag) {
+                      return GestureDetector(
+                        child: Hero(
+                          tag: tag,
+                          child: Container(
+                            child: Image.asset(
+                                firmProvider.firm.details.pictures[index]),
+                            color: Colors.white30,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) {
+                              return FullScreenImage(
+                                  imageAssetsPath:
+                                      firmProvider.firm.details.pictures[index],
+                                  tag: tag);
+                            }),
+                          );
+                        },
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text('Brak zdjęć.'),
+                  ),
+            SizedBox(height: 15),
+            Text(firmProvider.firm.toString()),
+          ],
+        ),
       ),
     );
   }

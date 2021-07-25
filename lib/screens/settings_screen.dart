@@ -33,25 +33,25 @@ class SettingsScreen extends StatelessWidget {
                 provider.toggleTheme(value);
               },
             ),
-            ListTile(
-              leading: FaIcon(FontAwesomeIcons.userEdit),
-              title: Text(
-                isUserTypeFirm
-                    ? 'Edycja profilu wykonawcy'
-                    : 'Edycja profilu użytkownika',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .subtitle1,
-              ),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                isUserTypeFirm
-                    ? Navigator.of(context)
-                    .pushNamed(FirmEditProfileScreen.routeName)
-                    : Navigator.of(context).pop();
-              },
-            ),
+            // ListTile(
+            //   leading: FaIcon(FontAwesomeIcons.userEdit),
+            //   title: Text(
+            //     isUserTypeFirm
+            //         ? 'Edycja profilu wykonawcy'
+            //         : 'Edycja profilu użytkownika',
+            //     style: Theme
+            //         .of(context)
+            //         .textTheme
+            //         .subtitle1,
+            //   ),
+            //   trailing: Icon(Icons.chevron_right),
+            //   onTap: () {
+            //     isUserTypeFirm
+            //         ? Navigator.of(context)
+            //         .pushNamed(FirmEditProfileScreen.routeName)
+            //         : Navigator.of(context).pop();
+            //   },
+            // ),
           ],
         ));
   }
