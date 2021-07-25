@@ -58,15 +58,15 @@ functionTemp(UserProvider user, BuildContext context) async {
   final String themeMode = await StorageManager.readData('themeMode');
   if (themeMode == null) {
     provider.themeMode = ThemeMode.system;
-      print('Hello themeMode is: $themeMode');
+    print('Hello themeMode is: $themeMode');
   } else if (themeMode == 'dark') {
     provider.themeMode = ThemeMode.dark;
-      print('Hello themeMode is: $themeMode');
+    print('Hello themeMode is: $themeMode');
   } else if (themeMode == 'light') {
     provider.themeMode = ThemeMode.light;
-      print('Hello themeMode is: $themeMode');
+    print('Hello themeMode is: $themeMode');
   } else {
     provider.themeMode = ThemeMode.system;
-      print('Hello themeMode is: $themeMode');
+    print('Hello themeMode is: $themeMode');
   }
 }
