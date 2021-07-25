@@ -8,6 +8,7 @@ import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
 import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
 import 'package:praca_inzynierska/screens/search/search_screen.dart';
+import 'package:praca_inzynierska/screens/settings_screen.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
 import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
           UserEditProfileScreen.routeName: (ctx) => UserEditProfileScreen(),
           FirmEditProfileScreen.routeName: (ctx) => FirmEditProfileScreen(),
           SearchScreen.routeName: (ctx) => SearchScreen(),
+          SettingsScreen.routeName: (ctx) => SettingsScreen(),
           // ChatsScreen.routeName: (ctx) => ChatsScreen(),
         },
       ),

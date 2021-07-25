@@ -5,6 +5,7 @@ import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/screens/emergency_screen.dart';
 import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
 import 'package:praca_inzynierska/screens/search/search_screen.dart';
+import 'package:praca_inzynierska/screens/settings_screen.dart';
 import 'package:praca_inzynierska/widgets/build_user_info.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +22,7 @@ class _AppDrawerState extends State<AppDrawer> {
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColorLight,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
             Consumer<UserProvider>(
                 builder: (ctx, provider, _) =>
@@ -84,6 +84,32 @@ class _AppDrawerState extends State<AppDrawer> {
               thickness: 1,
               height: 25,
             ),
+            ListTile(
+              leading: buildIcon(icon: Icons.settings),
+              title: Center(child: buildText(text: 'Ustawienia')),
+              onTap: () {
+                Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
+              },
+            ),
+            Divider(
+              thickness: 1,
+              height: 25,
+            ),
+            Spacer(),
+            Divider(
+              thickness: 1,
+              height: 25,
+            ),
+            ListTile(
+              leading: buildIcon(icon: Icons.logout),
+              title: Center(child: buildText(text: "Wyloguj")),
+              onTap: () {
+                Navigator.of(context).pop();
+                FirebaseAuth.instance.signOut();
+                provider.clearUserInfo();
+              },
+            ),
+            SizedBox(height: 10),
           ],
         ),
       ),
