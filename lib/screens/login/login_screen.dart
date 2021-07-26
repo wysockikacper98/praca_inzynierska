@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     print('build -> login_screen');
     final user = Provider.of<UserProvider>(context, listen: false);
+    final size = MediaQuery.of(context).size;
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
@@ -30,7 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(
-                    body: Center(child: CircularProgressIndicator()));
+                    backgroundColor: Color(0xFFFFF3E2),
+                    // body: Center(child: CircularProgressIndicator()));
+                    body: Center(
+                      child: Image.asset(
+                        'assets/icons/repair-tools.png',
+                        width: size.width * 0.4,
+                      ),
+                    ));
               }
               return HomeScreen();
             },
