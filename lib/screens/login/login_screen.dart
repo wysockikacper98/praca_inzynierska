@@ -38,7 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         'assets/icons/repair-tools.png',
                         width: size.width * 0.4,
                       ),
-                    ));
+                    ),
+                );
               }
               return HomeScreen();
             },
