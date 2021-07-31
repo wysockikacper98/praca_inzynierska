@@ -60,8 +60,8 @@ class MyApp extends StatelessWidget {
                 LoginScreen.routeName: (ctx) => LoginScreen(),
                 PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
                 RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
-                RegisterContractorScreen.routeName: (ctx) =>
-                    RegisterContractorScreen(),
+                // RegisterContractorScreen.routeName: (ctx) =>
+                //     RegisterContractorScreen(),
                 FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
                 EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
                 UserEditProfileScreen.routeName: (ctx) =>

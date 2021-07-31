@@ -6,6 +6,15 @@ import 'package:praca_inzynierska/models/users.dart';
 
 class RegisterContractorScreen extends StatefulWidget {
   static const routeName = '/register-contractor';
+  Map<String, bool> _categoriesMap;
+
+  RegisterContractorScreen({List categories}){
+    _categoriesMap = Map.fromIterable(
+      categories,
+      key: (item) => item.toString(),
+      value: (item) => false,
+    );
+  }
 
   @override
   _RegisterContractorScreenState createState() =>
@@ -13,29 +22,6 @@ class RegisterContractorScreen extends StatefulWidget {
 }
 
 class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
-  final Map<String, bool> _categoriesList = {
-    'Budowa domu': false,
-    'Elektryk': false,
-    'Hydraulik': false,
-    'Malarz': false,
-    'Meble i zabudowa': false,
-    'Montaż i naprawa': false,
-    'Motoryzacja': false,
-    'Ogród': false,
-    'Organizacja imprez': false,
-    'Projektowanie': false,
-    'Remont': false,
-    'Sprzątanie': false,
-    'Szkolenia i języki obce': false,
-    'Transport': false,
-    'Usługi dla biznesu': false,
-    'Usługi finansowe': false,
-    'Usługi prawne i administracyjne': false,
-    'Usługi zdalne': false,
-    'Zdrowie i uroda': false,
-    'Złota rączka': false,
-  };
-
   var _countSelected = 0;
 
   final _formKey = GlobalKey<FormState>();
@@ -79,7 +65,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
 
       _formKey.currentState.save();
 
-      _categoriesList.forEach((key, value) {
+      widget._categoriesMap.forEach((key, value) {
         if (value) {
           _firm.category.add(key);
         }
@@ -136,16 +122,16 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                         ? ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: _categoriesList.length,
+                            itemCount: widget._categoriesMap.length,
                             itemBuilder: (context, index) {
                               String key =
-                                  _categoriesList.keys.elementAt(index);
+                                  widget._categoriesMap.keys.elementAt(index);
                               return CheckboxListTile(
-                                  value: _categoriesList[key],
+                                  value: widget._categoriesMap[key],
                                   title: Text("$key"),
                                   onChanged: (value) {
                                     setState(() {
-                                      _categoriesList[key] = value;
+                                      widget._categoriesMap[key] = value;
                                       if (value) {
                                         _countSelected++;
                                       } else {

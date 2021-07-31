@@ -32,14 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(
                     backgroundColor: Color(0xFFFFF3E2),
-                    // body: Center(child: CircularProgressIndicator()));
-                    body: Center(
-                      child: Image.asset(
-                        'assets/icons/repair-tools.png',
-                        width: size.width * 0.4,
-                      ),
-                    ),
-                );
+                    body: Center(child: CircularProgressIndicator()));
               }
               return HomeScreen();
             },
