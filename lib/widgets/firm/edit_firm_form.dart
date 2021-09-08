@@ -1,12 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/full_screen_image.dart';
-import 'package:praca_inzynierska/widgets/pickers/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import '../../helpers/firebaseHelper.dart';
+import '../../models/firm.dart';
+import '../../models/users.dart';
+import '../../screens/full_screen_image.dart';
+import '../pickers/image_picker.dart';
 
 class EditFirmForm extends StatefulWidget {
   @override
@@ -767,14 +768,14 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ),
             !_editDescription
                 ? RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(text: firmProvider.firm.details.description),
-                    ],
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  textAlign: TextAlign.justify,
-                )
+                    text: TextSpan(
+                      children: [
+                        TextSpan(text: firmProvider.firm.details.description),
+                      ],
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    textAlign: TextAlign.justify,
+                  )
                 : Form(
                     key: _formDescriptionKey,
                     child: Column(

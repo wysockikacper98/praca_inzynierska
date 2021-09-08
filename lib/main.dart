@@ -1,24 +1,24 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:praca_inzynierska/screens/emergency_screen.dart';
-import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
-import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
-import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
-import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
-import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
-import 'package:praca_inzynierska/screens/search/search_screen.dart';
-import 'package:praca_inzynierska/screens/settings_screen.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_dark.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
 
 import 'models/firm.dart';
 import 'models/users.dart';
+import 'screens/emergency_screen.dart';
+import 'screens/firm/firm_edit_profile_screen.dart';
+import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/login/pick_register_screen.dart';
+import 'screens/login/register_user_screen.dart';
+import 'screens/orders/orders_screen.dart';
+import 'screens/search/search_screen.dart';
+import 'screens/settings_screen.dart';
 import 'screens/user/user_edit_profile_screen.dart';
+import 'widgets/theme/theme_Provider.dart';
+import 'widgets/theme/theme_dark.dart';
+import 'widgets/theme/theme_light.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,9 +43,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => FirmProvider()),
       ],
       child: ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
+          create: (context) => ThemeProvider(),
           builder: (context, _) {
-          final themeProvider = Provider.of<ThemeProvider>(context);
+            final themeProvider = Provider.of<ThemeProvider>(context);
 
             return MaterialApp(
               title: 'FixIT!',
@@ -70,11 +70,11 @@ class MyApp extends StatelessWidget {
                     FirmEditProfileScreen(),
                 SearchScreen.routeName: (ctx) => SearchScreen(),
                 SettingsScreen.routeName: (ctx) => SettingsScreen(),
+                OrdersScreen.routeName: (ctx) => OrdersScreen(),
                 // ChatsScreen.routeName: (ctx) => ChatsScreen(),
               },
             );
-          }
-      ),
+          }),
     );
   }
 }

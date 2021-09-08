@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/login/register_contractor_screen.dart';
-import 'package:praca_inzynierska/screens/login/register_user_screen.dart';
+
+import 'register_contractor_screen.dart';
+import 'register_user_screen.dart';
 
 class PickRegisterScreen extends StatelessWidget {
   static const routerName = '/pick-register';
@@ -18,10 +19,7 @@ class PickRegisterScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("Zarejestruj jako:",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5),
+                    style: Theme.of(context).textTheme.headline5),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -36,15 +34,13 @@ class PickRegisterScreen extends StatelessWidget {
                     ElevatedButton(
                         child: Text("Wykonawca"),
                         style: ElevatedButton.styleFrom(
-                            primary: Theme
-                                .of(context)
-                                .primaryColorDark),
+                            primary: Theme.of(context).primaryColorDark),
                         onPressed: () => _showContractorScreen(context)
-                      //     () {
-                      //   Navigator.of(context)
-                      //       .pushNamed(RegisterContractorScreen.routeName);
-                      // },
-                    ),
+                        //     () {
+                        //   Navigator.of(context)
+                        //       .pushNamed(RegisterContractorScreen.routeName);
+                        // },
+                        ),
                   ],
                 ),
               ],
@@ -58,12 +54,14 @@ class PickRegisterScreen extends StatelessWidget {
   Future<void> _showContractorScreen(BuildContext context) async {
     final data = await FirebaseFirestore.instance
         .collection('usefulData')
-        .doc('mKT6HCrf066qkE3MTNL0').get();
+        .doc('mKT6HCrf066qkE3MTNL0')
+        .get();
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RegisterContractorScreen(categories: data.data()['categoryListPL']),
+        builder: (context) =>
+            RegisterContractorScreen(categories: data.data()['categoryListPL']),
       ),
     );
   }

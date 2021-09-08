@@ -1,13 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/emergency_screen.dart';
-import 'package:praca_inzynierska/screens/messages/chats_screen.dart';
-import 'package:praca_inzynierska/screens/search/search_screen.dart';
-import 'package:praca_inzynierska/screens/settings_screen.dart';
-import 'package:praca_inzynierska/widgets/build_user_info.dart';
 import 'package:provider/provider.dart';
+
+import '../models/users.dart';
+import '../screens/emergency_screen.dart';
+import '../screens/messages/chats_screen.dart';
+import '../screens/orders/orders_screen.dart';
+import '../screens/search/search_screen.dart';
+import '../screens/settings_screen.dart';
+import 'build_user_info.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -18,7 +20,9 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     print("build -> drawer");
+    var height = MediaQuery.of(context).size.height;
     final provider = Provider.of<UserProvider>(context);
+
     return Drawer(
       child: Container(
         color: Theme.of(context).primaryColorLight,
@@ -34,10 +38,16 @@ class _AppDrawerState extends State<AppDrawer> {
                 Navigator.of(context).pushReplacementNamed('/');
               },
             ),
-            Divider(
-              thickness: 1,
-              height: 25,
+            buildDivider(),
+            ListTile(
+              leading: buildIcon(icon: Icons.build),
+              title: Center(child: buildText(text: "Zamówienia")),
+              onTap: () {
+                Navigator.of(context)
+                    .pushReplacementNamed(OrdersScreen.routeName);
+              },
             ),
+            buildDivider(),
             ListTile(
               leading: buildIcon(icon: Icons.search),
               title: Center(child: buildText(text: "Wyszukiwarka")),
@@ -46,10 +56,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 Navigator.of(context).popAndPushNamed(SearchScreen.routeName);
               },
             ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
+            buildDivider(),
             ListTile(
               leading: buildIcon(icon: Icons.email),
               title: Center(
@@ -68,10 +75,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 );
               },
             ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
+            buildDivider(),
             ListTile(
               leading: buildIcon(icon: Icons.warning_outlined),
               title: Center(child: buildText(text: "Awarie")),
@@ -80,10 +84,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     .popAndPushNamed(EmergencyScreen.routeName);
               },
             ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
+            buildDivider(),
             ListTile(
               leading: buildIcon(icon: Icons.settings),
               title: Center(child: buildText(text: 'Ustawienia')),
@@ -91,15 +92,9 @@ class _AppDrawerState extends State<AppDrawer> {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
               },
             ),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
+            buildDivider(),
             Spacer(),
-            Divider(
-              thickness: 1,
-              height: 25,
-            ),
+            buildDivider(),
             ListTile(
               leading: buildIcon(icon: Icons.logout),
               title: Center(child: buildText(text: "Wyloguj")),
@@ -113,6 +108,13 @@ class _AppDrawerState extends State<AppDrawer> {
           ],
         ),
       ),
+    );
+  }
+
+  Divider buildDivider() {
+    return Divider(
+      thickness: 1,
+      height: 20,
     );
   }
 

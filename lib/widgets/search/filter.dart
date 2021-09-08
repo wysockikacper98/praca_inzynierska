@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_dark.dart' as dark;
-import 'package:praca_inzynierska/widgets/theme/theme_light.dart' as light;
+
+import '../theme/theme_dark.dart' as dark;
+import '../theme/theme_light.dart' as light;
 
 Widget buildFilter(BuildContext context) {
   return Padding(

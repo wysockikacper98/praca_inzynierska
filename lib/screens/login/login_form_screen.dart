@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/screens/login/pick_register_screen.dart';
+
+import '../../helpers/firebaseHelper.dart';
+import 'pick_register_screen.dart';
 
 class LoginFormScreen extends StatefulWidget {
   @override

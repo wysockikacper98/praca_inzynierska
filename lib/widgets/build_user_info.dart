@@ -2,11 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
-import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
-import 'package:praca_inzynierska/screens/user/user_edit_profile_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../models/users.dart';
+import '../screens/firm/firm_edit_profile_screen.dart';
+import '../screens/firm/firm_profile_screen.dart';
+import '../screens/user/user_edit_profile_screen.dart';
 
 Container buildUserInfo(BuildContext context, Users user) {
   var screenSize = MediaQuery.of(context).size;

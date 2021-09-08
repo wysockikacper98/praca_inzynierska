@@ -5,8 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/models/users.dart';
+
+import '../../models/firm.dart';
+import '../../models/users.dart';
 
 Widget imagePicker(UserProvider provider, double width) {
   // PickedFile _pickedImage = null;
@@ -63,7 +64,7 @@ Widget imagePickerFirm(
 
 Future<void> _pickImage(UserProvider provider) async {
   final picker = ImagePicker();
-  final pickedImage = await picker.getImage(
+  final pickedImage = await picker.pickImage(
     source: ImageSource.gallery,
     imageQuality: 50,
     maxWidth: 200,
@@ -78,7 +79,7 @@ Future<void> _pickImage(UserProvider provider) async {
 Future<void> _pickImageFirm(
     FirmProvider firmProvider, UserProvider userProvider) async {
   final picker = ImagePicker();
-  final pickedImage = await picker.getImage(
+  final pickedImage = await picker.pickImage(
     source: ImageSource.gallery,
     imageQuality: 50,
     maxWidth: 200,

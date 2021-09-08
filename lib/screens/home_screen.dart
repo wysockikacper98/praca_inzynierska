@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/widgets/firm/firm_list.dart';
 import 'package:provider/provider.dart';
 
+import '../models/users.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/firm/firm_list.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';

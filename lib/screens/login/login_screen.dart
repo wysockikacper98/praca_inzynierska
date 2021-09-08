@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/helpers/storage_manager.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/firebaseHelper.dart';
+import '../../helpers/storage_manager.dart';
+import '../../models/users.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import '../home_screen.dart';
 import 'login_form_screen.dart';
 
@@ -21,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     print('build -> login_screen');
     final user = Provider.of<UserProvider>(context, listen: false);
-    final size = MediaQuery.of(context).size;
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {

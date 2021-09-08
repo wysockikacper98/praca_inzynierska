@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/message_buble.dart';
-import 'package:praca_inzynierska/widgets/new_message.dart';
+
+import '../../widgets/message_buble.dart';
+import '../../widgets/new_message.dart';
 
 class Message extends StatelessWidget {
   final String chatID;

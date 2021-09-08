@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/messages/messages.dart';
 import 'package:provider/provider.dart';
+
+import '../models/firm.dart';
+import '../models/users.dart';
+import '../screens/messages/messages.dart';
 
 Future<void> loginUser(
   BuildContext context,

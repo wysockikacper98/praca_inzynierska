@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/models/details.dart';
-import 'package:praca_inzynierska/models/firm.dart';
-import 'package:praca_inzynierska/models/users.dart';
+
+import '../../helpers/firebaseHelper.dart';
+import '../../models/details.dart';
+import '../../models/firm.dart';
+import '../../models/users.dart';
 
 class RegisterContractorScreen extends StatefulWidget {
   static const routeName = '/register-contractor';
   Map<String, bool> _categoriesMap;
 
-  RegisterContractorScreen({List categories}){
+  RegisterContractorScreen({List categories}) {
     _categoriesMap = Map.fromIterable(
       categories,
       key: (item) => item.toString(),

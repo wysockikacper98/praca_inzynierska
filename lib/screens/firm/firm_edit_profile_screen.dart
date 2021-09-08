@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/firm/edit_firm_form.dart';
+
+import '../../widgets/firm/edit_firm_form.dart';
 
 class FirmEditProfileScreen extends StatelessWidget {
   static const routeName = '/firm-edit-profile';
