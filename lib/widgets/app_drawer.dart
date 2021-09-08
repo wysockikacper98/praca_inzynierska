@@ -44,7 +44,7 @@ class _AppDrawerState extends State<AppDrawer> {
               title: Center(child: buildText(text: "Zamówienia")),
               onTap: () {
                 Navigator.of(context)
-                    .pushReplacementNamed(OrdersScreen.routeName);
+                    .popAndPushNamed(OrdersScreen.routeName);
               },
             ),
             buildDivider(),
