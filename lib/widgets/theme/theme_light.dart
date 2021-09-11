@@ -56,8 +56,6 @@ ThemeData themeLight() {
     primaryColorLight: primaryColorLight,
     primaryColor: primaryColor,
     primaryColorDark: Color(0xFF222222),
-    accentColor: kOrangeColor,
-    primarySwatch: kDeepGreenColor,
     toggleableActiveColor: kGreenColor,
     tabBarTheme: tabBarTheme(),
     primaryIconTheme: IconThemeData(color: primaryColorLight),
@@ -70,6 +68,9 @@ ThemeData themeLight() {
     //Buttons Theme
     elevatedButtonTheme: elevatedButtonTheme(),
     textButtonTheme: textButtonTheme(),
+    colorScheme: ColorScheme
+        .fromSwatch(primarySwatch: kDeepGreenColor)
+        .copyWith(secondary: kOrangeColor),
   );
 }
 
@@ -137,13 +138,11 @@ CardTheme cardTheme() {
 
 AppBarTheme appBarTheme() {
   return AppBarTheme(
-    textTheme: TextTheme(
-      headline6: TextStyle(
-        color: primaryColorLight,
-        fontSize: 30,
-        fontFamily: 'Dancing Script',
-        fontWeight: FontWeight.w700,
-      ),
+    titleTextStyle: TextStyle(
+      color: primaryColorLight,
+      fontSize: 30,
+      fontFamily: 'Dancing Script',
+      fontWeight: FontWeight.w700,
     ),
     backgroundColor: primaryColor,
     centerTitle: true,

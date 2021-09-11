@@ -11,13 +11,6 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  var _widgetIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _widgetIndex = 0;
-  }
 
   @override
   Widget build(BuildContext context) {

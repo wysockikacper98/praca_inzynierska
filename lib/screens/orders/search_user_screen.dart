@@ -19,7 +19,10 @@ class _SearchUserScreenState extends State<SearchUserScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              showSearch(context: context, delegate: Search());
+              showSearch(
+                context: context,
+                delegate: Search(),
+              );
             },
           ),
         ],

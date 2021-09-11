@@ -52,7 +52,7 @@ Container buildUserInfo(BuildContext context, Users user) {
           ),
           trailing: IconButton(
             icon: FaIcon(FontAwesomeIcons.userEdit),
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             onPressed: () {
               provider.user.type == UserType.Firm
                   ? Navigator.of(context)

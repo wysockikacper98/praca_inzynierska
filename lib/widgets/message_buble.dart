@@ -15,7 +15,9 @@ class MessageBubble extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: isMe ? Colors.grey[300] : Theme.of(context).accentColor,
+            color: isMe
+                ? Colors.grey[300]
+                : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(12),
               topRight: Radius.circular(12),
@@ -36,7 +38,7 @@ class MessageBubble extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: isMe
                       ? Colors.black
-                      : Theme.of(context).accentTextTheme.headline6.color,
+                      : Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
               Text(
@@ -44,7 +46,7 @@ class MessageBubble extends StatelessWidget {
                 style: TextStyle(
                   color: isMe
                       ? Colors.black
-                      : Theme.of(context).accentTextTheme.headline6.color,
+                      : Theme.of(context).colorScheme.onSecondary,
                 ),
                 textAlign: isMe ? TextAlign.end : TextAlign.start,
               ),

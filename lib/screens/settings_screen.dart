@@ -22,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
             SwitchListTile(
               title: Text('Tryb ciemny:'),
               value: themeProvider.isDarkMode,
-              activeColor: Theme.of(context).accentColor,
+              activeColor: Theme.of(context).colorScheme.secondary,
               onChanged: (value) {
                 final provider =
                     Provider.of<ThemeProvider>(context, listen: false);

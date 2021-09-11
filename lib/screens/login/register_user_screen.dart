@@ -173,7 +173,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                             ElevatedButton(
                               child: const Text("Cofnij"),
                               style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).accentColor),
+                                  primary: Theme.of(context).colorScheme.secondary),
                               onPressed: () => Navigator.of(context).pop(),
                             ),
                             ElevatedButton(
