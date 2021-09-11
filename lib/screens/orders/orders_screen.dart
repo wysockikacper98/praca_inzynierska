@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/orders/search_user_screen.dart';
+import 'package:praca_inzynierska/screens/orders/create_order_screen.dart';
 import 'package:provider/provider.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             ? FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(SearchUserScreen.routeName);
+                  Navigator.of(context).pushNamed(CreateOrderScreen.routeName);
                 },
               )
             : null,

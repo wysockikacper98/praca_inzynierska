@@ -37,7 +37,7 @@ class ChatsScreen extends StatelessWidget {
             );
             // } else if (chatSnapshot.data.docs != []) {
           } else if (chatSnapshot.data.docs.length == 0) {
-            return Center(child: Text("Brak wiadomości tekstowych"));
+            return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
             print(chatSnapshot.data.docs.length.toString());
 
