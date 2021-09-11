@@ -59,7 +59,7 @@ ThemeData themeLight() {
     accentColor: kOrangeColor,
     primarySwatch: kDeepGreenColor,
     toggleableActiveColor: kGreenColor,
-
+    tabBarTheme: tabBarTheme(),
     primaryIconTheme: IconThemeData(color: primaryColorLight),
     // iconTheme: IconThemeData(color: primaryColorLight),
     appBarTheme: appBarTheme(),
@@ -88,6 +88,18 @@ TextStyle textDrawerStyle() {
 }
 
 //Buttons Styles Theme
+
+TabBarTheme tabBarTheme() {
+  return TabBarTheme(
+    indicator: BoxDecoration(
+      border: Border.all(color: Colors.grey),
+      borderRadius: BorderRadius.zero,
+      color: kOrangeColor.shade200,
+    ),
+    labelColor: Colors.blue,
+    unselectedLabelColor: Colors.grey,
+  );
+}
 
 TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(

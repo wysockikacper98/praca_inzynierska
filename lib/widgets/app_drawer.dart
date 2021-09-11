@@ -19,9 +19,34 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
-    print("build -> drawer");
+    print('build -> drawer');
     var height = MediaQuery.of(context).size.height;
     final provider = Provider.of<UserProvider>(context);
+
+    Divider buildDivider() {
+      return Divider(
+        thickness: 1,
+        height: height * 0.02,
+      );
+    }
+
+    buildIcon(IconData icon) {
+      return Icon(
+        icon,
+        size: 40,
+        color: Theme.of(context).primaryColorDark,
+      );
+    }
+
+    buildText(String text) {
+      return Text(
+        text,
+        style: TextStyle(
+          fontSize: 20,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
 
     return Drawer(
       child: Container(
@@ -31,38 +56,29 @@ class _AppDrawerState extends State<AppDrawer> {
             Consumer<UserProvider>(
                 builder: (ctx, provider, _) =>
                     buildUserInfo(context, provider.user)),
-            ListTile(
-              leading: buildIcon(icon: Icons.home),
-              title: Center(child: buildText(text: "Strona główna")),
-              onTap: () {
+            buildListTile(
+              context,
+              buildIcon(Icons.home),
+              buildText('Strona główna'),
+              () {
                 Navigator.of(context).pushReplacementNamed('/');
               },
             ),
             buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.build),
-              title: Center(child: buildText(text: "Zamówienia")),
-              onTap: () {
-                Navigator.of(context)
-                    .popAndPushNamed(OrdersScreen.routeName);
-              },
-            ),
-            buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.search),
-              title: Center(child: buildText(text: "Wyszukiwarka")),
-              onTap: () {
-                //TODO: Go to screen
+            buildListTile(
+              context,
+              buildIcon(Icons.search),
+              buildText('Wyszukiwarka'),
+              () {
                 Navigator.of(context).popAndPushNamed(SearchScreen.routeName);
               },
             ),
             buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.email),
-              title: Center(
-                child: buildText(text: "Wiadomości"),
-              ),
-              onTap: () {
+            buildListTile(
+              context,
+              buildIcon(Icons.email),
+              buildText('Wiadomości'),
+              () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
@@ -76,29 +92,41 @@ class _AppDrawerState extends State<AppDrawer> {
               },
             ),
             buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.warning_outlined),
-              title: Center(child: buildText(text: "Awarie")),
-              onTap: () {
+            buildListTile(
+              context,
+              buildIcon(Icons.build),
+              buildText('Zamówienia'),
+              () {
+                Navigator.of(context).popAndPushNamed(OrdersScreen.routeName);
+              },
+            ),
+            buildDivider(),
+            buildListTile(
+              context,
+              buildIcon(Icons.warning_outlined),
+              buildText('Awarie'),
+              () {
                 Navigator.of(context)
                     .popAndPushNamed(EmergencyScreen.routeName);
               },
             ),
             buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.settings),
-              title: Center(child: buildText(text: 'Ustawienia')),
-              onTap: () {
+            buildListTile(
+              context,
+              buildIcon(Icons.settings),
+              buildText('Ustawienia'),
+              () {
                 Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
               },
             ),
             buildDivider(),
             Spacer(),
             buildDivider(),
-            ListTile(
-              leading: buildIcon(icon: Icons.logout),
-              title: Center(child: buildText(text: "Wyloguj")),
-              onTap: () {
+            buildListTile(
+              context,
+              buildIcon(Icons.logout),
+              buildText('Wyloguj'),
+              () {
                 Navigator.of(context).pop();
                 FirebaseAuth.instance.signOut();
                 provider.clearUserInfo();
@@ -111,28 +139,16 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Divider buildDivider() {
-    return Divider(
-      thickness: 1,
-      height: 20,
-    );
-  }
-
-  buildIcon({IconData icon}) {
-    return Icon(
-      icon,
-      size: 40,
-      color: Theme.of(context).primaryColorDark,
-    );
-  }
-
-  buildText({String text}) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 20,
-        fontStyle: FontStyle.italic,
-      ),
+  ListTile buildListTile(
+    BuildContext context,
+    Icon icon,
+    Text title,
+    Function navigate,
+  ) {
+    return ListTile(
+      leading: icon,
+      title: Center(child: title),
+      onTap: navigate,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:praca_inzynierska/screens/orders/search_user_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/firm.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
                 SearchScreen.routeName: (ctx) => SearchScreen(),
                 SettingsScreen.routeName: (ctx) => SettingsScreen(),
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),
+                SearchUserScreen.routeName: (ctx) => SearchUserScreen(),
                 // ChatsScreen.routeName: (ctx) => ChatsScreen(),
               },
             );

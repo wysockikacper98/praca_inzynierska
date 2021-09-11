@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/models/users.dart';
+import 'package:praca_inzynierska/screens/orders/search_user_screen.dart';
+import 'package:provider/provider.dart';
 
 class OrdersScreen extends StatefulWidget {
   static const routeName = "/orders";
@@ -19,48 +22,35 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     print("build -> orders_screen.dart");
+    var provider = Provider.of<UserProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Zamówienia")),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                child: Text("Button 1"),
-                style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(0),
-                  shape:
-                      RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _widgetIndex = 1;
-                  });
-                },
-              ),
-              ElevatedButton(
-                child: Text("Button 2"),
-                onPressed: () {
-                  setState(() {
-                    _widgetIndex = 0;
-                  });
-                },
-              ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Zamówienia"),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "Aktywne"),
+              Tab(text: "Zakończone"),
             ],
           ),
-          Container(
-            color: Colors.green,
-            child: IndexedStack(
-              index: _widgetIndex,
-              children: [
-                buildCenter("Jeden"),
-                buildCenter("Dwa"),
-              ],
-            ),
-          ),
-        ],
+        ),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            buildCenter("Lista zamówień aktywnych"),
+            buildCenter("Lista zamówień zakończonych"),
+          ],
+        ),
+        floatingActionButton: provider.user.type == UserType.Firm
+            ? FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(SearchUserScreen.routeName);
+                },
+              )
+            : null,
       ),
     );
   }
