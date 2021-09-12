@@ -47,11 +47,16 @@ class SearchUsers extends SearchDelegate<Users> {
           );
         }
 
-        final result = snapshot.data.docs.where((element) =>
-            element['firstName']
-                .toString()
-                .toLowerCase()
-                .contains(query.toLowerCase()));
+        final result = snapshot.data.docs.where((element) {
+          return ((element['firstName'] + ' ' + element['lastName'])
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              element['email']
+                  .toString()
+                  .toLowerCase()
+                  .contains(query.toLowerCase()));
+        });
 
         return ListView(
           children: result.map((DocumentSnapshot current) {

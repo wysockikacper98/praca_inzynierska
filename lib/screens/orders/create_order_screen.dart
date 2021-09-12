@@ -14,6 +14,9 @@ class CreateOrderScreen extends StatefulWidget {
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   DocumentSnapshot _user;
+  final TextEditingController _controllerTitle = TextEditingController();
+  final TextEditingController _controllerDescription = TextEditingController();
+  var _currentSelectedValue;
 
   void _setUser(DocumentSnapshot user) {
     setState(() {
@@ -21,12 +24,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     });
   }
 
-  var _currentSelectedValue;
-
   @override
   Widget build(BuildContext context) {
     print('build -> search_user_screen');
     final provider = Provider.of<FirmProvider>(context, listen: false);
+    final _width = MediaQuery.of(context).size.width;
 
     Stream<QuerySnapshot<Map<String, dynamic>>> users = FirebaseFirestore
         .instance
@@ -34,52 +36,171 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         .orderBy('lastName')
         .snapshots();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Utwórz zamówienie"),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            _user != null ? buildUserPreview(_user) : SizedBox(height: 16),
-            buildElevatedButton(context, users),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+    var _widthOfWidgets = _width * 0.8;
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Utwórz zamówienie"),
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
               children: [
-                Text("Rodzaj usługi:"),
-                DropdownButton(
-                  value: _currentSelectedValue,
-                  icon: Icon(
-                    Icons.arrow_downward,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  underline: Container(
-                    height: 2,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  items: provider.firm.category.map((value) {
-                    return DropdownMenuItem(
-                      value: value.toString(),
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    print('New value: ' + newValue);
-                    setState(() {
-                      _currentSelectedValue = newValue;
-                    });
-                  },
+                _user != null ? buildUserPreview(_user) : SizedBox(height: 16),
+                buildElevatedButton(context, users),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      "Rodzaj usługi:",
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    buildDropdownButton(context, provider),
+                  ],
                 ),
+                buildTextFormField(_widthOfWidgets, _controllerTitle),
+                SizedBox(height: 30),
+                Container(
+                  width: _widthOfWidgets,
+                  child: Text(
+                    'Adres wykonywanej usługi:',
+                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                SizedBox(height: 10),
+                buildAddressForm(_widthOfWidgets, _width),
+                SizedBox(height: 50),
+                buildNewTaskInCalendar(_widthOfWidgets),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      child: Text("Anuluj"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ElevatedButton(
+                      child: Text("Rozpocznij"),
+                      onPressed: _user != null
+                          ? () {
+                              print("Now is working");
+                            }
+                          : null,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 50),
               ],
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Container buildNewTaskInCalendar(double _widthOfWidgets) {
+    return Container(
+      width: _widthOfWidgets,
+      child: Text(
+        'Tu będzie wybieranie dat do kalenarza',
+        textAlign: TextAlign.center,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red),
+      ),
+    );
+  }
+
+  Form buildAddressForm(double _widthOfWidgets, double _width) {
+    return Form(
+      child: Column(
+        children: [
+          Container(
+            width: _widthOfWidgets,
+            child: TextFormField(
+              decoration: InputDecoration(labelText: "Ulica i numer"),
+            ),
+          ),
+          Row(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: _width * 0.25,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: "Kod pocztowy"),
+                ),
+              ),
+              SizedBox(width: _width * 0.05),
+              Container(
+                width: _width * 0.5,
+                child: TextFormField(
+                  decoration: InputDecoration(labelText: "Miejscowość"),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding buildTextFormField(double _width, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: _width,
+        child: TextFormField(
+          controller: controller,
+          autocorrect: true,
+          decoration: const InputDecoration(
+            labelText: 'Tytuł zamówienia',
+          ),
+        ),
+      ),
+    );
+  }
+
+  DropdownButton<dynamic> buildDropdownButton(
+      BuildContext context, FirmProvider provider) {
+    return DropdownButton(
+      value: _currentSelectedValue,
+      icon: Icon(
+        Icons.arrow_downward,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      iconSize: 24,
+      elevation: 16,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      underline: Container(
+        height: 2,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      items: provider.firm.category.map((value) {
+        return DropdownMenuItem(
+          value: value.toString(),
+          child: Text(value.toString()),
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _currentSelectedValue = newValue;
+        });
+      },
     );
   }
 
