@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../models/firm.dart';
@@ -256,4 +257,15 @@ Future<void> updateFirmInFirebase(
   });
 
   await getFirmInfoFromFirebase(context, userId);
+}
+
+Future<void> addOrderInFirebase(
+  BuildContext context,
+  Order order,
+) async {
+  await FirebaseFirestore.instance
+      .collection('orders')
+      .add(order.toJson())
+      .then((value) => print('Order added $value'))
+      .catchError((error) => print('Failed to add user: $error'));
 }

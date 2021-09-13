@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/firm.dart';
@@ -14,9 +15,12 @@ class CreateOrderScreen extends StatefulWidget {
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   DocumentSnapshot _user;
+  Order _order;
+  var _currentCategory;
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerTitle = TextEditingController();
   final TextEditingController _controllerDescription = TextEditingController();
-  var _currentSelectedValue;
 
   void _setUser(DocumentSnapshot user) {
     setState(() {
@@ -29,6 +33,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     print('build -> search_user_screen');
     final provider = Provider.of<FirmProvider>(context, listen: false);
     final _width = MediaQuery.of(context).size.width;
+    final _widthOfWidgets = _width * 0.8;
 
     Stream<QuerySnapshot<Map<String, dynamic>>> users = FirebaseFirestore
         .instance
@@ -36,11 +41,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         .orderBy('lastName')
         .snapshots();
 
-    var _widthOfWidgets = _width * 0.8;
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
-
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
         }
@@ -94,7 +97,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       child: Text("Rozpocznij"),
                       onPressed: _user != null
                           ? () {
-                              print("Now is working");
+                              _trySubmit(context);
                             }
                           : null,
                     ),
@@ -124,16 +127,26 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   Form buildAddressForm(double _widthOfWidgets, double _width) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           Container(
             width: _widthOfWidgets,
             child: TextFormField(
               decoration: InputDecoration(labelText: "Ulica i numer"),
+              validator: (value) {
+                // value.trim();
+                if (value.isEmpty) {
+                  return 'Pole wymagane';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                _order.address.streetAndHouseNumber = value;
+              },
             ),
           ),
           Row(
-            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -141,6 +154,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: "Kod pocztowy"),
+                  validator: (value) {
+                    value.trim();
+                    if (value.isEmpty) {
+                      return 'Pole wymagane';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _order.address.streetAndHouseNumber = value;
+                  },
                 ),
               ),
               SizedBox(width: _width * 0.05),
@@ -148,6 +171,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 width: _width * 0.5,
                 child: TextFormField(
                   decoration: InputDecoration(labelText: "Miejscowość"),
+                  validator: (value) {
+                    value.trim();
+                    if (value.isEmpty) {
+                      return 'Pole wymagane';
+                    }
+                    return null;
+                  },
                 ),
               )
             ],
@@ -174,9 +204,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 
   DropdownButton<dynamic> buildDropdownButton(
-      BuildContext context, FirmProvider provider) {
+    BuildContext context,
+    FirmProvider provider,
+  ) {
     return DropdownButton(
-      value: _currentSelectedValue,
+      value: _currentCategory,
       icon: Icon(
         Icons.arrow_downward,
         color: Theme.of(context).colorScheme.secondary,
@@ -198,7 +230,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       }).toList(),
       onChanged: (newValue) {
         setState(() {
-          _currentSelectedValue = newValue;
+          _currentCategory = newValue;
         });
       },
     );
@@ -242,5 +274,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         ),
       ),
     );
+  }
+
+  void _trySubmit(BuildContext context) {
+    final bool _isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+
+    if (_isValid) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      _formKey.currentState.save();
+    }
   }
 }
