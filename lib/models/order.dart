@@ -55,7 +55,7 @@ class Order {
       'userID': this.userID,
       'userName': this.userName,
       'title': this.title,
-      'status': this.status,
+      'status': this.status.toString().split('.').last,
       'category': this.category,
       'description': this.description,
       'address': this.address.toJson(),

@@ -260,7 +260,6 @@ Future<void> updateFirmInFirebase(
 }
 
 Future<void> addOrderInFirebase(
-  BuildContext context,
   Order order,
 ) async {
   await FirebaseFirestore.instance
