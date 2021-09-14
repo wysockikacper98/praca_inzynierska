@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/orders/widget/widgets_for_order_screens.dart';
 
 class OrderActiveScreen extends StatelessWidget {
   final Future<QuerySnapshot<Map<String, dynamic>>> _future;
@@ -27,21 +28,13 @@ class OrderActiveScreen extends StatelessWidget {
         }
         if (snapshot.data != null) {
           return SingleChildScrollView(
-            child: Center(
-              child: Column(
-                children: snapshot.data.docs
-                    .where((e) =>
-                        e.data()['status'] != 'DONE' &&
-                        e.data()['status'] != 'TERMINATE')
-                    .map((e) {
-                  return Column(
-                    children: [
-                      Text(e.data()['title'] + '\t' + e.data()['status']),
-                      SizedBox(height: 10),
-                    ],
-                  );
-                }).toList(),
-              ),
+            child: Column(
+              children: snapshot.data.docs
+                  .where((e) =>
+                      e.data()['status'] != 'DONE' &&
+                      e.data()['status'] != 'TERMINATE')
+                  .map((e) => buildOrderListTile(context, e))
+                  .toList(),
             ),
           );
         } else {
@@ -49,7 +42,5 @@ class OrderActiveScreen extends StatelessWidget {
         }
       },
     );
-
-    return Center(child: Text('Order Active Screen'));
   }
 }
