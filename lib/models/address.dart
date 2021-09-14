@@ -19,13 +19,11 @@ class Address {
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'streetAndHouseNumber': this.streetAndHouseNumber,
       'zipCode': this.zipCode,
       'city': this.city,
     };
   }
-
 }
-

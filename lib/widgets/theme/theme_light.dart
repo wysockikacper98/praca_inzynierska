@@ -68,9 +68,12 @@ ThemeData themeLight() {
     //Buttons Theme
     elevatedButtonTheme: elevatedButtonTheme(),
     textButtonTheme: textButtonTheme(),
-    colorScheme: ColorScheme
-        .fromSwatch(primarySwatch: kDeepGreenColor)
-        .copyWith(secondary: kOrangeColor),
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: kDeepGreenColor,
+    ).copyWith(
+      secondary: kOrangeColor,
+      secondaryVariant: Colors.lightBlue,
+    ),
   );
 }
 

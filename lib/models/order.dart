@@ -13,20 +13,25 @@ enum Status {
 class Order {
   String firmID;
   String firmName;
+  String firmAvatar;
   String userID;
   String userName;
+  String userAvatar;
   String title;
   Status status;
   String category;
   String description;
+
   //TODO: Dodać informacje odnoście dat
   Address address;
 
   Order({
     @required this.firmID,
     @required this.firmName,
+    @required this.firmAvatar,
     @required this.userID,
     @required this.userName,
+    @required this.userAvatar,
     @required this.title,
     @required this.status,
     @required this.category,
@@ -34,12 +39,14 @@ class Order {
     @required this.address,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json){
+  factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       firmID: json['firmID'] ?? '',
       firmName: json['firmName'] ?? '',
+      firmAvatar: json['firmAvatar'] ?? '',
       userID: json['userID'] ?? '',
       userName: json['userName'] ?? '',
+      userAvatar: json['userAvatar'] ?? '',
       title: json['title'] ?? '',
       status: json['status'] ?? '',
       category: json['category'] ?? '',
@@ -48,12 +55,14 @@ class Order {
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'firmID': this.firmID,
       'firmName': this.firmName,
+      'firmAvatar': this.firmAvatar,
       'userID': this.userID,
       'userName': this.userName,
+      'userAvatar': this.userAvatar,
       'title': this.title,
       'status': this.status.toString().split('.').last,
       'category': this.category,
@@ -61,5 +70,4 @@ class Order {
       'address': this.address.toJson(),
     };
   }
-
 }

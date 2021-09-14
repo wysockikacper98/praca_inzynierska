@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/orders/widget/widgets_for_order_screens.dart';
+
+import 'widget/widgets_for_order_screens.dart';
 
 class OrderActiveScreen extends StatelessWidget {
   final Future<QuerySnapshot<Map<String, dynamic>>> _future;

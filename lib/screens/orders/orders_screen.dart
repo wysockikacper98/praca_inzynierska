@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/orders/create_order_screen.dart';
-import 'package:praca_inzynierska/screens/orders/order_active_screen.dart';
-import 'package:praca_inzynierska/screens/orders/order_finish_screen.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/users.dart';
+import 'create_order_screen.dart';
+import 'order_active_screen.dart';
+import 'order_finish_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   static const routeName = "/orders";

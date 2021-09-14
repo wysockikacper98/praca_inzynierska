@@ -314,7 +314,8 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                           ElevatedButton(
                             child: const Text("Cofnij"),
                             style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).colorScheme.secondary),
+                                primary:
+                                    Theme.of(context).colorScheme.secondary),
                             onPressed: _pickCategory
                                 ? () => Navigator.of(context).pop()
                                 : () {

@@ -103,7 +103,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: appDrawer(context),
     );
   }
 }

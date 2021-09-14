@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:praca_inzynierska/screens/orders/create_order_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'models/firm.dart';
@@ -13,6 +12,7 @@ import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/pick_register_screen.dart';
 import 'screens/login/register_user_screen.dart';
+import 'screens/orders/create_order_screen.dart';
 import 'screens/orders/orders_screen.dart';
 import 'screens/search/search_screen.dart';
 import 'screens/settings_screen.dart';

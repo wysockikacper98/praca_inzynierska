@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebaseHelper.dart';
-import 'package:praca_inzynierska/models/address.dart';
-import 'package:praca_inzynierska/models/order.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/firebaseHelper.dart';
+import '../../models/address.dart';
 import '../../models/firm.dart';
+import '../../models/order.dart';
 import 'search_users.dart';
 
 class CreateOrderScreen extends StatefulWidget {
@@ -359,8 +359,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       _order = Order(
         firmID: '',
         firmName: '',
+        firmAvatar: '',
         userID: '',
         userName: '',
+        userAvatar: '',
         title: '',
         status: Status.PENDING_CONFIRMATION,
         category: '',
@@ -371,8 +373,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
       _order.firmID = FirebaseAuth.instance.currentUser.uid.toString();
       _order.firmName = provider.firm.firmName;
+      _order.firmAvatar = provider.firm.avatar;
       _order.userID = _user.id;
       _order.userName = _user['firstName'] + ' ' + _user['lastName'];
+      _order.userAvatar = _user['avatar'];
       _order.category = _currentCategory;
 
       print("To jest obiekt to zapisu ${_order.toJson()}");
