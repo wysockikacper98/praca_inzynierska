@@ -17,9 +17,7 @@ Widget buildOrderListTile(
     child: ListTile(
       leading: circleAvatar(provider.user.type, data),
       title: Text(
-        provider.user.type == UserType.PrivateUser
-            ? data.data()['firmName']
-            : data.data()['userName'],
+        data.data()['title'],
         style: themeData.textTheme.headline6,
       ),
       trailing: Text(
@@ -29,7 +27,9 @@ Widget buildOrderListTile(
         ),
       ),
       subtitle: Text(
-        data.data()['title'],
+        provider.user.type == UserType.PrivateUser
+            ? data.data()['firmName']
+            : data.data()['userName'],
         style: themeData.textTheme.subtitle1,
       ),
     ),
