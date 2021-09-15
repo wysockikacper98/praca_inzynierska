@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'widget/widgets_for_order_screens.dart';
 
 class OrderActiveScreen extends StatelessWidget {
-  final Future<QuerySnapshot<Map<String, dynamic>>> _future;
+  final Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
 
-  OrderActiveScreen(this._future);
+  OrderActiveScreen(this._stream);
 
   @override
   Widget build(BuildContext context) {
     print('build -> order_active_screen.dart');
 
-    return FutureBuilder(
-      future: _future,
+    return StreamBuilder(
+      stream: _stream,
       builder:
           (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -30,12 +30,15 @@ class OrderActiveScreen extends StatelessWidget {
         if (snapshot.data != null) {
           return SingleChildScrollView(
             child: Column(
-              children: snapshot.data.docs
-                  .where((e) =>
-                      e.data()['status'] != 'DONE' &&
-                      e.data()['status'] != 'TERMINATE')
-                  .map((e) => buildOrderListTile(context, e))
-                  .toList(),
+              children: [
+                ...snapshot.data.docs
+                    .where((e) =>
+                        e.data()['status'] != 'DONE' &&
+                        e.data()['status'] != 'TERMINATE')
+                    .map((e) => buildOrderListTile(context, e))
+                    .toList(),
+                SizedBox(height: 100),
+              ],
             ),
           );
         } else {

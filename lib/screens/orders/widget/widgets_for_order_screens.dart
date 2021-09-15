@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/orders/order_details_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
@@ -32,6 +33,17 @@ Widget buildOrderListTile(
             : data.data()['userName'],
         style: themeData.textTheme.subtitle1,
       ),
+      onTap: () {
+        print("Order id:" + data.id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetailsScreen(
+              orderID: data.id,
+            ),
+          ),
+        );
+      },
     ),
   );
 }

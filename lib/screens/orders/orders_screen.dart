@@ -12,13 +12,13 @@ class OrdersScreen extends StatefulWidget {
   static const routeName = "/orders";
   final String _loggedUserID = FirebaseAuth.instance.currentUser.uid;
 
-  Future<QuerySnapshot<Map<String, dynamic>>> _finalFuture(UserType userType) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> _finalStream(UserType userType) {
     final String fieldName = userType == UserType.Firm ? 'firmID' : 'userID';
-    print("this future is run once, hopefully");
+    print("this stream is run once, hopefully");
     return FirebaseFirestore.instance
         .collection('orders')
         .where(fieldName, isEqualTo: _loggedUserID)
-        .get();
+        .snapshots();
   }
 
   @override
@@ -47,8 +47,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
         body: TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: [
-            OrderActiveScreen(widget._finalFuture(userType)),
-            OrderFinishScreen(widget._finalFuture(userType)),
+            OrderActiveScreen(widget._finalStream(userType)),
+            OrderFinishScreen(widget._finalStream(userType)),
           ],
         ),
         floatingActionButton: userType == UserType.Firm

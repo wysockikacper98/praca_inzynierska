@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/orders/widget/widgets_for_order_screens.dart';
 
 class OrderFinishScreen extends StatelessWidget {
-  final Future<QuerySnapshot<Map<String, dynamic>>> _future;
+  final Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
 
-  OrderFinishScreen(this._future);
+  OrderFinishScreen(this._stream);
 
   @override
   Widget build(BuildContext context) {
     print('build -> order_finish_screen.dart');
 
-    return FutureBuilder(
-      future: _future,
+    return StreamBuilder(
+      stream: _stream,
       builder:
           (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -29,18 +30,15 @@ class OrderFinishScreen extends StatelessWidget {
           return SingleChildScrollView(
             child: Center(
               child: Column(
-                children: snapshot.data.docs
-                    .where((e) =>
-                        e.data()['status'] == 'DONE' ||
-                        e.data()['status'] == 'TERMINATE')
-                    .map((e) {
-                  return Column(
-                    children: [
-                      Text(e.data()['title'] + '\t' + e.data()['status']),
-                      SizedBox(height: 10),
-                    ],
-                  );
-                }).toList(),
+                children: [
+                  ...snapshot.data.docs
+                      .where((e) =>
+                          e.data()['status'] == 'DONE' ||
+                          e.data()['status'] == 'TERMINATE')
+                      .map((e) => buildOrderListTile(context, e))
+                      .toList(),
+                  SizedBox(height: 100),
+                ],
               ),
             ),
           );
