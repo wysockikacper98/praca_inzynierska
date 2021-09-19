@@ -12,11 +12,12 @@ Widget buildOrderListTile(
 ) {
   final provider = Provider.of<UserProvider>(context);
   final ThemeData themeData = Theme.of(context);
+  final UserType userType = provider.user.type;
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10),
     child: ListTile(
-      leading: circleAvatar(provider.user.type, data),
+      leading: circleAvatar(userType, data),
       title: Text(
         data.data()['title'],
         style: themeData.textTheme.headline6,
@@ -28,7 +29,7 @@ Widget buildOrderListTile(
         ),
       ),
       subtitle: Text(
-        provider.user.type == UserType.PrivateUser
+        userType == UserType.PrivateUser
             ? data.data()['firmName']
             : data.data()['userName'],
         style: themeData.textTheme.subtitle1,
@@ -40,6 +41,9 @@ Widget buildOrderListTile(
           MaterialPageRoute(
             builder: (context) => OrderDetailsScreen(
               orderID: data.id,
+              userOrFirmID: userType == UserType.Firm
+                  ? data.data()['userID']
+                  : data.data()['firmID'],
             ),
           ),
         );
