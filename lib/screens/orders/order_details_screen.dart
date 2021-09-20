@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -8,8 +9,9 @@ import 'package:provider/provider.dart';
 
 import '../../models/firm.dart';
 import '../../models/users.dart';
+import 'widget/alerts_dialog_for_orders.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   static const String routeName = '/order-details';
 
   final String orderID;
@@ -17,23 +19,64 @@ class OrderDetailsScreen extends StatelessWidget {
 
   OrderDetailsScreen({this.orderID, this.userOrFirmID});
 
+  @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Users userToShowInDetails;
   Firm firmToShowInDetails;
+  List<String> chatName;
+  List<String> idList;
 
   Future<DocumentSnapshot<Map<String, dynamic>>> _getOrderDetails(
     UserType userType,
   ) async {
+    final String currentUserID = FirebaseAuth.instance.currentUser.uid;
     final String collection = userType == UserType.Firm ? 'users' : 'firms';
-    final dataFromFirebase = await FirebaseFirestore.instance
-        .collection(collection)
-        .doc(userOrFirmID)
+    final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
+        await FirebaseFirestore.instance
+            .collection(collection)
+            .doc(widget.userOrFirmID)
+            .get();
+
+    if (userType == UserType.Firm) {
+      userToShowInDetails = Users.fromJson(dataFromFirebase.data());
+      //creating list of ids
+      idList = [dataFromFirebase.id, currentUserID];
+      idList.forEach((e) => print(e));
+      // creating chat name
+      final firm = Provider.of<FirmProvider>(context, listen: false).firm;
+      chatName = [
+        '${userToShowInDetails.lastName} ${userToShowInDetails.firstName}',
+        '${firm.lastName} ${firm.firstName}, ${firm.firmName}',
+      ];
+    } else {
+      firmToShowInDetails = Firm.fromJson(dataFromFirebase.data());
+      //creating list of ids
+      idList = [
+        currentUserID,
+        dataFromFirebase.id,
+      ];
+      //creating chat name
+      final user = Provider.of<UserProvider>(context, listen: false).user;
+      chatName = [
+        '${user.lastName} ${user.firstName}',
+        '${firmToShowInDetails.lastName} ${firmToShowInDetails.firstName}, ${firmToShowInDetails.firmName}',
+      ];
+    }
+
+    return FirebaseFirestore.instance
+        .collection('orders')
+        .doc(widget.orderID)
         .get();
+  }
 
-    userType == UserType.Firm
-        ? userToShowInDetails = Users.fromJson(dataFromFirebase.data())
-        : firmToShowInDetails = Firm.fromJson(dataFromFirebase.data());
-
-    return FirebaseFirestore.instance.collection('orders').doc(orderID).get();
+  Future<void> _updateStatus(String status, String docID) {
+    return FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'status': '$status'}).then((_) => setState(() {}));
   }
 
   @override
@@ -87,6 +130,14 @@ class OrderDetailsScreen extends StatelessWidget {
                 _buildDescription(context, snapshot),
                 //TODO: wyświetlanie okresu / dnia wykonania zamówienia
                 _buildDatePreview(),
+                SizedBox(height: 16),
+                _buildContactButtons(
+                  context,
+                  snapshot,
+                  userType,
+                  chatName,
+                  idList,
+                ),
                 SizedBox(height: 16),
                 _buildButtonsDependingOnStatus(context, snapshot),
               ],
@@ -165,33 +216,54 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonsDependingOnStatus(BuildContext context,
-      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-    Status currentStatus = stringToStatus(snapshot.data.data()['status']);
-
-    if (currentStatus == Status.PENDING_CONFIRMATION) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          ElevatedButton(
-            child: Text('Odrzuć'),
-            onPressed: () => _updateStatus(
-              Status.TERMINATE.toString().split('.').last,
-              snapshot.data.id,
+  Widget _buildButtonsDependingOnStatus(
+    BuildContext context,
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  ) {
+    switch (stringToStatus(snapshot.data.data()['status'])) {
+      case Status.PENDING_CONFIRMATION:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+              child: Text('Odrzuć'),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) => buildAlertDialogForChangingStatus(
+                  context: context,
+                  status: Status.TERMINATE.toString().split('.').last,
+                  docID: snapshot.data.id,
+                  updateStatus: _updateStatus,
+                  title: Text('Odrzucić zamówienie?'),
+                  cancelButton: Text('Anuluj'),
+                  acceptButton: Text('Potwierdź'),
+                ),
+              ),
             ),
-          ),
-          ElevatedButton(
-            child: Text('Akceptuj'),
-            onPressed: () => _updateStatus(
-              Status.CONFIRMED.toString().split('.').last,
-              snapshot.data.id,
+            ElevatedButton(
+              child: Text('Akceptuj'),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (_) => buildAlertDialogForChangingStatus(
+                  context: context,
+                  status: Status.CONFIRMED.toString().split('.').last,
+                  docID: snapshot.data.id,
+                  updateStatus: _updateStatus,
+                  title: Text('Zaakcpetować zamówienie?'),
+                  cancelButton: Text('Anuluj'),
+                  acceptButton: Text('Potwierdź'),
+                ),
+              ),
             ),
-          ),
-        ],
-      );
+          ],
+        );
+      case Status.TERMINATE:
+        return Row(
+          children: [],
+        );
+      default:
+        return Container();
     }
-
-    return Container();
   }
 
   Status stringToStatus(String status) {
@@ -200,20 +272,66 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 }
 
-Future<void> _updateStatus(String status, String docID) {
-  return FirebaseFirestore.instance
-      .collection('orders')
-      .doc(docID)
-      .update({'status': '$status'}).then((_) => print(
-            '''
-            Status updated:
-            docID:$docID
-            NewStatus:$status
-            ''',
-          ));
+Widget _buildContactButtons(
+  BuildContext context,
+  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  UserType userType,
+  List<String> chatName,
+  List<String> listID,
+) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      IconButton(
+        icon: Icon(Icons.question_answer_outlined),
+        iconSize: 80,
+        color: Theme.of(context).primaryColor,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => buildAlertDialogForNewMessage(
+              context: context,
+              title: Text('Rozpocząć wiadomość?'),
+              cancelButton: Text('Nie'),
+              acceptButton: Text('Tak'),
+              addressee: userType == UserType.Firm
+                  ? snapshot.data.data()['userID']
+                  : snapshot.data.data()['firmID'],
+              chatName: chatName,
+              listID: listID,
+            ),
+            barrierDismissible: true,
+          );
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.phone),
+        iconSize: 80,
+        color: Theme.of(context).primaryColor,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => Text('Phone Call'),
+            barrierDismissible: true,
+          );
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.email_outlined),
+        iconSize: 80,
+        color: Theme.of(context).primaryColor,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => Text('Email'),
+          );
+        },
+      ),
+    ],
+  );
 }
 
-Widget _createUserToShowInDetails(
+ListTile _createUserToShowInDetails(
   BuildContext context,
   UserProvider provider,
   Users user,
@@ -261,7 +379,7 @@ Widget _createUserToShowInDetails(
   );
 }
 
-Widget _createFirmToShowInDetails(
+ListTile _createFirmToShowInDetails(
   BuildContext context,
   UserProvider provider,
   Firm firm,
@@ -325,5 +443,5 @@ Center buildErrorMessage(BuildContext context) {
 }
 
 NetworkImage networkImage(String url) {
-  return url != null ? NetworkImage(url) : null;
+  return (url != null && url != '') ? NetworkImage(url) : null;
 }

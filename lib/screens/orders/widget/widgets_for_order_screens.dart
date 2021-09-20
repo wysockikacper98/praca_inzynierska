@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../models/order.dart';
 import '../../../models/users.dart';
 
-Widget buildOrderListTile(
+Padding buildOrderListTile(
   BuildContext context,
   QueryDocumentSnapshot<Map<String, dynamic>> data,
 ) {
@@ -59,14 +59,14 @@ CircleAvatar circleAvatar(
   return CircleAvatar(
     radius: 30,
     foregroundImage: type == UserType.Firm
-        ? networkImage(data.data()['firmAvatar'])
-        : networkImage(data.data()['userAvatar']),
+        ? networkImage(data.data()['userAvatar'])
+        : networkImage(data.data()['firmAvatar']),
     backgroundImage: AssetImage('assets/images/user.png'),
   );
 }
 
 NetworkImage networkImage(String url) {
-  return url != null ? NetworkImage(url) : null;
+  return (url != null && url != '') ? NetworkImage(url) : null;
 }
 
 String translateStatusEnumStringToString(String status) {

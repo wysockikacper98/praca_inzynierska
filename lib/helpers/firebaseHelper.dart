@@ -268,3 +268,68 @@ Future<void> addOrderInFirebase(
       .then((value) => print('Order added $value'))
       .catchError((error) => print('Failed to add user: $error'));
 }
+
+/// ## Create or Open chat
+/// Function create new or open existing chat
+/// just give [context], [loggedUser] and [addressee]
+Future<void> createOrOpenChat(
+  BuildContext context,
+  Users loggedUser,
+  String addressee,
+  List<String> chatName,
+  List<String> listID,
+) async {
+  CollectionReference chats = FirebaseFirestore.instance.collection('chats');
+  String loggedUserID = FirebaseAuth.instance.currentUser.uid;
+
+  final chatData =
+      await chats.where('users', arrayContains: loggedUserID).get();
+
+  bool ifChatExist = false;
+  QueryDocumentSnapshot<Map<String, dynamic>> pickedChat;
+
+  for (final element in chatData.docs) {
+    if (element['users'].contains(addressee)) {
+      pickedChat = element;
+      ifChatExist = true;
+      break;
+    }
+  }
+
+  if (!ifChatExist) {
+    print('Dodawanie nowego czatu');
+
+    chats.add({
+      'chatName': chatName,
+      'updateAt': DateTime.now(),
+      'users': listID,
+    }).then((value) {
+      print('Added chat with id:${value.id}');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Message(
+            chatID: value.id,
+            chatName: loggedUser.type == UserType.Firm
+                ? chatName.first
+                : chatName.last,
+          ),
+        ),
+      );
+    });
+  } else {
+    print('Otwieranie starego chatu');
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Message(
+          chatID: pickedChat.reference.id,
+          chatName: loggedUser.type == UserType.Firm
+              ? pickedChat['chatName'].first
+              : pickedChat['chatName'].last,
+        ),
+      ),
+    );
+  }
+}
