@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/orders/order_details_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/order.dart';
 import '../../../models/users.dart';
+import '../order_details_screen.dart';
 
 Padding buildOrderListTile(
   BuildContext context,
@@ -70,20 +69,13 @@ NetworkImage networkImage(String url) {
 }
 
 String translateStatusEnumStringToString(String status) {
-  Status statusEnum =
-      Status.values.firstWhere((e) => e.toString().split('.').last == status);
-
-  switch (statusEnum) {
-    case Status.PENDING_CONFIRMATION:
+  switch (status) {
+    case 'PENDING':
       return 'Oczekuje';
-    case Status.IN_PROGRESS:
+    case 'PROCESSING':
       return 'W trakcie';
-    case Status.CONFIRMED:
-      return 'Potwierdzony';
-    case Status.DONE:
-      return 'Ukończony';
-    case Status.TERMINATE:
-      return 'Przerwany';
+    case 'COMPLETED':
+      return 'Ukończone';
     default:
       return 'Nieznany status';
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/orders/widget/widgets_for_order_screens.dart';
+
+import 'widget/widgets_for_order_screens.dart';
 
 class OrderFinishScreen extends StatelessWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
@@ -32,9 +33,7 @@ class OrderFinishScreen extends StatelessWidget {
               child: Column(
                 children: [
                   ...snapshot.data.docs
-                      .where((e) =>
-                          e.data()['status'] == 'DONE' ||
-                          e.data()['status'] == 'TERMINATE')
+                      .where((e) => e.data()['status'] == 'COMPLETED')
                       .map((e) => buildOrderListTile(context, e))
                       .toList(),
                   SizedBox(height: 100),

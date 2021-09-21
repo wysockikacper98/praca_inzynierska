@@ -32,9 +32,7 @@ class OrderActiveScreen extends StatelessWidget {
             child: Column(
               children: [
                 ...snapshot.data.docs
-                    .where((e) =>
-                        e.data()['status'] != 'DONE' &&
-                        e.data()['status'] != 'TERMINATE')
+                    .where((e) => e.data()['status'] != 'COMPLETED')
                     .map((e) => buildOrderListTile(context, e))
                     .toList(),
                 SizedBox(height: 100),

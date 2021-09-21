@@ -3,13 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:praca_inzynierska/models/order.dart';
-import 'package:praca_inzynierska/screens/orders/widget/widgets_for_order_screens.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/firm.dart';
+import '../../models/order.dart';
 import '../../models/users.dart';
 import 'widget/alerts_dialog_for_orders.dart';
+import 'widget/widgets_for_order_screens.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   static const String routeName = '/order-details';
@@ -227,45 +227,54 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
   ) {
     switch (stringToStatus(snapshot.data.data()['status'])) {
-      case Status.PENDING_CONFIRMATION:
+      case Status.PENDING:
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            ElevatedButton(
-              child: Text('Odrzuć'),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (_) => buildAlertDialogForChangingStatus(
-                  context: context,
-                  status: Status.TERMINATE.toString().split('.').last,
-                  docID: snapshot.data.id,
-                  updateStatus: _updateStatus,
-                  title: Text('Odrzucić zamówienie?'),
-                  cancelButton: Text('Anuluj'),
-                  acceptButton: Text('Potwierdź'),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              child: Text('Akceptuj'),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (_) => buildAlertDialogForChangingStatus(
-                  context: context,
-                  status: Status.CONFIRMED.toString().split('.').last,
-                  docID: snapshot.data.id,
-                  updateStatus: _updateStatus,
-                  title: Text('Zaakcpetować zamówienie?'),
-                  cancelButton: Text('Anuluj'),
-                  acceptButton: Text('Potwierdź'),
-                ),
-              ),
-            ),
+            Text('Tutaj będą przyciski dla statusu PENDING'),
+            // ElevatedButton(
+            //   child: Text('Odrzuć'),
+            //   onPressed: () => showDialog(
+            //     context: context,
+            //     builder: (_) => buildAlertDialogForChangingStatus(
+            //       context: context,
+            //       status: Status.TERMINATE.toString().split('.').last,
+            //       docID: snapshot.data.id,
+            //       updateStatus: _updateStatus,
+            //       title: Text('Odrzucić zamówienie?'),
+            //       cancelButton: Text('Anuluj'),
+            //       acceptButton: Text('Potwierdź'),
+            //     ),
+            //   ),
+            // ),
+            // ElevatedButton(
+            //   child: Text('Akceptuj'),
+            //   onPressed: () => showDialog(
+            //     context: context,
+            //     builder: (_) => buildAlertDialogForChangingStatus(
+            //       context: context,
+            //       status: Status.CONFIRMED.toString().split('.').last,
+            //       docID: snapshot.data.id,
+            //       updateStatus: _updateStatus,
+            //       title: Text('Zaakcpetować zamówienie?'),
+            //       cancelButton: Text('Anuluj'),
+            //       acceptButton: Text('Potwierdź'),
+            //     ),
+            //   ),
+            // ),
           ],
         );
-      case Status.TERMINATE:
+      case Status.PROCESSING:
         return Row(
-          children: [],
+          children: [
+            Text('Tutuaj będa przyciski dla statusu PROCESSING'),
+          ],
+        );
+      case Status.COMPLETED:
+        return Row(
+          children: [
+            Text('Tutaj będą przyciski dla stutusu COMPLETED'),
+          ],
         );
       default:
         return Container();

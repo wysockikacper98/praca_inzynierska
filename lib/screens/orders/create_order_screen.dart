@@ -364,7 +364,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         userName: '',
         userAvatar: '',
         title: '',
-        status: Status.PENDING_CONFIRMATION,
+        status: Status.PENDING,
         category: '',
         description: '',
         address: _address,

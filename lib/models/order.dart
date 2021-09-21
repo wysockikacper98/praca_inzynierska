@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'address.dart';
 
 enum Status {
-  PENDING_CONFIRMATION,
-  CONFIRMED,
-  IN_PROGRESS,
-  TERMINATE,
-  DONE,
+  PENDING,
+  PROCESSING,
+  COMPLETED,
 }
 
 class Order {
