@@ -9,12 +9,12 @@ import 'order_active_screen.dart';
 import 'order_finish_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
-  static const routeName = "/orders";
+  static const routeName = '/orders';
   final String _loggedUserID = FirebaseAuth.instance.currentUser.uid;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> _finalStream(UserType userType) {
     final String fieldName = userType == UserType.Firm ? 'firmID' : 'userID';
-    print("this stream is run once, hopefully");
+    print('this stream is run once, hopefully');
     return FirebaseFirestore.instance
         .collection('orders')
         .where(fieldName, isEqualTo: _loggedUserID)
@@ -36,16 +36,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Zamówienia"),
+          title: Text('Zamówienia'),
           bottom: TabBar(
             tabs: [
-              Tab(text: "Aktywne"),
-              Tab(text: "Zakończone"),
+              Tab(text: 'Aktywne'),
+              Tab(text: 'Zakończone'),
             ],
           ),
         ),
         body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
           children: [
             OrderActiveScreen(widget._finalStream(userType)),
             OrderFinishScreen(widget._finalStream(userType)),

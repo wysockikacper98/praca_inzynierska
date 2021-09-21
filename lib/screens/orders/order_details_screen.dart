@@ -44,7 +44,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       userToShowInDetails = Users.fromJson(dataFromFirebase.data());
       //creating list of ids
       idList = [dataFromFirebase.id, currentUserID];
-      idList.forEach((e) => print(e));
       // creating chat name
       final firm = Provider.of<FirmProvider>(context, listen: false).firm;
       chatName = [
@@ -70,13 +69,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         .collection('orders')
         .doc(widget.orderID)
         .get();
-  }
-
-  Future<void> _updateStatus(String status, String docID) {
-    return FirebaseFirestore.instance
-        .collection('orders')
-        .doc(docID)
-        .update({'status': '$status'}).then((_) => setState(() {}));
   }
 
   @override
@@ -145,13 +137,37 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       : firmToShowInDetails.email,
                 ),
                 SizedBox(height: 16),
-                _buildButtonsDependingOnStatus(context, snapshot),
+                _buildButtonsDependingOnStatus(context, snapshot, userType),
               ],
             );
           }
         },
       ),
     );
+  }
+
+  Future<void> _startOrder(
+    BuildContext context,
+    String id,
+  ) async {
+    Navigator.of(context).pop();
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(id)
+        .update({'status': Status.PROCESSING.toString().split('.').last});
+    setState(() {});
+  }
+
+  Future<void> _finishOrder(
+    BuildContext context,
+    String id,
+  ) async {
+    Navigator.of(context).pop();
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(id)
+        .update({'status': Status.COMPLETED.toString().split('.').last});
+    setState(() {});
   }
 
   Center _buildDatePreview() {
@@ -225,56 +241,97 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget _buildButtonsDependingOnStatus(
     BuildContext context,
     AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+    UserType userType,
   ) {
+    final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
     switch (stringToStatus(snapshot.data.data()['status'])) {
       case Status.PENDING:
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text('Tutaj będą przyciski dla statusu PENDING'),
-            // ElevatedButton(
-            //   child: Text('Odrzuć'),
-            //   onPressed: () => showDialog(
-            //     context: context,
-            //     builder: (_) => buildAlertDialogForChangingStatus(
-            //       context: context,
-            //       status: Status.TERMINATE.toString().split('.').last,
-            //       docID: snapshot.data.id,
-            //       updateStatus: _updateStatus,
-            //       title: Text('Odrzucić zamówienie?'),
-            //       cancelButton: Text('Anuluj'),
-            //       acceptButton: Text('Potwierdź'),
-            //     ),
-            //   ),
-            // ),
-            // ElevatedButton(
-            //   child: Text('Akceptuj'),
-            //   onPressed: () => showDialog(
-            //     context: context,
-            //     builder: (_) => buildAlertDialogForChangingStatus(
-            //       context: context,
-            //       status: Status.CONFIRMED.toString().split('.').last,
-            //       docID: snapshot.data.id,
-            //       updateStatus: _updateStatus,
-            //       title: Text('Zaakcpetować zamówienie?'),
-            //       cancelButton: Text('Anuluj'),
-            //       acceptButton: Text('Potwierdź'),
-            //     ),
-            //   ),
-            // ),
-          ],
+        return SizedBox(
+          width: buttonWidth,
+          child: Row(
+            children: [
+              Flexible(
+                flex: 5,
+                fit: FlexFit.tight,
+                child: ElevatedButton(
+                  child: Text('Anuluj'),
+                  onPressed: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => buildAlertDialogForCancelingOrder(
+                      context,
+                      snapshot.data.id,
+                    ),
+                  ),
+                ),
+              ),
+              if (userType == UserType.Firm)
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: Container(),
+                ),
+              if (userType == UserType.Firm)
+                Flexible(
+                  flex: 5,
+                  fit: FlexFit.tight,
+                  child: ElevatedButton(
+                    child: Text('Rozpocznij'),
+                    onPressed: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (_) => buildAlertDialogForStartingOrder(
+                        context,
+                        snapshot.data.id,
+                        _startOrder,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       case Status.PROCESSING:
-        return Row(
-          children: [
-            Text('Tutuaj będa przyciski dla statusu PROCESSING'),
-          ],
+        return SizedBox(
+          width: buttonWidth,
+          child: Row(
+            children: [
+              if (userType == UserType.Firm)
+                Flexible(
+                  flex: 5,
+                  fit: FlexFit.tight,
+                  child: ElevatedButton(
+                    child: Text('Zakończ'),
+                    onPressed: () => showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (_) => buildAlertDialogForFinishingOrder(
+                        context,
+                        snapshot.data.id,
+                        _finishOrder,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       case Status.COMPLETED:
-        return Row(
-          children: [
-            Text('Tutaj będą przyciski dla stutusu COMPLETED'),
-          ],
+        return SizedBox(
+          width: buttonWidth,
+          child: Row(
+            children: [
+              Flexible(
+                flex: 1,
+                fit: FlexFit.tight,
+                child: ElevatedButton.icon(
+                  icon: Icon(Icons.add_comment_outlined),
+                  label: Text('Dodaj komentarz'),
+                  onPressed: () => print('Dodawanie komentarza'),
+                ),
+              ),
+            ],
+          ),
         );
       default:
         return Container();

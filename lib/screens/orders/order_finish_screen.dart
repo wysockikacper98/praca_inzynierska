@@ -27,7 +27,7 @@ class OrderFinishScreen extends StatelessWidget {
             ),
           );
         }
-        if (snapshot.data != null) {
+        if (snapshot.hasData) {
           return SingleChildScrollView(
             child: Center(
               child: Column(

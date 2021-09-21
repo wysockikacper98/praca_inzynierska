@@ -1,40 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
+import 'package:praca_inzynierska/models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helpers/firebaseHelper.dart';
 import '../../../models/users.dart';
-
-AlertDialog buildAlertDialogForChangingStatus({
-  @required BuildContext context,
-  @required String status,
-  @required String docID,
-  @required Future<void> Function(String status, String docID) updateStatus,
-  @required Widget title,
-  Widget content,
-  @required Widget cancelButton,
-  @required Widget acceptButton,
-}) {
-  return AlertDialog(
-    title: title,
-    content: content,
-    elevation: 24.0,
-    actions: [
-      TextButton(
-        child: cancelButton,
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      TextButton(
-        child: acceptButton,
-        onPressed: () {
-          Navigator.of(context).pop();
-          updateStatus(status, docID);
-        },
-      ),
-    ],
-  );
-}
+import '../../firm/firm_profile_screen.dart';
 
 AlertDialog buildAlertDialogForNewMessage({
   @required BuildContext context,
@@ -109,4 +81,81 @@ AlertDialog buildAlertDialogForPhoneCallAndEmail({
       ),
     ],
   );
+}
+
+AlertDialog buildAlertDialogForCancelingOrder(
+  BuildContext context,
+  String id,
+) {
+  return AlertDialog(
+    title: Text('Anulować zamówienie?'),
+    content: Text('Anulowanie zamówienia jest operacją nieodwracalną.'),
+    elevation: 24,
+    actions: [
+      TextButton(
+        child: Text('Nie'),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      TextButton(
+        child: Text('Tak'),
+        onPressed: () => _cancelOrder(context, id),
+      ),
+    ],
+  );
+}
+
+AlertDialog buildAlertDialogForStartingOrder(
+  BuildContext context,
+  String id,
+  Future<void> Function(BuildContext context, String id) startOrder,
+) {
+  return AlertDialog(
+    title: Text('Rozpocznij wykonywanie zamówienia'),
+    elevation: 24.0,
+    actions: [
+      TextButton(
+        child: Text('Anuluj'),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      TextButton(
+        child: Text('Rozpocznij'),
+        onPressed: () => startOrder(context, id),
+      ),
+    ],
+  );
+}
+
+AlertDialog buildAlertDialogForFinishingOrder(
+  BuildContext context,
+  String id,
+  Future<void> Function(BuildContext context, String id) finishOrder,
+) {
+  return AlertDialog(
+    title: Text('Zakończyć wykonwyanie zamówienia?'),
+    content: Text(
+        'Zakończenie zamówienia jest nieodwracalne. Upewnij się, że wszystkie prace z nim związane zostały zakończone.'),
+    elevation: 24.0,
+    actions: [
+      TextButton(
+        child: Text('Nie'),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      TextButton(
+        child: Text('Zakończ'),
+        onPressed: () => finishOrder(context, id),
+      ),
+    ],
+  );
+}
+
+Future<void> _cancelOrder(
+  BuildContext context,
+  String id,
+) async {
+  Navigator.of(context).pop();
+  await FirebaseFirestore.instance
+      .collection('orders')
+      .doc(id)
+      .update({'status': Status.COMPLETED.toString().split('.').last});
+  Navigator.of(context).pop();
 }
