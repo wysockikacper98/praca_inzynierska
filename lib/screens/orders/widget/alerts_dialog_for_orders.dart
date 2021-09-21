@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helpers/firebaseHelper.dart';
@@ -68,6 +69,42 @@ AlertDialog buildAlertDialogForNewMessage({
             chatName,
             listID,
           );
+        },
+      ),
+    ],
+  );
+}
+
+AlertDialog buildAlertDialogForPhoneCallAndEmail({
+  @required BuildContext context,
+  @required Widget title,
+  Widget content,
+  @required Widget cancelButton,
+  @required Widget acceptButton,
+  @required bool isPhoneCall,
+  @required String contactData,
+}) {
+  return AlertDialog(
+    title: title,
+    content: content,
+    elevation: 24,
+    actions: [
+      TextButton(
+        child: cancelButton,
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      TextButton(
+        child: acceptButton,
+        onPressed: () async {
+          Navigator.of(context).pop();
+          isPhoneCall
+              ? callPhone('tel:$contactData')
+              : sendEmail(
+                  Uri(
+                    scheme: 'mailto',
+                    path: contactData,
+                  ).toString(),
+                );
         },
       ),
     ],

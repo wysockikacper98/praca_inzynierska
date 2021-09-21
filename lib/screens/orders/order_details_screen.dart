@@ -132,11 +132,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 _buildDatePreview(),
                 SizedBox(height: 16),
                 _buildContactButtons(
-                  context,
-                  snapshot,
-                  userType,
-                  chatName,
-                  idList,
+                  context: context,
+                  snapshot: snapshot,
+                  userType: userType,
+                  chatName: chatName,
+                  listID: idList,
+                  contactPhoneNumber: userType == UserType.Firm
+                      ? userToShowInDetails.telephone
+                      : firmToShowInDetails.telephone,
+                  contactEmail: userType == UserType.Firm
+                      ? userToShowInDetails.email
+                      : firmToShowInDetails.email,
                 ),
                 SizedBox(height: 16),
                 _buildButtonsDependingOnStatus(context, snapshot),
@@ -272,13 +278,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 }
 
-Widget _buildContactButtons(
-  BuildContext context,
-  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  UserType userType,
-  List<String> chatName,
-  List<String> listID,
-) {
+Widget _buildContactButtons({
+  @required BuildContext context,
+  @required AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  @required UserType userType,
+  @required List<String> chatName,
+  @required List<String> listID,
+  @required String contactEmail,
+  @required String contactPhoneNumber,
+}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
@@ -311,7 +319,15 @@ Widget _buildContactButtons(
         onPressed: () {
           showDialog(
             context: context,
-            builder: (_) => Text('Phone Call'),
+            builder: (_) => buildAlertDialogForPhoneCallAndEmail(
+              context: context,
+              title: Text(
+                  'Zadzwonić do ${userType == UserType.Firm ? 'użytkownika' : 'firmy'}?'),
+              cancelButton: Text('Anuluj'),
+              acceptButton: Text('Zadzwoń'),
+              isPhoneCall: true,
+              contactData: contactPhoneNumber,
+            ),
             barrierDismissible: true,
           );
         },
@@ -323,7 +339,15 @@ Widget _buildContactButtons(
         onPressed: () {
           showDialog(
             context: context,
-            builder: (_) => Text('Email'),
+            builder: (_) => buildAlertDialogForPhoneCallAndEmail(
+              context: context,
+              title: Text(
+                  'Wysłać maila do ${userType == UserType.Firm ? 'użytkownika' : 'firmy'}?'),
+              cancelButton: Text('Anuluj'),
+              acceptButton: Text('Wyślij'),
+              isPhoneCall: false,
+              contactData: contactEmail,
+            ),
           );
         },
       ),
