@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
+import '../../widgets/comment/comment_widgets.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 import 'widget/widgets_for_order_screens.dart';
 
@@ -73,6 +74,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('build -> order_details_screen');
     final provider = Provider.of<UserProvider>(context);
     final UserType userType = provider.user.type;
 
@@ -89,56 +91,59 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           } else if (!snapshot.hasData) {
             return buildErrorMessage(context);
           } else {
-            return Column(
-              children: [
-                SizedBox(height: 10),
-                userType == UserType.Firm
-                    ? _createUserToShowInDetails(
-                        context,
-                        provider,
-                        userToShowInDetails,
-                      )
-                    : _createFirmToShowInDetails(
-                        context,
-                        provider,
-                        firmToShowInDetails,
-                      ),
-                _buildTextNormalThenBold(
-                  context: context,
-                  normal: 'Rodzaj usługi: ',
-                  bold: snapshot.data.data()['category'],
-                ),
-                _buildTextNormalThenBold(
-                  context: context,
-                  normal: 'Status usługi: ',
-                  bold: translateStatusEnumStringToString(
-                      snapshot.data.data()['status']),
-                ),
-                _buildTextNormalThenBold(
-                  context: context,
-                  normal: 'Tytuł: ',
-                  bold: snapshot.data.data()['title'],
-                ),
-                _buildDescription(context, snapshot),
-                //TODO: wyświetlanie okresu / dnia wykonania zamówienia
-                _buildDatePreview(),
-                SizedBox(height: 16),
-                _buildContactButtons(
-                  context: context,
-                  snapshot: snapshot,
-                  userType: userType,
-                  chatName: chatName,
-                  listID: idList,
-                  contactPhoneNumber: userType == UserType.Firm
-                      ? userToShowInDetails.telephone
-                      : firmToShowInDetails.telephone,
-                  contactEmail: userType == UserType.Firm
-                      ? userToShowInDetails.email
-                      : firmToShowInDetails.email,
-                ),
-                SizedBox(height: 16),
-                _buildButtonsDependingOnStatus(context, snapshot, userType),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  userType == UserType.Firm
+                      ? _createUserToShowInDetails(
+                          context,
+                          provider,
+                          userToShowInDetails,
+                        )
+                      : _createFirmToShowInDetails(
+                          context,
+                          provider,
+                          firmToShowInDetails,
+                        ),
+                  _buildTextNormalThenBold(
+                    context: context,
+                    normal: 'Rodzaj usługi: ',
+                    bold: snapshot.data.data()['category'],
+                  ),
+                  _buildTextNormalThenBold(
+                    context: context,
+                    normal: 'Status usługi: ',
+                    bold: translateStatusEnumStringToString(
+                        snapshot.data.data()['status']),
+                  ),
+                  _buildTextNormalThenBold(
+                    context: context,
+                    normal: 'Tytuł: ',
+                    bold: snapshot.data.data()['title'],
+                  ),
+                  _buildDescription(context, snapshot),
+                  //TODO: wyświetlanie okresu / dnia wykonania zamówienia
+                  _buildDatePreview(),
+                  SizedBox(height: 16),
+                  _buildContactButtons(
+                    context: context,
+                    snapshot: snapshot,
+                    userType: userType,
+                    chatName: chatName,
+                    listID: idList,
+                    contactPhoneNumber: userType == UserType.Firm
+                        ? userToShowInDetails.telephone
+                        : firmToShowInDetails.telephone,
+                    contactEmail: userType == UserType.Firm
+                        ? userToShowInDetails.email
+                        : firmToShowInDetails.email,
+                  ),
+                  SizedBox(height: 16),
+                  _buildButtonsDependingOnStatus(
+                      context, snapshot, userType, idList),
+                ],
+              ),
             );
           }
         },
@@ -163,10 +168,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     String id,
   ) async {
     Navigator.of(context).pop();
-    await FirebaseFirestore.instance
-        .collection('orders')
-        .doc(id)
-        .update({'status': Status.COMPLETED.toString().split('.').last});
+    await FirebaseFirestore.instance.collection('orders').doc(id).update({
+      'status': Status.COMPLETED.toString().split('.').last,
+      'canUserComment': true,
+      'canFirmComment': true,
+    });
     setState(() {});
   }
 
@@ -242,7 +248,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     BuildContext context,
     AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
     UserType userType,
+    List<String> idList,
   ) {
+    final bool canShowComment = userType == UserType.Firm
+        ? (snapshot.data.data()['canFirmComment'] != null &&
+            snapshot.data.data()['canFirmComment'] == true)
+        : (snapshot.data.data()['canUserComment'] != null &&
+            snapshot.data.data()['canUserComment'] == true);
+
     final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
     switch (stringToStatus(snapshot.data.data()['status'])) {
       case Status.PENDING:
@@ -321,21 +334,35 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           width: buttonWidth,
           child: Row(
             children: [
-              Flexible(
-                flex: 1,
-                fit: FlexFit.tight,
-                child: ElevatedButton.icon(
-                  icon: Icon(Icons.add_comment_outlined),
-                  label: Text('Dodaj komentarz'),
-                  onPressed: () => print('Dodawanie komentarza'),
+              if (canShowComment)
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: ElevatedButton.icon(
+                    icon: Icon(Icons.add_comment_outlined),
+                    label: Text(' Dodaj komentarz'),
+                    onPressed: () => showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => buildAlertDialogAddComment(
+                        context,
+                        idList,
+                        snapshot.data.id,
+                        refreshWidget,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
             ],
           ),
         );
       default:
         return Container();
     }
+  }
+
+  void refreshWidget() {
+    setState(() {});
   }
 
   Status stringToStatus(String status) {

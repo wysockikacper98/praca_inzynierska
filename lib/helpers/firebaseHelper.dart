@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/comment.dart';
 import '../models/firm.dart';
 import '../models/order.dart';
 import '../models/users.dart';
@@ -332,4 +333,28 @@ Future<void> createOrOpenChat(
       ),
     );
   }
+}
+
+Future<void> addCommentToFirebase(
+  UserType userType,
+  List<String> userAndFirmIds,
+  Comment comment,
+  String orderID,
+) async {
+  print('Dodawanie komentarza:\n${comment.toString()}');
+  final String collection = userType == UserType.Firm ? 'users' : 'firms';
+  final String docID =
+      userType == UserType.Firm ? userAndFirmIds.first : userAndFirmIds.last;
+  final String updateField =
+      userType == UserType.Firm ? 'canFirmComment' : 'canUserComment';
+
+  return FirebaseFirestore.instance
+      .collection('orders')
+      .doc(orderID)
+      .update({updateField: false}).then((value) => FirebaseFirestore.instance
+          .collection(collection)
+          .doc(docID)
+          .collection('comments')
+          .add(comment.toJson())
+          .then((value) => print('Value:\n${value.toString()}')));
 }

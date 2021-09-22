@@ -17,7 +17,8 @@ class Order {
   String userAvatar;
   String title;
   Status status;
-  bool isCommentEnable;
+  bool canUserComment;
+  bool canFirmComment;
   String category;
   String description;
 
@@ -33,7 +34,8 @@ class Order {
     @required this.userAvatar,
     @required this.title,
     @required this.status,
-    this.isCommentEnable,
+    this.canUserComment,
+    this.canFirmComment,
     @required this.category,
     this.description,
     @required this.address,
@@ -49,7 +51,8 @@ class Order {
       userAvatar: json['userAvatar'] ?? '',
       title: json['title'] ?? '',
       status: json['status'] ?? '',
-      isCommentEnable: json['isCommentEnable'] ?? '',
+      canUserComment: json['canUserComment'] ?? '',
+      canFirmComment: json['canFirmComment'] ?? '',
       category: json['category'] ?? '',
       description: json['description'] ?? '',
       address: Address.fromJson(json['address']) ?? '',
@@ -66,7 +69,8 @@ class Order {
       'userAvatar': this.userAvatar,
       'title': this.title,
       'status': this.status.toString().split('.').last,
-      'isCommentEnable': this.isCommentEnable,
+      'canUserComment': this.canUserComment,
+      'canFirmComment': this.canFirmComment,
       'category': this.category,
       'description': this.description,
       'address': this.address.toJson(),

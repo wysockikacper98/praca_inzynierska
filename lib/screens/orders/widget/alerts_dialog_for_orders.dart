@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/order.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helpers/firebaseHelper.dart';
+import '../../../models/order.dart';
 import '../../../models/users.dart';
 import '../../firm/firm_profile_screen.dart';
 
