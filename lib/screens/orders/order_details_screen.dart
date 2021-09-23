@@ -75,7 +75,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     print('build -> order_details_screen');
-    final provider = Provider.of<UserProvider>(context);
+    final provider = Provider.of<UserProvider>(context, listen:false);
     final UserType userType = provider.user.type;
 
     return Scaffold(

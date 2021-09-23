@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/users.dart';
+import '../screens/calendar/calendar_screen.dart';
 import '../screens/emergency_screen.dart';
 import '../screens/messages/chats_screen.dart';
 import '../screens/orders/orders_screen.dart';
@@ -14,7 +15,7 @@ import 'build_user_info.dart';
 Drawer appDrawer(BuildContext context) {
   print('build -> drawer');
   var height = MediaQuery.of(context).size.height;
-  final provider = Provider.of<UserProvider>(context);
+  final provider = Provider.of<UserProvider>(context, listen: false);
 
   Divider buildDivider() {
     return Divider(
@@ -94,14 +95,25 @@ Drawer appDrawer(BuildContext context) {
             },
           ),
           buildDivider(),
-          buildListTile(
-            context,
-            buildIcon(Icons.warning_outlined),
-            buildText('Awarie'),
-            () {
-              Navigator.of(context).popAndPushNamed(EmergencyScreen.routeName);
-            },
-          ),
+          provider.user.type == UserType.Firm
+              ? buildListTile(
+                  context,
+                  buildIcon(Icons.today_outlined),
+                  buildText('Kalendarz'),
+                  () {
+                    Navigator.of(context)
+                        .popAndPushNamed(CalendarScreen.routeName);
+                  },
+                )
+              : buildListTile(
+                  context,
+                  buildIcon(Icons.warning_outlined),
+                  buildText('Awarie'),
+                  () {
+                    Navigator.of(context)
+                        .popAndPushNamed(EmergencyScreen.routeName);
+                  },
+                ),
           buildDivider(),
           buildListTile(
             context,

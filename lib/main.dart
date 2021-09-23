@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'models/firm.dart';
 import 'models/users.dart';
+import 'screens/calendar/calendar_screen.dart';
 import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
                 SettingsScreen.routeName: (ctx) => SettingsScreen(),
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),
                 CreateOrderScreen.routeName: (ctx) => CreateOrderScreen(),
+                CalendarScreen.routeName: (ctx) => CalendarScreen(),
               },
             );
           }),

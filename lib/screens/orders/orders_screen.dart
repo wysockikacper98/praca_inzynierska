@@ -29,7 +29,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     print("build -> orders_screen.dart");
-    var provider = Provider.of<UserProvider>(context);
+    var provider = Provider.of<UserProvider>(context, listen:false);
     var userType = provider.user.type;
 
     return DefaultTabController(

@@ -22,8 +22,8 @@ class FirmsAuth {
 class FirmProfileScreen extends StatelessWidget {
   static const routeName = '/firm-profile';
 
-  getDataAboutFirm(firmID) async {
-    // await Future.delayed(Duration(seconds: 3));
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDataAboutFirm(
+      firmID) async {
     return FirebaseFirestore.instance.collection('firms').doc(firmID).get();
   }
 
@@ -32,6 +32,8 @@ class FirmProfileScreen extends StatelessWidget {
     final data = ModalRoute.of(context).settings.arguments as FirmsAuth;
     final dateTime = DateTime.now();
     final userID = FirebaseAuth.instance.currentUser.uid;
+    final userType =
+        Provider.of<UserProvider>(context, listen: false).user.type;
 
     return Scaffold(
       appBar: AppBar(
@@ -111,71 +113,73 @@ class FirmProfileScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 50),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 7.5,
+                  if (userType != UserType.Firm)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 7.5,
+                      ),
+                      child: AutoSizeText(
+                        'Napisz do nas w razie pytań lub chęci współpracy',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headline5,
+                        maxLines: 2,
+                      ),
                     ),
-                    child: AutoSizeText(
-                      'Napisz do nas w razie pytań lub chęci współpracy',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline5,
-                      maxLines: 2,
+                  if (userType != UserType.Firm) SizedBox(height: 50),
+                  if (userType != UserType.Firm)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.question_answer_outlined),
+                          iconSize: 80,
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => buildConfirmNewMessageDialog(
+                                context,
+                                userID,
+                                snapshot.data,
+                              ),
+                              barrierDismissible: true,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.phone),
+                          iconSize: 80,
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => buildConfirmPhoneCall(
+                                context,
+                                userID,
+                                snapshot.data,
+                              ),
+                              barrierDismissible: true,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.email_outlined),
+                          iconSize: 80,
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => buildConfirmNewEmailDialog(
+                                context,
+                                userID,
+                                snapshot.data,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 50),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.question_answer_outlined),
-                        iconSize: 80,
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => buildConfirmNewMessageDialog(
-                              context,
-                              userID,
-                              snapshot.data,
-                            ),
-                            barrierDismissible: true,
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.phone),
-                        iconSize: 80,
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => buildConfirmPhoneCall(
-                              context,
-                              userID,
-                              snapshot.data,
-                            ),
-                            barrierDismissible: true,
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.email_outlined),
-                        iconSize: 80,
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => buildConfirmNewEmailDialog(
-                              context,
-                              userID,
-                              snapshot.data,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
                   SizedBox(height: 50),
                 ],
               ),

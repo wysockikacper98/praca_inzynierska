@@ -9,7 +9,7 @@ Padding buildOrderListTile(
   BuildContext context,
   QueryDocumentSnapshot<Map<String, dynamic>> data,
 ) {
-  final provider = Provider.of<UserProvider>(context);
+  final provider = Provider.of<UserProvider>(context, listen: false);
   final ThemeData themeData = Theme.of(context);
   final UserType userType = provider.user.type;
 

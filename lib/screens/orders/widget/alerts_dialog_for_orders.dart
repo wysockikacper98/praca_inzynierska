@@ -131,7 +131,7 @@ AlertDialog buildAlertDialogForFinishingOrder(
   Future<void> Function(BuildContext context, String id) finishOrder,
 ) {
   return AlertDialog(
-    title: Text('Zakończyć wykonwyanie zamówienia?'),
+    title: Text('Zakończyć wykonywanie zamówienia?'),
     content: Text(
         'Zakończenie zamówienia jest nieodwracalne. Upewnij się, że wszystkie prace z nim związane zostały zakończone.'),
     elevation: 24.0,

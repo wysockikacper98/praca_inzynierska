@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Najczęstrze kategorie',
+              'Najczęstsze kategorie',
               // style: TextStyle(fontWeight: FontWeight.bold),
               style: Theme.of(context).textTheme.headline6,
             ),

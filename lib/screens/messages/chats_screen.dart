@@ -30,7 +30,10 @@ class ChatsScreen extends StatelessWidget {
             .where('users', arrayContains: userId)
             // .orderBy('updatedAt', descending: true)
             .snapshots(),
-        builder: (ctx, chatSnapshot) {
+        builder: (
+          ctx,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,
+        ) {
           if (chatSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -43,6 +46,7 @@ class ChatsScreen extends StatelessWidget {
 
             final chatDocs = chatSnapshot.data.docs;
             //TODO: sortowanie listy przed budowaniem
+            //TODO: wyświetlanie tylko tych które posiadają collection('messages')
             // print('Zobaczymy co tu się takiego dzieje');
             // print(chatSnapshot.data.docs[0]['chatName']);
             // print(chatSnapshot.data.docs[0]['chatName'][0]);
