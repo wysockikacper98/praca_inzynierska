@@ -205,7 +205,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             ),
             SizedBox(height: 16),
             Text(
-              snapshot.data.data()['description'] != null
+              (snapshot.data.data()['description'] != null &&
+                      snapshot.data.data()['description'] != '')
                   ? snapshot.data.data()['description']
                   : 'Brak opisu',
               style: Theme.of(context).textTheme.bodyText2,
@@ -344,8 +345,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     onPressed: () => showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (context) => buildAlertDialogAddComment(
-                        context,
+                      builder: (context) => BuildAlertDialogAddComment(
                         idList,
                         snapshot.data.id,
                         refreshWidget,
@@ -511,6 +511,7 @@ ListTile _createFirmToShowInDetails(
       firm.firmName,
       style: Theme.of(context).textTheme.headline6,
     ),
+    subtitle: Text('${firm.firstName} ${firm.lastName}'),
     trailing: Column(
       children: [
         RatingBarIndicator(
