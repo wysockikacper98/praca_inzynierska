@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'address.dart';
 
 enum Status {
@@ -17,28 +15,28 @@ class Order {
   String userAvatar;
   String title;
   Status status;
-  bool canUserComment;
-  bool canFirmComment;
+  bool? canUserComment;
+  bool? canFirmComment;
   String category;
-  String description;
+  String? description;
 
   //TODO: Dodać informacje odnoście dat
   Address address;
 
   Order({
-    @required this.firmID,
-    @required this.firmName,
-    @required this.firmAvatar,
-    @required this.userID,
-    @required this.userName,
-    @required this.userAvatar,
-    @required this.title,
-    @required this.status,
+    required this.firmID,
+    required this.firmName,
+    required this.firmAvatar,
+    required this.userID,
+    required this.userName,
+    required this.userAvatar,
+    required this.title,
+    required this.status,
     this.canUserComment,
     this.canFirmComment,
-    @required this.category,
+    required this.category,
     this.description,
-    @required this.address,
+    required this.address,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -50,12 +48,12 @@ class Order {
       userName: json['userName'] ?? '',
       userAvatar: json['userAvatar'] ?? '',
       title: json['title'] ?? '',
-      status: json['status'] ?? '',
-      canUserComment: json['canUserComment'] ?? '',
-      canFirmComment: json['canFirmComment'] ?? '',
+      status: json['status'],
+      canUserComment: json['canUserComment'],
+      canFirmComment: json['canFirmComment'],
       category: json['category'] ?? '',
       description: json['description'] ?? '',
-      address: Address.fromJson(json['address']) ?? '',
+      address: Address.fromJson(json['address']),
     );
   }
 

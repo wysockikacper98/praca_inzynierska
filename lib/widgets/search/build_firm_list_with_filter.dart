@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/firebaseHelper.dart';
@@ -7,9 +8,9 @@ Widget buildFirmListWithFilter() {
   getFirmList();
   return FutureBuilder(
     future: getFirmList(),
-    builder: (ctx, snapshot) {
+    builder: (ctx, AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
-        final firms = snapshot.data.docs;
+        final firms = snapshot.data!.docs;
         return ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),

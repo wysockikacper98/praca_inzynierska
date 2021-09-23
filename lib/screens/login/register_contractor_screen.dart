@@ -7,9 +7,9 @@ import '../../models/users.dart';
 
 class RegisterContractorScreen extends StatefulWidget {
   static const routeName = '/register-contractor';
-  Map<String, bool> _categoriesMap;
+  late final Map<String, bool> _categoriesMap;
 
-  RegisterContractorScreen({List categories}) {
+  RegisterContractorScreen({required List categories}) {
     _categoriesMap = Map.fromIterable(
       categories,
       key: (item) => item.toString(),
@@ -23,7 +23,7 @@ class RegisterContractorScreen extends StatefulWidget {
 }
 
 class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
-  var _countSelected = 0;
+  int _countSelected = 0;
 
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
@@ -50,13 +50,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         prices: "Brak informacji",
         description: "Dodaj opis firmy"),
   );
-  String _userPassword;
+  late String _userPassword;
 
   bool _isLoading = false;
   bool _pickCategory = true;
 
   void _trySubmit(BuildContext context) {
-    final _isValid = _formKey.currentState.validate();
+    final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
@@ -64,11 +64,11 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         _isLoading = true;
       });
 
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
 
       widget._categoriesMap.forEach((key, value) {
         if (value) {
-          _firm.category.add(key);
+          _firm.category!.add(key);
         }
       });
 
@@ -132,7 +132,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   title: Text("$key"),
                                   onChanged: (value) {
                                     setState(() {
-                                      widget._categoriesMap[key] = value;
+                                      widget._categoriesMap[key] = value!;
                                       if (value) {
                                         _countSelected++;
                                       } else {
@@ -152,7 +152,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Nazwa firmy lub Wykonawcy'),
                                   textCapitalization: TextCapitalization.words,
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value!.isEmpty) {
                                       return 'Pole wymagane';
                                     } else if (value.length < 3) {
                                       return 'Nazwa za krótka';
@@ -160,7 +160,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.firmName = value;
+                                    _firm.firmName = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -168,7 +168,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Imie właściciela'),
                                   textCapitalization: TextCapitalization.words,
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value!.isEmpty) {
                                       return 'Pole wymagane';
                                     } else if (value.length < 3) {
                                       return 'Imie za krótkie';
@@ -176,7 +176,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.firstName = value;
+                                    _firm.firstName = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -184,7 +184,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Nazwisko właściciela'),
                                   textCapitalization: TextCapitalization.words,
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value!.isEmpty) {
                                       return 'Pole wymagane';
                                     } else if (value.length < 3) {
                                       return 'Nazwisko za krótkie';
@@ -192,7 +192,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.lastName = value;
+                                    _firm.lastName = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -200,7 +200,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Nr. Telefonu'),
                                   keyboardType: TextInputType.phone,
                                   validator: (value) {
-                                    if (int.tryParse(value) == null) {
+                                    if (int.tryParse(value!) == null) {
                                       return 'Podaj numer telefonu';
                                     } else if (value.isEmpty) {
                                       return 'Pole wymagane';
@@ -218,13 +218,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       InputDecoration(labelText: 'Email'),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
-                                    if (value.isEmpty || !value.contains('@')) {
+                                    if (value!.isEmpty || !value.contains('@')) {
                                       return 'Proszę podać poprawy adres email.';
                                     }
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.email = value;
+                                    _firm.email = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -232,7 +232,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       InputDecoration(labelText: 'Lokalizacja'),
                                   textCapitalization: TextCapitalization.words,
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value!.isEmpty) {
                                       return 'Pole wymagane';
                                     } else if (value.length < 4) {
                                       return 'Podaj poprawną nazwę miejscowości';
@@ -262,7 +262,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration: InputDecoration(labelText: 'NIP'),
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
-                                    if (int.tryParse(value) == null) {
+                                    if (int.tryParse(value!) == null) {
                                       return 'Podaj numer';
                                     } else if (value.length != 10) {
                                       return 'Podano niepoprawny numer NIP';
@@ -270,7 +270,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _firm.nip = value;
+                                    _firm.nip = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -279,13 +279,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       InputDecoration(labelText: 'Hasło'),
                                   obscureText: true,
                                   validator: (value) {
-                                    if (value.isEmpty || value.length < 7) {
+                                    if (value!.isEmpty || value.length < 7) {
                                       return 'Hasło musi mieć przynajmniej 7 znaków.';
                                     }
                                     return null;
                                   },
                                   onSaved: (value) {
-                                    _userPassword = value;
+                                    _userPassword = value!;
                                   },
                                 ),
                                 TextFormField(
@@ -294,7 +294,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Powtórz hasło'),
                                   obscureText: true,
                                   validator: (value) {
-                                    if (value.isEmpty || value.length < 7) {
+                                    if (value!.isEmpty || value.length < 7) {
                                       return 'Hasło musi mieć przynajmniej 7 znaków.';
                                     } else if (value !=
                                         _passwordController.text) {

@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-
 class Address {
   String streetAndHouseNumber;
   String zipCode;
   String city;
 
   Address({
-    @required this.streetAndHouseNumber,
-    @required this.zipCode,
-    @required this.city,
+    required this.streetAndHouseNumber,
+    required this.zipCode,
+    required this.city,
   });
 
   factory Address.fromJson(Map<String, dynamic> json) {

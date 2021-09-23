@@ -10,7 +10,7 @@ import 'order_finish_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   static const routeName = '/orders';
-  final String _loggedUserID = FirebaseAuth.instance.currentUser.uid;
+  final String _loggedUserID = FirebaseAuth.instance.currentUser!.uid;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> _finalStream(UserType userType) {
     final String fieldName = userType == UserType.Firm ? 'firmID' : 'userID';

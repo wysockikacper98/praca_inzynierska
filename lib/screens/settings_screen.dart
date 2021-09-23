@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/users.dart';
 import '../widgets/theme/theme_Provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -9,10 +8,6 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isUserTypeFirm =
-        Provider.of<UserProvider>(context, listen: false).user.type ==
-            UserType.Firm;
-
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(

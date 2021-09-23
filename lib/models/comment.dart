@@ -1,22 +1,20 @@
-import 'package:flutter/material.dart';
-
 class Comment {
   double rating;
-  String comment;
+  String? comment;
 
   Comment({
-    @required this.rating,
+    required this.rating,
     this.comment,
   });
 
-  factory Comment.fromJson(Map<String, dynamic> json){
+  factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      rating: json['rating'] ?? '',
+      rating: json['rating'] ?? 0,
       comment: json['comment'] ?? '',
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'rating': this.rating,
       'comment': this.comment,

@@ -29,10 +29,10 @@ class FirmProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = ModalRoute.of(context).settings.arguments as FirmsAuth;
-    final dateTime = DateTime.now();
-    final userID = FirebaseAuth.instance.currentUser.uid;
-    final userType =
+    final FirmsAuth data = ModalRoute.of(context)!.settings.arguments as FirmsAuth;
+    final DateTime dateTime = DateTime.now();
+    final String userID = FirebaseAuth.instance.currentUser!.uid;
+    final UserType userType =
         Provider.of<UserProvider>(context, listen: false).user.type;
 
     return Scaffold(
@@ -42,9 +42,9 @@ class FirmProfileScreen extends StatelessWidget {
       ),
       body: FutureBuilder(
         future: getDataAboutFirm(data.firmID),
-        builder: (ctx, snapshot) {
+        builder: (ctx, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            var pictures = snapshot.data.data()['details']['pictures'];
+            var pictures = snapshot.data!.data()!['details']['pictures'];
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +55,7 @@ class FirmProfileScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 7.5),
-                    child: Text(snapshot.data.data()['details']['description']),
+                    child: Text(snapshot.data!.data()!['details']['description']),
                   ),
                   // TODO: Localization do not implemented yet
                   // Padding(

@@ -5,7 +5,7 @@ import 'package:praca_inzynierska/models/users.dart';
 
 void main() {
   group('Testing json converting', () {
-    Firm _firm;
+    late Firm _firm;
 
     setUp(() {
       _firm = Firm(

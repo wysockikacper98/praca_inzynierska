@@ -6,7 +6,7 @@ import '../../widgets/firm/edit_firm_form.dart';
 
 class FirmEditProfileScreen extends StatelessWidget {
   static const routeName = '/firm-edit-profile';
-  final userID = FirebaseAuth.instance.currentUser.uid;
+  final userID = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {

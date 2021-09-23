@@ -3,22 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/users.dart';
 import 'messages.dart';
 
 class ChatsScreen extends StatelessWidget {
   static const routeName = '/chat-screen';
 
-  final user;
+  final Users user;
   final Key key;
 
   ChatsScreen({
-    @required this.user,
-    @required this.key,
+    required this.user,
+    required this.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final userId = FirebaseAuth.instance.currentUser.uid;
+    final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,12 +40,12 @@ class ChatsScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
             // } else if (chatSnapshot.data.docs != []) {
-          } else if (chatSnapshot.data.docs.length == 0) {
+          } else if (chatSnapshot.data!.docs.length == 0) {
             return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
-            print(chatSnapshot.data.docs.length.toString());
+            print(chatSnapshot.data!.docs.length.toString());
 
-            final chatDocs = chatSnapshot.data.docs;
+            final chatDocs = chatSnapshot.data!.docs;
             //TODO: sortowanie listy przed budowaniem
             //TODO: wyświetlanie tylko tych które posiadają collection('messages')
             // print('Zobaczymy co tu się takiego dzieje');

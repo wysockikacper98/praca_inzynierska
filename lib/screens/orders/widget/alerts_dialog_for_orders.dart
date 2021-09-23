@@ -9,14 +9,14 @@ import '../../../models/users.dart';
 import '../../firm/firm_profile_screen.dart';
 
 AlertDialog buildAlertDialogForNewMessage({
-  @required BuildContext context,
-  @required Widget title,
-  Widget content,
-  @required Widget cancelButton,
-  @required Widget acceptButton,
-  @required String addressee,
-  @required List<String> chatName,
-  @required List<String> listID,
+  required BuildContext context,
+  required Widget title,
+  Widget? content,
+  required Widget cancelButton,
+  required Widget acceptButton,
+  required String addressee,
+  required List<String> chatName,
+  required List<String> listID,
 }) {
   final currentLoggedUser =
       Provider.of<UserProvider>(context, listen: false).user;
@@ -48,13 +48,13 @@ AlertDialog buildAlertDialogForNewMessage({
 }
 
 AlertDialog buildAlertDialogForPhoneCallAndEmail({
-  @required BuildContext context,
-  @required Widget title,
-  Widget content,
-  @required Widget cancelButton,
-  @required Widget acceptButton,
-  @required bool isPhoneCall,
-  @required String contactData,
+  required BuildContext context,
+  required Widget title,
+  Widget? content,
+  required Widget cancelButton,
+  required Widget acceptButton,
+  required bool isPhoneCall,
+  required String contactData,
 }) {
   return AlertDialog(
     title: title,

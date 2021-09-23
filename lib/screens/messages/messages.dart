@@ -9,11 +9,11 @@ class Message extends StatelessWidget {
   final String chatID;
   final String chatName;
 
-  Message({this.chatID, this.chatName});
+  Message({required this.chatID, required this.chatName});
 
   @override
   Widget build(BuildContext context) {
-    final userID = FirebaseAuth.instance.currentUser.uid;
+    final userID = FirebaseAuth.instance.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: Text(this.chatName),
@@ -29,14 +29,14 @@ class Message extends StatelessWidget {
                     .collection('messages')
                     .orderBy('createdAt', descending: true)
                     .snapshots(),
-                builder: (ctx, messageSnapshot) {
+                builder: (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> messageSnapshot) {
                   if (messageSnapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   } else if (!messageSnapshot.hasData) {
                     return Center(child: Text("Brak wiadomości tekstowych"));
                   } else {
-                    final messageDoc = messageSnapshot.data.docs;
+                    final messageDoc = messageSnapshot.data!.docs;
 
                     return ListView.builder(
                       reverse: true,

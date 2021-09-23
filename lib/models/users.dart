@@ -9,21 +9,21 @@ class Users {
   final String email;
   final String firstName;
   final String lastName;
-  final String rating;
-  final String ratingNumber;
-  final String telephone;
-  final String avatar;
+  final String? rating;
+  final String? ratingNumber;
+  final String? telephone;
+  final String? avatar;
   final UserType type;
 
   Users({
-    @required this.email,
-    this.firstName,
-    this.lastName,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
     this.rating,
     this.ratingNumber,
     this.telephone,
     this.avatar,
-    @required this.type,
+    required this.type,
   });
 
   factory Users.fromJson(Map<String, dynamic> parsedJson) {
@@ -50,13 +50,13 @@ class Users {
         "\nEmail:" +
         this.email +
         "\nRating:" +
-        this.rating +
+        this.rating! +
         "\nRating Number:" +
-        this.ratingNumber +
+        this.ratingNumber! +
         "\nTelephone:" +
-        this.telephone +
+        this.telephone! +
         "\nAvatar:" +
-        this.avatar +
+        this.avatar! +
         "\nType:" +
         (this.type == UserType.Firm ? 'Firm' : 'Private User');
   }
@@ -76,10 +76,10 @@ class Users {
 }
 
 class UserProvider with ChangeNotifier {
-  Users _user;
+  Users? _user;
 
   Users get user {
-    return _user;
+    return _user!;
   }
 
   set user(Users value) {

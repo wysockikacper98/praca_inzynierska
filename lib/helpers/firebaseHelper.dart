@@ -27,18 +27,18 @@ Future<void> loginUser(
 
     var data = await FirebaseFirestore.instance
         .collection('users')
-        .doc(authResult.user.uid)
+        .doc(authResult.user!.uid)
         .get();
     if (!data.exists) {
       data = await FirebaseFirestore.instance
           .collection('firms')
-          .doc(authResult.user.uid)
+          .doc(authResult.user!.uid)
           .get();
     }
     // print("Login as User:" + authResult.user.uid);
     // print('Login helper:' + data.data().toString());
     Provider.of<UserProvider>(context, listen: false).user =
-        Users.fromJson(data.data());
+        Users.fromJson(data.data()!);
     // await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
@@ -64,7 +64,7 @@ Future<bool> registerUser(
 
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(authResult.user.uid)
+        .doc(authResult.user!.uid)
         .set(user.toJson());
 
     Provider.of<UserProvider>(context, listen: false).user = user;
@@ -86,7 +86,7 @@ Future<bool> registerFirm(
   await Future.delayed(Duration(seconds: 3), () {
     print("Stop delay");
   });
-  UserCredential authResult;
+  late UserCredential authResult;
   final _auth = FirebaseAuth.instance;
   // print("Test Zapisu Firmy: ${firm.toJson()}");
   // print("Test Zapisu szczegółów: ${firm.details.toJson()}");
@@ -97,7 +97,7 @@ Future<bool> registerFirm(
 
     await FirebaseFirestore.instance
         .collection('firms')
-        .doc(authResult.user.uid)
+        .doc(authResult.user!.uid)
         .set(firm.toJson());
 
     // print('Zapisana firma:\n' + firm.toString());
@@ -107,11 +107,11 @@ Future<bool> registerFirm(
     return true;
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
-    authResult.user.delete();
+    authResult.user!.delete();
     return false;
   } catch (error) {
     print(error);
-    authResult.user.delete();
+    authResult.user!.delete();
     return false;
   }
 }
@@ -119,7 +119,7 @@ Future<bool> registerFirm(
 void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
   String errorMessage = "Wystąpił błąd. Proszę sprawedzić dane logowania.";
   if (error.message != null) {
-    errorMessage = error.message;
+    errorMessage = error.message!;
   }
   print(errorMessage);
 
@@ -134,7 +134,7 @@ void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
 
 Future<void> createNewChat(BuildContext context, Users user, firm) async {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-  String userID = FirebaseAuth.instance.currentUser.uid;
+  String userID = FirebaseAuth.instance.currentUser!.uid;
 
   final List<String> chatName = [
     user.lastName + ' ' + user.firstName,
@@ -147,7 +147,7 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
 
   final chatData = await chats.where('users', arrayContains: userID).get();
   bool ifChatExist = false;
-  var pickedChat;
+  late var pickedChat;
 
   for (int i = 0; i < chatData.docs.length; i++) {
     if (chatData.docs[i]['users'].contains(firm.id)) {
@@ -175,7 +175,9 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
           ),
         ),
       );
-    }).catchError((error) => print("Failed to add user: $error"));
+    }).catchError((error) {
+      print('Failed to add user: $error');
+    });
   } else {
     print('Otwieranie starego chatu');
 
@@ -205,7 +207,7 @@ Future<void> getUserInfoFromFirebase(
     data =
         await FirebaseFirestore.instance.collection('firms').doc(userID).get();
   }
-  provider.user = Users.fromJson(data.data());
+  provider.user = Users.fromJson(data.data()!);
 }
 
 Future<void> getFirmInfoFromFirebase(
@@ -221,8 +223,8 @@ Future<void> getFirmInfoFromFirebase(
 
   // print("Data:" + data.data().toString());
 
-  provider.firm = Firm.fromJson(data.data());
-  providerUser.user = Users.fromJson(data.data());
+  provider.firm = Firm.fromJson(data.data()!);
+  providerUser.user = Users.fromJson(data.data()!);
 }
 
 Future<QuerySnapshot> getFirmList() async {
@@ -236,7 +238,7 @@ Future<void> updateUserInFirebase(
   String lastName,
   String telephone,
 ) async {
-  final userId = FirebaseAuth.instance.currentUser.uid;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   await FirebaseFirestore.instance.collection('users').doc(userId).update(
       {'firstName': firstName, 'lastName': lastName, 'telephone': telephone});
 
@@ -247,14 +249,14 @@ Future<void> updateFirmInFirebase(
   BuildContext context,
   Firm firm,
 ) async {
-  final userId = FirebaseAuth.instance.currentUser.uid;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   await FirebaseFirestore.instance.collection('firms').doc(userId).update({
     'firmName': firm.firmName,
     'firstName': firm.firstName,
     'lastName': firm.lastName,
     'telephone': firm.telephone,
     'location': firm.location,
-    'details': firm.details.toJson(),
+    'details': firm.details!.toJson(),
   });
 
   await getFirmInfoFromFirebase(context, userId);
@@ -281,17 +283,17 @@ Future<void> createOrOpenChat(
   List<String> listID,
 ) async {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-  String loggedUserID = FirebaseAuth.instance.currentUser.uid;
+  String loggedUserID = FirebaseAuth.instance.currentUser!.uid;
 
   final chatData =
       await chats.where('users', arrayContains: loggedUserID).get();
 
   bool ifChatExist = false;
-  QueryDocumentSnapshot<Map<String, dynamic>> pickedChat;
+  late QueryDocumentSnapshot<Map<String, dynamic>> pickedChat;
 
   for (final element in chatData.docs) {
     if (element['users'].contains(addressee)) {
-      pickedChat = element;
+      pickedChat = element as QueryDocumentSnapshot<Map<String, dynamic>>;
       ifChatExist = true;
       break;
     }

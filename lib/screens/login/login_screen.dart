@@ -45,18 +45,17 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 functionTemp(UserProvider user, BuildContext context) async {
-  final userId = FirebaseAuth.instance.currentUser.uid;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final provider = Provider.of<ThemeProvider>(context, listen: false);
 
-  if (user.user == null) {
-    await getUserInfoFromFirebase(context, userId);
-  }
+  await getUserInfoFromFirebase(context, userId);
+
   if (user.user.type == UserType.Firm) {
     print("GetFirm info provider: " + userId);
     await getFirmInfoFromFirebase(context, userId);
   }
 
-  final String themeMode = await StorageManager.readData('themeMode');
+  final String? themeMode = await StorageManager.readData('themeMode');
   if (themeMode == null) {
     provider.themeMode = ThemeMode.system;
     print('Hello themeMode is: $themeMode');

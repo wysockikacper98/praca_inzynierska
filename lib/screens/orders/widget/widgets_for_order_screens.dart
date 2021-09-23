@@ -23,7 +23,7 @@ Padding buildOrderListTile(
       ),
       trailing: Text(
         translateStatusEnumStringToString(data.data()['status']),
-        style: themeData.textTheme.subtitle2.copyWith(
+        style: themeData.textTheme.subtitle2!.copyWith(
           color: themeData.colorScheme.secondaryVariant,
         ),
       ),
@@ -64,11 +64,11 @@ CircleAvatar circleAvatar(
   );
 }
 
-NetworkImage networkImage(String url) {
+NetworkImage? networkImage(String? url) {
   return (url != null && url != '') ? NetworkImage(url) : null;
 }
 
-String translateStatusEnumStringToString(String status) {
+String translateStatusEnumStringToString(String? status) {
   switch (status) {
     case 'PENDING':
       return 'Oczekuje';

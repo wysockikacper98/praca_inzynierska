@@ -55,7 +55,7 @@ class StorageManager {
     }
   }
 
-  static Future<String> readData(String key) async {
+  static Future<String?> readData(String key) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
   }

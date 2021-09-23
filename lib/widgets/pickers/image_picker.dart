@@ -15,9 +15,9 @@ Widget imagePicker(UserProvider provider, double width) {
   return Stack(
     children: [
       CircleAvatar(
-        backgroundImage: provider.user.avatar == ''
+        backgroundImage: (provider.user.avatar == ''
             ? AssetImage('assets/images/user.png')
-            : NetworkImage(provider.user.avatar),
+            : NetworkImage(provider.user.avatar!)) as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),
@@ -41,9 +41,9 @@ Widget imagePickerFirm(
   return Stack(
     children: [
       CircleAvatar(
-        backgroundImage: firmProvider.firm.avatar == ''
+        backgroundImage: (firmProvider.firm.avatar == ''
             ? AssetImage('assets/images/user.png')
-            : NetworkImage(firmProvider.firm.avatar),
+            : NetworkImage(firmProvider.firm.avatar!)) as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),
@@ -92,7 +92,7 @@ Future<void> _pickImageFirm(
 }
 
 Future<void> _pickedImage(File image, UserProvider provider) async {
-  final userID = FirebaseAuth.instance.currentUser.uid;
+  final userID = FirebaseAuth.instance.currentUser!.uid;
   final ref = FirebaseStorage.instance
       .ref()
       .child('user_avatars')
@@ -107,12 +107,12 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
 
   final data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();
-  provider.user = Users.fromJson(data.data());
+  provider.user = Users.fromJson(data.data()!);
 }
 
 Future<void> _pickedImageFirm(
     File image, FirmProvider firmProvider, UserProvider userProvider) async {
-  final userID = FirebaseAuth.instance.currentUser.uid;
+  final userID = FirebaseAuth.instance.currentUser!.uid;
   final ref = FirebaseStorage.instance
       .ref()
       .child('user_avatars')
@@ -127,6 +127,6 @@ Future<void> _pickedImageFirm(
 
   final data =
       await FirebaseFirestore.instance.collection('firms').doc(userID).get();
-  firmProvider.firm = Firm.fromJson(data.data());
-  userProvider.user = Users.fromJson(data.data());
+  firmProvider.firm = Firm.fromJson(data.data()!);
+  userProvider.user = Users.fromJson(data.data()!);
 }

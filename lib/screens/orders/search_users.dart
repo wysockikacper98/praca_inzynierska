@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/users.dart';
 
-class SearchUsers extends SearchDelegate<Users> {
-  final Stream<QuerySnapshot<Map<String, dynamic>>> users;
+class SearchUsers extends SearchDelegate<Users?> {
+  final Stream<QuerySnapshot<Map<String, dynamic>>>? users;
   final void Function(DocumentSnapshot) setUser;
 
   SearchUsers(this.users, this.setUser);
@@ -47,7 +47,7 @@ class SearchUsers extends SearchDelegate<Users> {
           );
         }
 
-        final result = snapshot.data.docs.where((element) {
+        final result = snapshot.data!.docs.where((element) {
           return ((element['firstName'] + ' ' + element['lastName'])
                   .toString()
                   .toLowerCase()

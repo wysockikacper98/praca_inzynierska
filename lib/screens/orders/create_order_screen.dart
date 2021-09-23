@@ -17,10 +17,10 @@ class CreateOrderScreen extends StatefulWidget {
 }
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
-  DocumentSnapshot _user;
-  Stream<QuerySnapshot<Map<String, dynamic>>> users;
-  Address _address;
-  Order _order;
+  DocumentSnapshot? _user;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? users;
+  late Address _address;
+  late Order _order;
   var _currentCategory;
   bool _isLoading = false;
   bool _showCategoryError = false;
@@ -64,7 +64,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           child: Center(
             child: Column(
               children: [
-                _user != null ? buildUserPreview(_user) : SizedBox(height: 16),
+                _user != null ? buildUserPreview(_user!) : SizedBox(height: 16),
                 buildElevatedButton(context, users),
                 SizedBox(height: 10),
                 Container(
@@ -143,7 +143,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 labelText: 'Tytuł zamówenia',
               ),
               validator: (value) {
-                value.trim();
+                value!.trim();
                 if (value.isEmpty) {
                   return 'Pole wymagane';
                 }
@@ -153,7 +153,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 return null;
               },
               onSaved: (value) {
-                _order.title = value.trim();
+                _order.title = value!.trim();
               },
             ),
           ),
@@ -167,7 +167,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 labelText: 'Opis zamównienia',
               ),
               onSaved: (value) {
-                _order.description = value.trim();
+                _order.description = value!.trim();
               },
             ),
           ),
@@ -201,7 +201,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               keyboardType: TextInputType.streetAddress,
               textCapitalization: TextCapitalization.sentences,
               validator: (value) {
-                value = value.trim();
+                value = value!.trim();
                 if (value.isEmpty) {
                   return 'Pole wymagane';
                 }
@@ -211,7 +211,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 return null;
               },
               onSaved: (value) {
-                _address.streetAndHouseNumber = value.trim();
+                _address.streetAndHouseNumber = value!.trim();
               },
             ),
           ),
@@ -224,14 +224,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: "Kod pocztowy"),
                   validator: (value) {
-                    value.trim();
+                    value!.trim();
                     if (value.isEmpty) {
                       return 'Pole wymagane';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _address.zipCode = value.trim();
+                    _address.zipCode = value!.trim();
                   },
                 ),
               ),
@@ -242,7 +242,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   decoration: InputDecoration(labelText: "Miejscowość"),
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    value.trim();
+                    value!.trim();
                     if (value.isEmpty) {
                       return 'Pole wymagane';
                     }
@@ -252,7 +252,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _address.city = value.trim();
+                    _address.city = value!.trim();
                   },
                 ),
               )
@@ -282,7 +282,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         height: 2,
         color: Theme.of(context).colorScheme.secondary,
       ),
-      items: provider.firm.category.map((value) {
+      items: provider.firm.category!.map((value) {
         return DropdownMenuItem(
           value: value.toString(),
           child: Text(value.toString()),
@@ -298,7 +298,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   ElevatedButton buildElevatedButton(
     BuildContext context,
-    Stream<QuerySnapshot<Map<String, dynamic>>> users,
+    Stream<QuerySnapshot<Map<String, dynamic>>>? users,
   ) {
     return ElevatedButton.icon(
       icon: Icon(Icons.person_search),
@@ -339,8 +339,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 
   Future<void> _trySubmit(BuildContext context, FirmProvider provider) async {
-    final bool _isAddressFormValid = _formAddressKey.currentState.validate();
-    final bool _isTitleFormValid = _formKey.currentState.validate();
+    final bool _isAddressFormValid = _formAddressKey.currentState!.validate();
+    final bool _isTitleFormValid = _formKey.currentState!.validate();
     final bool _isCategoryValid = validateCategory(_currentCategory);
     FocusScope.of(context).unfocus();
 
@@ -354,7 +354,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         zipCode: '',
         city: '',
       );
-      _formAddressKey.currentState.save();
+      _formAddressKey.currentState!.save();
 
       _order = Order(
         firmID: '',
@@ -369,14 +369,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         description: '',
         address: _address,
       );
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
 
-      _order.firmID = FirebaseAuth.instance.currentUser.uid.toString();
+      _order.firmID = FirebaseAuth.instance.currentUser!.uid.toString();
       _order.firmName = provider.firm.firmName;
-      _order.firmAvatar = provider.firm.avatar;
-      _order.userID = _user.id;
-      _order.userName = _user['firstName'] + ' ' + _user['lastName'];
-      _order.userAvatar = _user['avatar'];
+      _order.firmAvatar = provider.firm.avatar!;
+      _order.userID = _user!.id;
+      _order.userName = _user!['firstName'] + ' ' + _user!['lastName'];
+      _order.userAvatar = _user!['avatar'];
       _order.category = _currentCategory;
 
       print("To jest obiekt to zapisu ${_order.toJson()}");

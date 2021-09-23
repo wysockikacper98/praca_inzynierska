@@ -1,8 +1,8 @@
 class Details {
-  String description;
-  List<dynamic> pictures;
-  String prices;
-  String calendar = "calendar";
+  String? description;
+  List<dynamic>? pictures;
+  String? prices;
+  String? calendar = "calendar";
 
   Details({
     this.description,
@@ -14,7 +14,7 @@ class Details {
   @override
   String toString() {
     return '\nDescription:$description' +
-        '\nPictures amount:${pictures.length}' +
+        '\nPictures amount:${pictures!.length}' +
         '\nCalendar:$calendar' +
         '\nPrices:\n$prices';
   }

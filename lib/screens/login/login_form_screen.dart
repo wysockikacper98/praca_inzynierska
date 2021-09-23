@@ -12,8 +12,8 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
 
-  var _userEmail = '';
-  var _userPassword = '';
+  late String _userEmail;
+  late String _userPassword;
   bool _isLoading = false;
 
   Future<void> _trySubmit() async {
@@ -21,11 +21,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
       _isLoading = true;
     });
 
-    final _isValid = _formKey.currentState.validate();
+    final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
 
       await loginUser(context, _userEmail.trim(), _userPassword.trim())
           .then((value) {
@@ -63,13 +63,13 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                         decoration: InputDecoration(labelText: 'Email'),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
-                          if (value.isEmpty || !value.contains('@')) {
+                          if (value!.isEmpty || !value.contains('@')) {
                             return 'Proszę podać poprawy adres email.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userEmail = value;
+                          _userEmail = value!;
                         },
                       ),
                       TextFormField(
@@ -78,13 +78,13 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                         decoration: InputDecoration(labelText: 'Hasło'),
                         obscureText: true,
                         validator: (value) {
-                          if (value.isEmpty || value.length < 7) {
+                          if (value!.isEmpty || value.length < 7) {
                             return 'Hasło musi mieć przynajmniej 7 znaków.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userPassword = value;
+                          _userPassword = value!;
                         },
                       ),
                       SizedBox(height: 20),

@@ -18,22 +18,22 @@ class OrderDetailsScreen extends StatefulWidget {
   final String orderID;
   final String userOrFirmID;
 
-  OrderDetailsScreen({this.orderID, this.userOrFirmID});
+  OrderDetailsScreen({required this.orderID, required this.userOrFirmID});
 
   @override
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  Users userToShowInDetails;
-  Firm firmToShowInDetails;
-  List<String> chatName;
-  List<String> idList;
+  late Users userToShowInDetails;
+  late Firm firmToShowInDetails;
+  late List<String> chatName;
+  late List<String> idList;
 
   Future<DocumentSnapshot<Map<String, dynamic>>> _getOrderDetails(
     UserType userType,
   ) async {
-    final String currentUserID = FirebaseAuth.instance.currentUser.uid;
+    final String currentUserID = FirebaseAuth.instance.currentUser!.uid;
     final String collection = userType == UserType.Firm ? 'users' : 'firms';
     final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
         await FirebaseFirestore.instance
@@ -42,7 +42,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             .get();
 
     if (userType == UserType.Firm) {
-      userToShowInDetails = Users.fromJson(dataFromFirebase.data());
+      userToShowInDetails = Users.fromJson(dataFromFirebase.data()!);
       //creating list of ids
       idList = [dataFromFirebase.id, currentUserID];
       // creating chat name
@@ -52,7 +52,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         '${firm.lastName} ${firm.firstName}, ${firm.firmName}',
       ];
     } else {
-      firmToShowInDetails = Firm.fromJson(dataFromFirebase.data());
+      firmToShowInDetails = Firm.fromJson(dataFromFirebase.data()!);
       //creating list of ids
       idList = [
         currentUserID,
@@ -109,18 +109,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   _buildTextNormalThenBold(
                     context: context,
                     normal: 'Rodzaj usługi: ',
-                    bold: snapshot.data.data()['category'],
+                    bold: snapshot.data!.data()!['category'],
                   ),
                   _buildTextNormalThenBold(
                     context: context,
                     normal: 'Status usługi: ',
                     bold: translateStatusEnumStringToString(
-                        snapshot.data.data()['status']),
+                        snapshot.data!.data()!['status']),
                   ),
                   _buildTextNormalThenBold(
                     context: context,
                     normal: 'Tytuł: ',
-                    bold: snapshot.data.data()['title'],
+                    bold: snapshot.data!.data()!['title'],
                   ),
                   _buildDescription(context, snapshot),
                   //TODO: wyświetlanie okresu / dnia wykonania zamówienia
@@ -133,8 +133,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     chatName: chatName,
                     listID: idList,
                     contactPhoneNumber: userType == UserType.Firm
-                        ? userToShowInDetails.telephone
-                        : firmToShowInDetails.telephone,
+                        ? userToShowInDetails.telephone!
+                        : firmToShowInDetails.telephone!,
                     contactEmail: userType == UserType.Firm
                         ? userToShowInDetails.email
                         : firmToShowInDetails.email,
@@ -200,14 +200,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               'Opis:',
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .subtitle1!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Text(
-              (snapshot.data.data()['description'] != null &&
-                      snapshot.data.data()['description'] != '')
-                  ? snapshot.data.data()['description']
+              (snapshot.data!.data()!['description'] != null &&
+                      snapshot.data!.data()!['description'] != '')
+                  ? snapshot.data!.data()!['description']
                   : 'Brak opisu',
               style: Theme.of(context).textTheme.bodyText2,
             ),
@@ -218,9 +218,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   Padding _buildTextNormalThenBold({
-    BuildContext context,
-    String normal,
-    String bold,
+    required BuildContext context,
+    required String normal,
+    required String bold,
   }) {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -235,7 +235,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 text: bold,
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle1
+                    .subtitle1!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
             ],
@@ -252,13 +252,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     List<String> idList,
   ) {
     final bool canShowComment = userType == UserType.Firm
-        ? (snapshot.data.data()['canFirmComment'] != null &&
-            snapshot.data.data()['canFirmComment'] == true)
-        : (snapshot.data.data()['canUserComment'] != null &&
-            snapshot.data.data()['canUserComment'] == true);
+        ? (snapshot.data!.data()!['canFirmComment'] != null &&
+            snapshot.data!.data()!['canFirmComment'] == true)
+        : (snapshot.data!.data()!['canUserComment'] != null &&
+            snapshot.data!.data()!['canUserComment'] == true);
 
     final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
-    switch (stringToStatus(snapshot.data.data()['status'])) {
+    switch (stringToStatus(snapshot.data!.data()!['status'])) {
       case Status.PENDING:
         return SizedBox(
           width: buttonWidth,
@@ -274,7 +274,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     barrierDismissible: true,
                     builder: (_) => buildAlertDialogForCancelingOrder(
                       context,
-                      snapshot.data.id,
+                      snapshot.data!.id,
                     ),
                   ),
                 ),
@@ -296,7 +296,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       barrierDismissible: true,
                       builder: (_) => buildAlertDialogForStartingOrder(
                         context,
-                        snapshot.data.id,
+                        snapshot.data!.id,
                         _startOrder,
                       ),
                     ),
@@ -321,7 +321,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       barrierDismissible: true,
                       builder: (_) => buildAlertDialogForFinishingOrder(
                         context,
-                        snapshot.data.id,
+                        snapshot.data!.id,
                         _finishOrder,
                       ),
                     ),
@@ -347,7 +347,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       barrierDismissible: false,
                       builder: (context) => BuildAlertDialogAddComment(
                         idList,
-                        snapshot.data.id,
+                        snapshot.data!.id,
                         refreshWidget,
                       ),
                     ),
@@ -372,13 +372,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 }
 
 Widget _buildContactButtons({
-  @required BuildContext context,
-  @required AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  @required UserType userType,
-  @required List<String> chatName,
-  @required List<String> listID,
-  @required String contactEmail,
-  @required String contactPhoneNumber,
+  required BuildContext context,
+  required AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  required UserType userType,
+  required List<String> chatName,
+  required List<String> listID,
+  required String contactEmail,
+  required String contactPhoneNumber,
 }) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -396,8 +396,8 @@ Widget _buildContactButtons({
               cancelButton: Text('Nie'),
               acceptButton: Text('Tak'),
               addressee: userType == UserType.Firm
-                  ? snapshot.data.data()['userID']
-                  : snapshot.data.data()['firmID'],
+                  ? snapshot.data!.data()!['userID']
+                  : snapshot.data!.data()!['firmID'],
               chatName: chatName,
               listID: listID,
             ),
@@ -467,7 +467,7 @@ ListTile _createUserToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: double.parse(user.rating),
+          rating: double.parse(user.rating!),
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -485,7 +485,7 @@ ListTile _createUserToShowInDetails(
                 text: ' (${user.ratingNumber})',
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
+                    .headline6!
                     .copyWith(fontWeight: FontWeight.normal),
               )
             ],
@@ -515,7 +515,7 @@ ListTile _createFirmToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: double.parse(firm.rating),
+          rating: double.parse(firm.rating!),
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -533,7 +533,7 @@ ListTile _createFirmToShowInDetails(
                   text: ' (${firm.ratingNumber})',
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headline6!
                       .copyWith(fontWeight: FontWeight.normal))
             ],
           ),
@@ -560,6 +560,6 @@ Center buildErrorMessage(BuildContext context) {
   );
 }
 
-NetworkImage networkImage(String url) {
+NetworkImage? networkImage(String? url) {
   return (url != null && url != '') ? NetworkImage(url) : null;
 }

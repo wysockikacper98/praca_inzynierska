@@ -30,12 +30,12 @@ class _EditFirmFormState extends State<EditFirmForm> {
 
   bool _isLoading = false;
 
-  var _firmNameController = TextEditingController();
-  var _nameController = TextEditingController();
-  var _surnameController = TextEditingController();
-  var _phoneController = TextEditingController();
-  var _locationController = TextEditingController();
-  var _descriptionController = TextEditingController();
+  TextEditingController _firmNameController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _surnameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -48,13 +48,13 @@ class _EditFirmFormState extends State<EditFirmForm> {
     _descriptionController.dispose();
   }
 
-  String _firmName;
-  String _name;
-  String _surname;
-  String _phone;
-  String _location;
-  String _description;
-  List<String> _picture;
+  String? _firmName;
+  String? _name;
+  String? _surname;
+  String? _phone;
+  String? _location;
+  String? _description;
+  // List<String>? _picture;
 
   Future<void> _trySubmit(
     BuildContext context,
@@ -63,7 +63,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
     final firmProvider = Provider.of<FirmProvider>(context, listen: false);
     // final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    final _isValid = formKey.currentState.validate();
+    final _isValid = formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
@@ -71,17 +71,17 @@ class _EditFirmFormState extends State<EditFirmForm> {
         _isLoading = true;
       });
 
-      formKey.currentState.save();
+      formKey.currentState!.save();
 
       Firm updatedFirm = firmProvider.firm;
 
       //update Firm
       if (_firmName != null) {
-        updatedFirm.firmName = _firmName;
+        updatedFirm.firmName = _firmName!;
       }
       if (_name != null && _surname != null) {
-        updatedFirm.firstName = _name;
-        updatedFirm.lastName = _surname;
+        updatedFirm.firstName = _name!;
+        updatedFirm.lastName = _surname!;
       }
       if (_phone != null) {
         updatedFirm.telephone = _phone;
@@ -90,7 +90,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
         updatedFirm.location = _location;
       }
       if (_description != null) {
-        updatedFirm.details.description = _description;
+        updatedFirm.details!.description = _description;
       }
 
       await updateFirmInFirebase(context, updatedFirm);
@@ -123,15 +123,15 @@ class _EditFirmFormState extends State<EditFirmForm> {
             imagePickerFirm(firmProvider, userProvider, width),
             SizedBox(height: 15),
             RatingBarIndicator(
-              rating: double.parse(userProvider.user.rating),
+              rating: double.parse(userProvider.user.rating!),
               itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
               itemCount: 5,
               itemSize: 40.0,
             ),
             Text(
-              firmProvider.firm.rating +
+              firmProvider.firm.rating! +
                   ' (' +
-                  firmProvider.firm.ratingNumber +
+                  firmProvider.firm.ratingNumber! +
                   ')',
               style: Theme.of(context).textTheme.subtitle1,
             ),
@@ -185,7 +185,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           ),
                         ),
                         validator: (value) {
-                          value = value.trim();
+                          value = value!.trim();
 
                           if (value.isEmpty || value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
@@ -193,7 +193,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           return null;
                         },
                         onSaved: (value) {
-                          value = value.trim();
+                          value = value!.trim();
 
                           _firmName = value;
                         },
@@ -348,7 +348,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           ),
                         ),
                         validator: (value) {
-                          value = value.trim();
+                          value = value!.trim();
 
                           if (value.isEmpty || value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
@@ -356,7 +356,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           return null;
                         },
                         onSaved: (value) {
-                          value = value.trim();
+                          value = value!.trim();
 
                           _name = value;
                         },
@@ -376,14 +376,14 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           ),
                         ),
                         validator: (value) {
-                          value = value.trim();
+                          value = value!.trim();
                           if (value.isEmpty || value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          value = value.trim();
+                          value = value!.trim();
                           _surname = value;
                         },
                       ),
@@ -525,11 +525,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 !_editPhoneNumber
                     ? TextButton(
                         child: Text(
-                          _formatPhoneNumber(firmProvider.firm.telephone),
+                          _formatPhoneNumber(firmProvider.firm.telephone!),
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         onPressed: () {
-                          _phoneController.text = firmProvider.firm.telephone;
+                          _phoneController.text = firmProvider.firm.telephone!;
                           setState(() {
                             _editPhoneNumber = !_editPhoneNumber;
                           });
@@ -561,7 +561,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           hintText: "Numer Telefonu",
                         ),
                         validator: (value) {
-                          value = value.replaceAll(' ', '');
+                          value = value!.replaceAll(' ', '');
                           if (int.tryParse(value) == null) {
                             return 'Podaj numer telefonu';
                           } else if (value.isEmpty || value.length < 9) {
@@ -570,7 +570,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                           return null;
                         },
                         onSaved: (value) {
-                          _phone = value.replaceAll(' ', '');
+                          _phone = value!.replaceAll(' ', '');
                         },
                       ),
                     ),
@@ -682,7 +682,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 icon: _editLocation ? Icon(Icons.close) : Icon(Icons.edit),
                 onPressed: () {
                   if (!_editLocation) {
-                    _locationController.text = firmProvider.firm.location;
+                    _locationController.text = firmProvider.firm.location!;
                   }
                   setState(() {
                     _editLocation = !_editLocation;
@@ -692,7 +692,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ),
             !_editLocation
                 ? Text(
-                    firmProvider.firm.location,
+                    firmProvider.firm.location!,
                     style: Theme.of(context).textTheme.headline6,
                   )
                 : Form(
@@ -713,7 +713,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                               ),
                             ),
                             validator: (value) {
-                              value = value.trim();
+                              value = value!.trim();
 
                               if (value.isEmpty || value.length < 3) {
                                 return 'Proszę podać przynajmniej 3 znaki.';
@@ -721,7 +721,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                               return null;
                             },
                             onSaved: (value) {
-                              _location = value.trim();
+                              _location = value!.trim();
                             },
                           ),
                         ),
@@ -758,7 +758,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 onPressed: () {
                   if (!_editDescription) {
                     _descriptionController.text =
-                        firmProvider.firm.details.description;
+                        firmProvider.firm.details!.description!;
                   }
                   setState(() {
                     _editDescription = !_editDescription;
@@ -770,7 +770,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 ? RichText(
                     text: TextSpan(
                       children: [
-                        TextSpan(text: firmProvider.firm.details.description),
+                        TextSpan(text: firmProvider.firm.details!.description),
                       ],
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
@@ -796,7 +796,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                               // ),
                             ),
                             validator: (value) {
-                              value = value.trimRight();
+                              value = value!.trimRight();
 
                               if (value.isEmpty || value.length < 30) {
                                 return 'Proszę podać przynajmniej 30 znaki.';
@@ -804,7 +804,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                               return null;
                             },
                             onSaved: (value) {
-                              _description = value.trimRight();
+                              _description = value!.trimRight();
                             },
                           ),
                         ),
@@ -841,7 +841,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 onPressed: () {
                   if (!_editPicture) {
                     _descriptionController.text =
-                        firmProvider.firm.details.description;
+                        firmProvider.firm.details!.description!;
                   }
                   setState(() {
                     _editPicture = !_editPicture;
@@ -849,7 +849,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 },
               ),
             ),
-            firmProvider.firm.details.pictures.length > 0
+            firmProvider.firm.details!.pictures!.length > 0
                 ? CarouselSlider.builder(
                     options: CarouselOptions(
                       aspectRatio: 2.5,
@@ -858,14 +858,14 @@ class _EditFirmFormState extends State<EditFirmForm> {
                       enlargeCenterPage: true,
                       autoPlay: true,
                     ),
-                    itemCount: firmProvider.firm.details.pictures.length,
+                    itemCount: firmProvider.firm.details!.pictures!.length,
                     itemBuilder: (ctx, index, tag) {
                       return GestureDetector(
                         child: Hero(
                           tag: tag,
                           child: Container(
                             child: Image.asset(
-                                firmProvider.firm.details.pictures[index]),
+                                firmProvider.firm.details!.pictures![index]),
                             color: Colors.white30,
                           ),
                         ),
@@ -875,7 +875,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                             MaterialPageRoute(builder: (_) {
                               return FullScreenImage(
                                   imageAssetsPath:
-                                      firmProvider.firm.details.pictures[index],
+                                      firmProvider.firm.details!.pictures![index],
                                   tag: tag);
                             }),
                           );

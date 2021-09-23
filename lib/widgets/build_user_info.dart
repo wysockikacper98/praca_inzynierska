@@ -13,7 +13,7 @@ Container buildUserInfo(BuildContext context, Users user) {
   var screenSize = MediaQuery.of(context).size;
   var height = screenSize.height;
 
-  final userID = FirebaseAuth.instance.currentUser.uid;
+  final userID = FirebaseAuth.instance.currentUser!.uid;
 
   final provider = Provider.of<UserProvider>(context);
 
@@ -28,7 +28,7 @@ Container buildUserInfo(BuildContext context, Users user) {
           leading: CircleAvatar(
             backgroundImage: AssetImage('assets/images/user.png'),
             foregroundImage:
-                user.avatar != '' ? NetworkImage(user.avatar) : null,
+                user.avatar != '' ? NetworkImage(user.avatar!) : null,
             radius: 30,
           ),
           title: AutoSizeText(

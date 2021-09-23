@@ -15,7 +15,7 @@ class UserEditProfileScreen extends StatefulWidget {
 }
 
 class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
-  final userID = FirebaseAuth.instance.currentUser.uid;
+  final userID = FirebaseAuth.instance.currentUser!.uid;
   final _formPersonalDataKey = GlobalKey<FormState>();
   final _formPhoneKey = GlobalKey<FormState>();
 
@@ -27,16 +27,16 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   var _surnameController = TextEditingController();
   var _phoneController = TextEditingController();
 
-  String _name;
-  String _surname;
-  String _phone;
+  String? _name;
+  String? _surname;
+  String? _phone;
 
   Future<void> _trySubmit(
     BuildContext context,
     UserProvider provider,
     GlobalKey<FormState> formKey,
   ) async {
-    final _isValid = formKey.currentState.validate();
+    final _isValid = formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
@@ -44,7 +44,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
         _isLoading = true;
       });
 
-      formKey.currentState.save();
+      formKey.currentState!.save();
 
       if (_name == null || _surname == null) {
         _name = provider.user.firstName;
@@ -54,7 +54,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
         _phone = provider.user.telephone;
       }
 
-      await updateUserInFirebase(context, _name, _surname, _phone);
+      await updateUserInFirebase(context, _name!, _surname!, _phone!);
 
       setState(() {
         _isLoading = false;
@@ -94,14 +94,14 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               imagePicker(provider, width),
               SizedBox(height: 15),
               RatingBarIndicator(
-                rating: double.parse(provider.user.rating),
+                rating: double.parse(provider.user.rating!),
                 itemBuilder: (_, index) =>
                     Icon(Icons.star, color: Colors.amber),
                 itemCount: 5,
                 itemSize: 40.0,
               ),
               Text(
-                provider.user.rating + ' (' + provider.user.ratingNumber + ')',
+                provider.user.rating! + ' (' + provider.user.ratingNumber! + ')',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               SizedBox(height: 15),
@@ -149,7 +149,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                 ),
                               ),
                               validator: (value) {
-                                if (value.isEmpty || value.length < 3) {
+                                if (value!.isEmpty || value.length < 3) {
                                   return 'Proszę podać przynajmniej 3 znaki.';
                                 }
                                 return null;
@@ -172,7 +172,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                 ),
                               ),
                               validator: (value) {
-                                if (value.isEmpty || value.length < 3) {
+                                if (value!.isEmpty || value.length < 3) {
                                   return 'Proszę podać przynajmniej 3 znaki.';
                                 }
                                 return null;
@@ -216,7 +216,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           });
                         }
                       : () {
-                          _phoneController.text = provider.user.telephone;
+                          _phoneController.text = provider.user.telephone!;
                           setState(() {
                             _userPhoneEdit = !_userPhoneEdit;
                           });
@@ -225,7 +225,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ),
               !_userPhoneEdit
                   ? Text(
-                      _formatPhoneNumber(provider.user.telephone),
+                      _formatPhoneNumber(provider.user.telephone!),
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(
@@ -246,7 +246,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                 ),
                               ),
                               validator: (value) {
-                                value = value.replaceAll(' ', '');
+                                value = value!.replaceAll(' ', '');
                                 if (int.tryParse(value) == null) {
                                   return 'Podaj numer telefonu';
                                 } else if (value.isEmpty || value.length < 9) {
@@ -255,7 +255,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                 return null;
                               },
                               onSaved: (value) {
-                                _phone = value.replaceAll(' ', '');
+                                _phone = value!.replaceAll(' ', '');
                               },
                             ),
                           ),

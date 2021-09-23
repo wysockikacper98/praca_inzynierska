@@ -5,7 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../screens/firm/firm_profile_screen.dart';
 
 ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
-  final rating = double.tryParse(firm.data()['rating']) != null
+  final double rating = double.tryParse(firm.data()['rating']) != null
       ? double.parse(firm.data()['rating'])
       : 0;
 

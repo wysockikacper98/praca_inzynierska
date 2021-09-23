@@ -7,32 +7,32 @@ class Firm {
   String firmName;
   String firstName;
   String lastName;
-  String telephone;
+  String? telephone;
   String email;
-  String location;
-  String range;
+  String? location;
+  String? range;
   String nip;
-  String avatar;
-  String rating;
-  String ratingNumber;
-  List<dynamic> category;
+  String? avatar;
+  String? rating;
+  String? ratingNumber;
+  List<dynamic>? category;
   UserType type;
-  Details details;
+  Details? details;
 
   Firm({
-    @required this.firmName,
-    this.firstName,
-    this.lastName,
+    required this.firmName,
+    required this.firstName,
+    required this.lastName,
     this.telephone,
-    this.email,
+    required this.email,
     this.location,
     this.range,
-    @required this.nip,
+    required this.nip,
     this.category,
     this.avatar,
     this.rating,
     this.ratingNumber,
-    @required this.type,
+    required this.type,
     this.details,
   });
 
@@ -70,7 +70,7 @@ class Firm {
       ratingNumber: parsedJson['ratingNumber'] ?? "",
       category: parsedJson['category'] ?? [],
       type: parsedJson['type'] == 'Firm' ? UserType.Firm : UserType.PrivateUser,
-      details: Details.fromJson(parsedJson['details']) ?? "",
+      details: Details.fromJson(parsedJson['details']),
     );
   }
 
@@ -89,16 +89,16 @@ class Firm {
       'ratingNumber': this.ratingNumber,
       'category': this.category,
       'type': this.type.toString().split('.').last,
-      'details': this.details.toJson(),
+      'details': this.details!.toJson(),
     };
   }
 }
 
 class FirmProvider with ChangeNotifier {
-  Firm _firm;
+  Firm? _firm;
 
   Firm get firm {
-    return _firm;
+    return _firm!;
   }
 
   set firm(Firm value) {

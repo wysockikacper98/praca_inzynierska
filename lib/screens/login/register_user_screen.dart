@@ -17,14 +17,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
   bool _isLoading = false;
 
-  var _userFirstName = '';
-  var _userLastName = '';
-  var _userTelephone = '';
-  var _userEmail = '';
-  var _userPassword = '';
+  late String _userFirstName;
+  late String _userLastName;
+  late String _userTelephone;
+  late String _userEmail;
+  late String _userPassword;
 
   void _trySubmit(BuildContext context) {
-    final _isValid = _formKey.currentState.validate();
+    final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
@@ -32,7 +32,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _isLoading = true;
       });
 
-      _formKey.currentState.save();
+      _formKey.currentState!.save();
 
       Users _currentUser = Users(
         firstName: _userFirstName,
@@ -80,26 +80,26 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         key: ValueKey('imie'),
                         decoration: InputDecoration(labelText: 'Imie'),
                         validator: (value) {
-                          if (value.isEmpty || value.length < 3) {
+                          if (value!.isEmpty || value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userFirstName = value;
+                          _userFirstName = value!;
                         },
                       ),
                       TextFormField(
                         key: ValueKey('nazwisko'),
                         decoration: InputDecoration(labelText: 'Nazwisko'),
                         validator: (value) {
-                          if (value.isEmpty || value.length < 3) {
+                          if (value!.isEmpty || value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userLastName = value;
+                          _userLastName = value!;
                         },
                       ),
                       TextFormField(
@@ -107,7 +107,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         decoration: InputDecoration(labelText: 'Nr. Telefonu'),
                         keyboardType: TextInputType.phone,
                         validator: (value) {
-                          value = value.replaceAll(' ', '');
+                          value = value!.replaceAll(' ', '');
                           if (int.tryParse(value) == null) {
                             return 'Podaj numer telefonu';
                           } else if (value.isEmpty || value.length < 9) {
@@ -116,7 +116,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                           return null;
                         },
                         onSaved: (value) {
-                          _userTelephone = value;
+                          _userTelephone = value!;
                         },
                       ),
                       TextFormField(
@@ -127,13 +127,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         textCapitalization: TextCapitalization.none,
                         enableSuggestions: false,
                         validator: (value) {
-                          if (value.isEmpty || !value.contains('@')) {
+                          if (value!.isEmpty || !value.contains('@')) {
                             return 'Proszę podać poprawy adres email.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userEmail = value;
+                          _userEmail = value!;
                         },
                       ),
                       TextFormField(
@@ -142,13 +142,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         decoration: InputDecoration(labelText: 'Hasło'),
                         obscureText: true,
                         validator: (value) {
-                          if (value.isEmpty || value.length < 7) {
+                          if (value!.isEmpty || value.length < 7) {
                             return 'Hasło musi mieć przynajmniej 7 znaków.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _userPassword = value;
+                          _userPassword = value!;
                         },
                       ),
                       TextFormField(
@@ -157,7 +157,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         decoration: InputDecoration(labelText: 'Powtórz hasło'),
                         obscureText: true,
                         validator: (value) {
-                          if (value.isEmpty || value.length < 7) {
+                          if (value!.isEmpty || value.length < 7) {
                             return 'Hasło musi mieć przynajmniej 7 znaków.';
                           } else if (value != _passwordController.text) {
                             return 'Hasła muszą być takie same!';

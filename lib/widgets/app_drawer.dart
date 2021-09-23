@@ -78,7 +78,7 @@ Drawer appDrawer(BuildContext context) {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatsScreen(
-                    key: ValueKey(FirebaseAuth.instance.currentUser.uid),
+                    key: ValueKey(FirebaseAuth.instance.currentUser!.uid),
                     user: provider.user,
                   ),
                 ),
@@ -152,6 +152,6 @@ ListTile buildListTile(
   return ListTile(
     leading: icon,
     title: Center(child: title),
-    onTap: navigate,
+    onTap: navigate as void Function()?,
   );
 }

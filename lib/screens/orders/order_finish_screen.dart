@@ -32,7 +32,7 @@ class OrderFinishScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  ...snapshot.data.docs
+                  ...snapshot.data!.docs
                       .where((e) => e.data()['status'] == 'COMPLETED')
                       .map((e) => buildOrderListTile(context, e))
                       .toList(),

@@ -15,9 +15,9 @@ Widget createRecommendedFirmList(BuildContext context) {
 
   return FutureBuilder(
     future: getFuture(),
-    builder: (ctx, snapshot) {
+    builder: (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
       if (snapshot.connectionState == ConnectionState.done) {
-        final firms = snapshot.data.docs;
+        final firms = snapshot.data!.docs;
         // print(firms[0].id);
         return Flexible(
           fit: FlexFit.tight,
