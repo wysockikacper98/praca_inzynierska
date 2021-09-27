@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/firebaseHelper.dart';
 import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import 'search_users.dart';
+import 'widget/alerts_dialog_for_orders.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   static const routeName = '/search-user';
@@ -21,6 +24,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? users;
   late Address _address;
   late Order _order;
+  PickerDateRange? _range;
   var _currentCategory;
   bool _isLoading = false;
   bool _showCategoryError = false;
@@ -39,6 +43,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   void _setUser(DocumentSnapshot user) {
     setState(() {
       _user = user;
+    });
+  }
+
+  void _setRange(PickerDateRange range) {
+    setState(() {
+      _range = range;
     });
   }
 
@@ -98,7 +108,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 SizedBox(height: 10),
                 buildAddressForm(_widthOfWidgets, _width),
                 SizedBox(height: 50),
-                buildNewTaskInCalendar(_widthOfWidgets),
+                buildNewTaskInCalendar(context, _widthOfWidgets, _range),
                 SizedBox(height: 10),
                 _isLoading
                     ? CircularProgressIndicator()
@@ -176,16 +186,46 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Container buildNewTaskInCalendar(double _widthOfWidgets) {
+  Container buildNewTaskInCalendar(
+    BuildContext context,
+    double _widthOfWidgets,
+    PickerDateRange? _range,
+  ) {
     return Container(
       width: _widthOfWidgets,
-      child: Text(
-        'Tu będzie wybieranie dat do kalenarza',
-        textAlign: TextAlign.center,
+      child: Column(
+        children: [
+          buildDateRangeText(context, _range),
+          SizedBox(height: 16),
+          ElevatedButton(
+            child: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
+            onPressed: () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => buildAlertDialogForDatePicker(context, _setRange),
+            ),
+          ),
+        ],
       ),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.red),
-      ),
+    );
+  }
+
+  Widget buildDateRangeText(BuildContext context, PickerDateRange? _range) {
+    if (_range == null) return Text('Wybierz datę');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          DateFormat.yMMMEd('pl_PL').format(_range.startDate!),
+          // style: Theme.of(context).textTheme.bodyText2,
+        ),
+        if (_range.endDate != null) Icon(Icons.arrow_right_alt),
+        if (_range.endDate != null)
+          Text(
+            DateFormat.yMMMEd('pl_PL').format(_range.endDate!),
+            // style: Theme.of(context).textTheme.bodyText2,
+          ),
+      ],
     );
   }
 

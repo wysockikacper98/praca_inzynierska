@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../helpers/firebaseHelper.dart';
 import '../../../models/order.dart';
@@ -158,4 +159,38 @@ Future<void> _cancelOrder(
       .doc(id)
       .update({'status': Status.COMPLETED.toString().split('.').last});
   Navigator.of(context).pop();
+}
+
+AlertDialog buildAlertDialogForDatePicker(
+    BuildContext context, void Function(PickerDateRange range) setRange) {
+  return AlertDialog(
+    title: Text('Wybierz okres trwania zamówienia'),
+    content: Container(
+      width: 300,
+      child: SfDateRangePicker(
+        showActionButtons: true,
+        cancelText: 'Anuluj',
+        confirmText: 'Potwierdź',
+        showNavigationArrow: true,
+        enablePastDates: false,
+        initialSelectedRange: PickerDateRange(
+          DateTime.now(),
+          DateTime.now().add(Duration(days: 2)),
+        ),
+        monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+        selectionMode: DateRangePickerSelectionMode.range,
+        onCancel: () => Navigator.of(context).pop(),
+        onSubmit: (value) {
+          if (value is PickerDateRange) {
+            setRange(value);
+            print(value.startDate!);
+            if (value.endDate != null) {
+              print(value.endDate);
+            }
+          }
+          Navigator.of(context).pop();
+        },
+      ),
+    ),
+  );
 }
