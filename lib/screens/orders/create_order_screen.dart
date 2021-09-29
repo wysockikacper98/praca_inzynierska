@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/models/meeting.dart';
+import 'package:praca_inzynierska/models/users.dart';
 import 'package:praca_inzynierska/screens/calendar/calendar_screen.dart';
 import 'package:praca_inzynierska/screens/orders/widget/alerts_dialog_for_orders.dart';
 import 'package:provider/provider.dart';
@@ -451,12 +453,30 @@ End Date: ${range.endDate}
       _order.dateTo = _range?.endDate;
       print("To jest obiekt to zapisu ${_order.toJson()}");
 
-      await addOrderInFirebase(_order);
+      await addOrderInFirebase(_order).then((value) async {
+        if (_order.dateFrom != null && _order.dateTo != null) {
+          Meeting _meeting = Meeting(
+            eventName: _order.title,
+            orderId: value.id,
+            from: _order.dateFrom!,
+            to: _order.dateTo!,
+            background: Theme.of(context).colorScheme.primary,
+          );
+          await addMeetingToUser(
+            meeting: _meeting,
+            userType: UserType.Firm,
+            userID: FirebaseAuth.instance.currentUser!.uid,
+          ).catchError((error) {
+            print('Failed to add meeting: $error');
+          });
+        }
+      }).catchError((error) {
+        print('Failed to add user: $error');
+      });
 
       setState(() {
         _isLoading = false;
       });
-
       Navigator.of(context).pop();
     }
   }

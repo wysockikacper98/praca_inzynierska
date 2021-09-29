@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/models/meeting.dart';
 import 'package:provider/provider.dart';
 
 import '../models/comment.dart';
@@ -262,14 +263,12 @@ Future<void> updateFirmInFirebase(
   await getFirmInfoFromFirebase(context, userId);
 }
 
-Future<void> addOrderInFirebase(
+Future<DocumentReference<Map<String, dynamic>>> addOrderInFirebase(
   Order order,
 ) async {
-  await FirebaseFirestore.instance
+  return await FirebaseFirestore.instance
       .collection('orders')
-      .add(order.toJson())
-      .then((value) => print('Order added $value'))
-      .catchError((error) => print('Failed to add user: $error'));
+      .add(order.toJson());
 }
 
 /// ## Create or Open chat
@@ -359,4 +358,17 @@ Future<void> addCommentToFirebase(
           .collection('comments')
           .add(comment.toJson())
           .then((value) => print('Value:\n${value.toString()}')));
+}
+
+Future<void> addMeetingToUser({
+  required Meeting meeting,
+  required UserType userType,
+  required String userID,
+}) async {
+  String collectionName = userType == UserType.Firm ? 'firms' : 'users';
+  FirebaseFirestore.instance
+      .collection(collectionName)
+      .doc(userID)
+      .collection('meetings')
+      .add(meeting.toJson());
 }
