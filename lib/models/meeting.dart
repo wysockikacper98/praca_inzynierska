@@ -21,8 +21,8 @@ class Meeting {
     return Meeting(
       eventName: json['eventName'],
       orderId: json['orderId'],
-      from: json['from'],
-      to: json['to'],
+      from: json['from'].toDate(),
+      to: json['to'].toDate(),
       background: Color(json['background']),
       isAllDay: json['isAllDay'],
     );
