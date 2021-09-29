@@ -41,7 +41,7 @@ Drawer appDrawer(BuildContext context) {
       ),
     );
   }
-
+// TODO: Drawer do poprawy (skorzystać z poleceń Material Design: https://material.io/components/navigation-drawer
   return Drawer(
     child: Container(
       color: Theme.of(context).primaryColorLight,

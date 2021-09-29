@@ -19,8 +19,8 @@ class Order {
   bool? canFirmComment;
   String category;
   String? description;
-
-  //TODO: Dodać informacje odnoście dat
+  DateTime? dateFrom;
+  DateTime? dateTo;
   Address address;
 
   Order({
@@ -36,6 +36,8 @@ class Order {
     this.canFirmComment,
     required this.category,
     this.description,
+    this.dateFrom,
+    this.dateTo,
     required this.address,
   });
 
@@ -53,6 +55,8 @@ class Order {
       canFirmComment: json['canFirmComment'],
       category: json['category'] ?? '',
       description: json['description'] ?? '',
+      dateFrom: json['dateFrom'] ?? '',
+      dateTo: json['dateTo'] ?? '',
       address: Address.fromJson(json['address']),
     );
   }
@@ -71,6 +75,8 @@ class Order {
       'canFirmComment': this.canFirmComment,
       'category': this.category,
       'description': this.description,
+      'dateFrom': this.dateFrom,
+      'dateTo': this.dateTo,
       'address': this.address.toJson(),
     };
   }

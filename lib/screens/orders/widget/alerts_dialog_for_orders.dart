@@ -180,13 +180,63 @@ AlertDialog buildAlertDialogForDatePicker(
         monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
         selectionMode: DateRangePickerSelectionMode.range,
         onCancel: () => Navigator.of(context).pop(),
-        onSubmit: (value) {
+        onSubmit: (value) async {
           if (value is PickerDateRange) {
-            setRange(value);
-            print(value.startDate!);
-            if (value.endDate != null) {
-              print(value.endDate);
+            if (value.endDate == null) {
+              final TimeOfDay? timeFrom = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.now(),
+                helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
+                builder: (BuildContext context, Widget? child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(alwaysUse24HourFormat: true),
+                    child: child!,
+                  );
+                },
+              );
+
+              final TimeOfDay? timeTo = timeFrom != null
+                  ? await showTimePicker(
+                      context: context,
+                      initialTime: timeFrom,
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      },
+                    )
+                  : null;
+
+              if (timeFrom != null && timeTo != null) {
+                if (timeOfDayIsAfter(
+                    context: context, timeFrom: timeFrom, timeTo: timeTo)) {
+                  setRange(
+                    PickerDateRange(
+                      DateTime(
+                        value.startDate!.year,
+                        value.startDate!.month,
+                        value.startDate!.day,
+                        timeFrom.hour,
+                        timeFrom.minute,
+                      ),
+                      DateTime(
+                        value.startDate!.year,
+                        value.startDate!.month,
+                        value.startDate!.day,
+                        timeTo.hour,
+                        timeTo.minute,
+                      ),
+                    ),
+                  );
+                }
+                Navigator.of(context).pop();
+                return;
+              }
             }
+            setRange(value);
           }
           Navigator.of(context).pop();
         },
@@ -194,3 +244,25 @@ AlertDialog buildAlertDialogForDatePicker(
     ),
   );
 }
+
+bool timeOfDayIsAfter({
+  required BuildContext context,
+  required TimeOfDay timeFrom,
+  required TimeOfDay timeTo,
+}) {
+  if (timeOfDayToDouble(timeFrom) < timeOfDayToDouble(timeTo)) {
+    return true;
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(
+            'Błędnie podane godziny usługi. Godzina rozpoczęcia po godzienie końca.'),
+      ),
+    );
+    return false;
+  }
+}
+
+double timeOfDayToDouble(TimeOfDay myTime) =>
+    myTime.hour + myTime.minute / 60.0;

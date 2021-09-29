@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/screens/calendar/calendar_screen.dart';
+import 'package:praca_inzynierska/screens/orders/widget/alerts_dialog_for_orders.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -10,7 +12,6 @@ import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import 'search_users.dart';
-import 'widget/alerts_dialog_for_orders.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   static const routeName = '/search-user';
@@ -47,6 +48,11 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 
   void _setRange(PickerDateRange range) {
+    print('''
+New Range:
+Start Date: ${range.startDate}
+End Date: ${range.endDate}
+''');
     setState(() {
       _range = range;
     });
@@ -83,7 +89,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Rodzaj usługi:",
+                        'Rodzaj usługi:',
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
                       buildDropdownButton(context, provider),
@@ -108,21 +114,24 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 SizedBox(height: 10),
                 buildAddressForm(_widthOfWidgets, _width),
                 SizedBox(height: 50),
-                buildNewTaskInCalendar(context, _widthOfWidgets, _range),
+                buildDataAndTimePicker(context, _widthOfWidgets, _range),
                 SizedBox(height: 10),
                 _isLoading
                     ? CircularProgressIndicator()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                            child: Text("Anuluj"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.cancel_outlined),
+                            label: Text('Anuluj'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
-                          ElevatedButton(
-                            child: Text("Rozpocznij"),
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.add_circle_outline_outlined),
+                            label: Text('Utwórz'),
                             onPressed: _user != null
                                 ? () {
                                     _trySubmit(context, provider);
@@ -186,7 +195,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Container buildNewTaskInCalendar(
+  Container buildDataAndTimePicker(
     BuildContext context,
     double _widthOfWidgets,
     PickerDateRange? _range,
@@ -197,13 +206,26 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         children: [
           buildDateRangeText(context, _range),
           SizedBox(height: 16),
-          ElevatedButton(
-            child: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
-            onPressed: () => showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => buildAlertDialogForDatePicker(context, _setRange),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton.icon(
+                icon: Icon(Icons.preview_outlined),
+                label: Text('Kalendarz'),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(CalendarScreen.routeName),
+              ),
+              ElevatedButton.icon(
+                icon: Icon(Icons.date_range_outlined),
+                label: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
+                onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) =>
+                      buildAlertDialogForDatePicker(context, _setRange),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -212,21 +234,26 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   Widget buildDateRangeText(BuildContext context, PickerDateRange? _range) {
     if (_range == null) return Text('Wybierz datę');
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          DateFormat.yMMMEd('pl_PL').format(_range.startDate!),
-          // style: Theme.of(context).textTheme.bodyText2,
-        ),
-        if (_range.endDate != null) Icon(Icons.arrow_right_alt),
-        if (_range.endDate != null)
-          Text(
-            DateFormat.yMMMEd('pl_PL').format(_range.endDate!),
-            // style: Theme.of(context).textTheme.bodyText2,
-          ),
-      ],
-    );
+    if (_range.startDate!.year != _range.endDate!.year ||
+        _range.startDate!.month != _range.endDate!.month ||
+        _range.startDate!.day != _range.endDate!.day) {
+      return Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(DateFormat.yMMMMEEEEd('pl_PL').format(_range.startDate!)),
+          Icon(Icons.arrow_right_alt),
+          Text(DateFormat.yMMMMEEEEd('pl_PL').format(_range.endDate!)),
+        ],
+      );
+    } else {
+      return Text(
+        DateFormat.Hm('pl_PL').format(_range.startDate!) +
+            ' - ' +
+            DateFormat.Hm('pl_PL').format(_range.endDate!) +
+            ' ' +
+            DateFormat.yMMMMEEEEd('pl_PL').format(_range.startDate!),
+      );
+    }
   }
 
   Form buildAddressForm(double _widthOfWidgets, double _width) {
@@ -407,6 +434,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         status: Status.PENDING,
         category: '',
         description: '',
+        dateFrom: null,
+        dateTo: null,
         address: _address,
       );
       _formKey.currentState!.save();
@@ -418,7 +447,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       _order.userName = _user!['firstName'] + ' ' + _user!['lastName'];
       _order.userAvatar = _user!['avatar'];
       _order.category = _currentCategory;
-
+      _order.dateFrom = _range?.startDate;
+      _order.dateTo = _range?.endDate;
       print("To jest obiekt to zapisu ${_order.toJson()}");
 
       await addOrderInFirebase(_order);
