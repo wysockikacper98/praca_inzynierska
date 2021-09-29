@@ -28,6 +28,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   late Address _address;
   late Order _order;
   PickerDateRange? _range;
+  Color? _color;
   var _currentCategory;
   bool _isLoading = false;
   bool _showCategoryError = false;
@@ -57,6 +58,13 @@ End Date: ${range.endDate}
 ''');
     setState(() {
       _range = range;
+    });
+  }
+
+  void _setColor(Color color) {
+    print('New Color: $color');
+    setState(() {
+      _color = color;
     });
   }
 
@@ -223,8 +231,10 @@ End Date: ${range.endDate}
                 onPressed: () => showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) =>
-                      buildAlertDialogForDatePicker(context, _setRange),
+                  builder: (_) => BuildAlertDialogForDatePicker(
+                    _setRange,
+                    _setColor,
+                  ),
                 ),
               ),
             ],
@@ -460,7 +470,9 @@ End Date: ${range.endDate}
             orderId: value.id,
             from: _order.dateFrom!,
             to: _order.dateTo!,
-            background: Theme.of(context).colorScheme.primary,
+            background: _color == null
+                ? Theme.of(context).colorScheme.primary
+                : _color!,
           );
           await addMeetingToUser(
             meeting: _meeting,

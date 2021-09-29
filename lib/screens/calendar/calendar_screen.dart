@@ -93,39 +93,3 @@ Resource: $resource
     );
   }
 }
-
-List<Meeting> _getDataSource() {
-  final List<Meeting> meetings = [];
-  final DateTime today = DateTime.now();
-  final DateTime startTime =
-  DateTime(today.year, today.month, today.day, 9, 0, 0);
-
-  meetings.add(Meeting(
-      eventName: 'Spotkanie',
-      from: startTime.add(const Duration(days: 4)),
-      to: startTime.add(const Duration(days: 6)),
-      background: Colors.red));
-  meetings.add(Meeting(
-      eventName: 'Spotkanie',
-      from: startTime.add(const Duration(hours: 2)),
-      to: startTime.add(const Duration(hours: 5)),
-      background: Colors.greenAccent));
-  meetings.add(Meeting(
-      eventName: 'Spotkanie',
-      from: startTime,
-      to: startTime.add(const Duration(hours: 2)),
-      background: Colors.lightBlue));
-  meetings.add(Meeting(
-    eventName: 'Spotkanie',
-    from: startTime.subtract(const Duration(hours: 2)),
-    to: startTime,
-    background: Colors.orangeAccent,
-  ));
-  meetings.add(Meeting(
-    eventName: 'Spotkanie',
-    from: startTime.subtract(const Duration(hours: 5)),
-    to: startTime.subtract(const Duration(hours: 4)),
-    background: Colors.yellow,
-  ));
-  return meetings;
-}
