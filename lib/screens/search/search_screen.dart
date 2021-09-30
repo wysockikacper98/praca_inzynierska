@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/search/search_firms.dart';
 
 import '../../widgets/search/build_firm_list_with_filter.dart';
 import '../../widgets/search/filter.dart';
@@ -13,6 +14,17 @@ class SearchScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Wyszukaj'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: SearchFirms(),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

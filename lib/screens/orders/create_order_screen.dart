@@ -24,7 +24,7 @@ class CreateOrderScreen extends StatefulWidget {
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   DocumentSnapshot? _user;
-  Stream<QuerySnapshot<Map<String, dynamic>>>? users;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> users;
   late Address _address;
   late Order _order;
   PickerDateRange? _range;
@@ -41,6 +41,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     users = FirebaseFirestore.instance
         .collection('users')
         .orderBy('lastName')
+        .limit(20)
         .snapshots();
   }
 
@@ -96,7 +97,7 @@ End Date: ${range.endDate}
             child: Column(
               children: [
                 _user != null ? buildUserPreview(_user!) : SizedBox(height: 16),
-                buildElevatedButton(context, users),
+                buildSearchForUser(context, users),
                 SizedBox(height: 10),
                 Container(
                   width: _widthOfWidgets,
@@ -380,7 +381,7 @@ End Date: ${range.endDate}
     );
   }
 
-  ElevatedButton buildElevatedButton(
+  ElevatedButton buildSearchForUser(
     BuildContext context,
     Stream<QuerySnapshot<Map<String, dynamic>>>? users,
   ) {
