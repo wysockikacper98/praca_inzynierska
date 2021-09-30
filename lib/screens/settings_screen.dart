@@ -11,39 +11,38 @@ class SettingsScreen extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-        appBar: AppBar(title: Text('Ustawienia')),
-        body: Column(
-          children: [
-            SwitchListTile(
-              title: Text('Tryb ciemny:'),
-              value: themeProvider.isDarkMode,
-              activeColor: Theme.of(context).colorScheme.secondary,
-              onChanged: (value) {
-                final provider =
-                    Provider.of<ThemeProvider>(context, listen: false);
-                provider.toggleTheme(value);
-              },
-            ),
-            // ListTile(
-            //   leading: FaIcon(FontAwesomeIcons.userEdit),
-            //   title: Text(
-            //     isUserTypeFirm
-            //         ? 'Edycja profilu wykonawcy'
-            //         : 'Edycja profilu użytkownika',
-            //     style: Theme
-            //         .of(context)
-            //         .textTheme
-            //         .subtitle1,
-            //   ),
-            //   trailing: Icon(Icons.chevron_right),
-            //   onTap: () {
-            //     isUserTypeFirm
-            //         ? Navigator.of(context)
-            //         .pushNamed(FirmEditProfileScreen.routeName)
-            //         : Navigator.of(context).pop();
-            //   },
-            // ),
-          ],
-        ));
+      appBar: AppBar(title: Text('Ustawienia')),
+      body: Column(
+        children: [
+          SwitchListTile(
+            title: Text('Tryb ciemny:'),
+            value: themeProvider.isDarkMode,
+            activeColor: Theme.of(context).colorScheme.secondary,
+            onChanged: (value) =>
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme(value),
+          ),
+          // ListTile(
+          //   leading: FaIcon(FontAwesomeIcons.userEdit),
+          //   title: Text(
+          //     isUserTypeFirm
+          //         ? 'Edycja profilu wykonawcy'
+          //         : 'Edycja profilu użytkownika',
+          //     style: Theme
+          //         .of(context)
+          //         .textTheme
+          //         .subtitle1,
+          //   ),
+          //   trailing: Icon(Icons.chevron_right),
+          //   onTap: () {
+          //     isUserTypeFirm
+          //         ? Navigator.of(context)
+          //         .pushNamed(FirmEditProfileScreen.routeName)
+          //         : Navigator.of(context).pop();
+          //   },
+          // ),
+        ],
+      ),
+    );
   }
 }

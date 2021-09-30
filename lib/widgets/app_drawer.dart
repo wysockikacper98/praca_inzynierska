@@ -10,6 +10,7 @@ import '../screens/messages/chats_screen.dart';
 import '../screens/orders/orders_screen.dart';
 import '../screens/search/search_screen.dart';
 import '../screens/settings_screen.dart';
+import 'theme/theme_Provider.dart';
 
 class AppDrawer extends StatefulWidget {
   final String title;
@@ -36,15 +37,21 @@ class _AppDrawerState extends State<AppDrawer> {
     final provider = Provider.of<UserProvider>(context, listen: false);
 
     return Drawer(
-      child: SafeArea(
+      child: Container(
+        color: theme.primaryColorLight,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Consumer<UserProvider>(
-                builder: (ctx, provider, _) =>
-                    buildHeader(textTheme, provider.user),
+            Container(
+              color: theme.primaryColor,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Consumer<UserProvider>(
+                    builder: (ctx, provider, _) =>
+                        buildHeader(ctx, textTheme, provider.user),
+                  ),
+                ),
               ),
             ),
             Divider(
@@ -145,27 +152,69 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget buildHeader(TextTheme textTheme, Users user) {
+  Widget buildHeader(BuildContext context, TextTheme textTheme, Users user) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundImage: AssetImage('assets/images/user.png'),
-          foregroundImage:
-              user.avatar != '' ? NetworkImage(user.avatar!) : null,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage('assets/images/user.png'),
+              foregroundImage:
+                  user.avatar != '' ? NetworkImage(user.avatar!) : null,
+            ),
+            IconButton(
+              iconSize: 30,
+              icon: Icon(
+                themeProvider.isDarkMode
+                    ? Icons.light_mode_sharp
+                    : Icons.nightlight_round_sharp,
+                color: Theme.of(context).primaryColorLight,
+              ),
+              onPressed: () =>
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme(!themeProvider.isDarkMode),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: Text(
-            '${user.firstName} ${user.lastName}',
-            style: textTheme.headline6,
+        Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            iconColor: Theme.of(context).primaryColorLight,
+            collapsedIconColor: Theme.of(context).primaryColorLight,
+            tilePadding: EdgeInsets.zero,
+            title: Text(
+              '${user.firstName} ${user.lastName}',
+              style: textTheme.headline6,
+            ),
+            subtitle: Text(
+              '${user.email}',
+              style: textTheme.bodyText2,
+            ),
+            children: [
+              ListTile(
+                leading: Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+                title: Text('Podgląd profilu'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.manage_accounts,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+                title: Text('Edycja profilu'),
+                onTap: () {},
+              ),
+            ],
           ),
         ),
-        Text(
-          '${user.email}',
-          style: textTheme.bodyText2,
-        )
       ],
     );
   }

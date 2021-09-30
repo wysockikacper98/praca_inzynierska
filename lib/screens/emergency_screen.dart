@@ -63,7 +63,7 @@ class EmergencyScreen extends StatelessWidget {
                 onPressed: () {
                   callPhone('tel:' + data[index]['phone'].toString());
                 },
-              )
+              ),
             ],
           );
         },
