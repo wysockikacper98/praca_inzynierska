@@ -51,14 +51,19 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 
   void _setRange(PickerDateRange range) {
-    print('''
+    if (range.endDate != null && range.startDate != null) {
+      print('''
 New Range:
 Start Date: ${range.startDate}
 End Date: ${range.endDate}
 ''');
-    setState(() {
-      _range = range;
-    });
+      setState(() {
+        _range = range;
+      });
+    } else {
+      print(
+          'setRange value ignored. (range.endDate or range.startDate are null)');
+    }
   }
 
   void _setColor(Color color) {
@@ -245,7 +250,7 @@ End Date: ${range.endDate}
   }
 
   Widget buildDateRangeText(BuildContext context, PickerDateRange? _range) {
-    if (_range == null) return Text('Wybierz datę');
+    if (_range == null || _range.endDate == null) return Text('Wybierz datę');
     if (_range.startDate!.year != _range.endDate!.year ||
         _range.startDate!.month != _range.endDate!.month ||
         _range.startDate!.day != _range.endDate!.day) {
