@@ -69,8 +69,8 @@ Future<bool> registerUser(
   }
 }
 
-Future<bool> registerFirm(
-    BuildContext context, Firm firm, String password) async {
+Future<bool> registerFirm(BuildContext context, Firm firm, String password,
+    void Function(bool value) setLoading) async {
   late UserCredential authResult;
   final _auth = FirebaseAuth.instance;
   // print("Test Zapisu Firmy: ${firm.toJson()}");
@@ -93,10 +93,12 @@ Future<bool> registerFirm(
   } on FirebaseAuthException catch (error) {
     handleFirebaseError(context, error);
     authResult.user!.delete();
+    setLoading(false);
     return false;
   } catch (error) {
     print(error);
     authResult.user!.delete();
+    setLoading(false);
     return false;
   }
 }

@@ -55,14 +55,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
   bool _isLoading = false;
   bool _pickCategory = true;
 
-  void _trySubmit(BuildContext context) {
+  Future<void> _trySubmit(BuildContext context) async {
     final _isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
     if (_isValid) {
-      setState(() {
-        _isLoading = true;
-      });
+      setLoading(true);
 
       _formKey.currentState!.save();
 
@@ -72,7 +70,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         }
       });
 
-      registerFirm(context, _firm, _userPassword).then((value) {
+      registerFirm(context, _firm, _userPassword, setLoading).then((value) {
         print("Wynik zapisania użytkownika:$value");
         if (value) {
           Navigator.of(context).popUntil((route) => route.isFirst);
@@ -81,12 +79,16 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
           _repeatPasswordController.clear();
         }
         if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
+          setLoading(false);
         }
       });
     }
+  }
+
+  void setLoading(bool value) {
+    return setState(() {
+      _isLoading = value;
+    });
   }
 
   @override

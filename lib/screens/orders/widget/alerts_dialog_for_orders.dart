@@ -206,76 +206,102 @@ class _BuildAlertDialogForDatePickerState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text('Wybierz okres trwania zamówienia'),
-        trailing: ElevatedButton(
-          child: Icon(Icons.edit),
-          style: ElevatedButton.styleFrom(
-            primary: _selectedColor,
-            shape: CircleBorder(),
-          ),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: Text('Wybierz kolor zamówienia'),
-              content: MaterialColorPicker(
-                selectedColor: _selectedColor,
-                colors: widget._colors,
-                onColorChange: (value) {
-                  setState(() {
-                    _selectedColor = value;
-                  });
-                  widget.setColor(value);
-                },
-              ),
-              actions: [
-                TextButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      content: Container(
-        width: 300,
-        child: SfDateRangePicker(
-          showActionButtons: true,
-          cancelText: 'Anuluj',
-          confirmText: 'Potwierdź',
-          showNavigationArrow: true,
-          enablePastDates: false,
-          initialSelectedRange: PickerDateRange(
-            DateTime.now(),
-            DateTime.now().add(Duration(days: 2)),
-          ),
-          monthViewSettings:
-              DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-          selectionMode: DateRangePickerSelectionMode.range,
-          onCancel: () => Navigator.of(context).pop(),
-          onSubmit: (value) async {
-            if (value is PickerDateRange) {
-              if (value.endDate == null) {
-                final TimeOfDay? timeFrom = await showTimePicker(
+    return Scaffold(
+      appBar: AppBar(title: Text('Wybierz okres zamówienia')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton.icon(
+                icon: Icon(Icons.edit),
+                label: Text(' Wybierz kolor zamówienia'),
+                style: ElevatedButton.styleFrom(primary: _selectedColor),
+                onPressed: () => showDialog(
                   context: context,
-                  initialTime: TimeOfDay.now(),
-                  helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
-                  builder: (BuildContext context, Widget? child) {
-                    return MediaQuery(
-                      data: MediaQuery.of(context)
-                          .copyWith(alwaysUse24HourFormat: true),
-                      child: child!,
-                    );
-                  },
-                );
-
-                final TimeOfDay? timeTo = timeFrom != null
-                    ? await showTimePicker(
+                  builder: (_) => AlertDialog(
+                    title: Text('Wybierz kolor zamówienia'),
+                    content: MaterialColorPicker(
+                      selectedColor: _selectedColor,
+                      colors: widget._colors,
+                      onColorChange: (value) {
+                        setState(() {
+                          _selectedColor = value;
+                        });
+                        widget.setColor(value);
+                      },
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('Ok'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // ListTile(
+            //   contentPadding: EdgeInsets.zero,
+            //   title: Text('Wybierz kolor zamówienia: '),
+            //   trailing: ElevatedButton(
+            //     child: Icon(Icons.edit),
+            //     style: ElevatedButton.styleFrom(
+            //       primary: _selectedColor,
+            //       shape: CircleBorder(),
+            //     ),
+            //     onPressed: () => showDialog(
+            //       context: context,
+            //       builder: (_) => AlertDialog(
+            //         title: Text('Wybierz kolor zamówienia'),
+            //         content: MaterialColorPicker(
+            //           selectedColor: _selectedColor,
+            //           colors: widget._colors,
+            //           onColorChange: (value) {
+            //             setState(() {
+            //               _selectedColor = value;
+            //             });
+            //             widget.setColor(value);
+            //           },
+            //         ),
+            //         actions: [
+            //           TextButton(
+            //             child: Text('Ok'),
+            //             onPressed: () => Navigator.of(context).pop(),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            SizedBox(height: 16),
+            Container(
+              color: Colors.white,
+              child: SfDateRangePicker(
+                showActionButtons: true,
+                cancelText: 'Anuluj',
+                confirmText: 'Potwierdź',
+                showNavigationArrow: true,
+                enablePastDates: false,
+                rangeSelectionColor: _selectedColor.withOpacity(0.3),
+                startRangeSelectionColor: _selectedColor,
+                endRangeSelectionColor: _selectedColor,
+                initialSelectedRange: PickerDateRange(
+                  DateTime.now(),
+                  DateTime.now().add(Duration(days: 2)),
+                ),
+                monthViewSettings:
+                    DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+                selectionMode: DateRangePickerSelectionMode.range,
+                onCancel: () => Navigator.of(context).pop(),
+                onSubmit: (value) async {
+                  if (value is PickerDateRange) {
+                    if (value.endDate == null) {
+                      final TimeOfDay? timeFrom = await showTimePicker(
                         context: context,
-                        initialTime: timeFrom,
+                        initialTime: TimeOfDay.now(),
+                        helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
                         builder: (BuildContext context, Widget? child) {
                           return MediaQuery(
                             data: MediaQuery.of(context)
@@ -283,41 +309,174 @@ class _BuildAlertDialogForDatePickerState
                             child: child!,
                           );
                         },
-                      )
-                    : null;
+                      );
 
-                if (timeFrom != null && timeTo != null) {
-                  if (timeOfDayIsAfter(
-                      context: context, timeFrom: timeFrom, timeTo: timeTo)) {
-                    widget.setRange(
-                      PickerDateRange(
-                        DateTime(
-                          value.startDate!.year,
-                          value.startDate!.month,
-                          value.startDate!.day,
-                          timeFrom.hour,
-                          timeFrom.minute,
-                        ),
-                        DateTime(
-                          value.startDate!.year,
-                          value.startDate!.month,
-                          value.startDate!.day,
-                          timeTo.hour,
-                          timeTo.minute,
-                        ),
-                      ),
-                    );
+                      final TimeOfDay? timeTo = timeFrom != null
+                          ? await showTimePicker(
+                              context: context,
+                              initialTime: timeFrom,
+                              helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
+                              builder: (BuildContext context, Widget? child) {
+                                return MediaQuery(
+                                  data: MediaQuery.of(context)
+                                      .copyWith(alwaysUse24HourFormat: true),
+                                  child: child!,
+                                );
+                              },
+                            )
+                          : null;
+
+                      if (timeFrom != null && timeTo != null) {
+                        if (timeOfDayIsAfter(
+                            context: context,
+                            timeFrom: timeFrom,
+                            timeTo: timeTo)) {
+                          widget.setRange(
+                            PickerDateRange(
+                              DateTime(
+                                value.startDate!.year,
+                                value.startDate!.month,
+                                value.startDate!.day,
+                                timeFrom.hour,
+                                timeFrom.minute,
+                              ),
+                              DateTime(
+                                value.startDate!.year,
+                                value.startDate!.month,
+                                value.startDate!.day,
+                                timeTo.hour,
+                                timeTo.minute,
+                              ),
+                            ),
+                          );
+                        }
+                        Navigator.of(context).pop();
+                        return;
+                      }
+                    }
+                    widget.setRange(value);
                   }
                   Navigator.of(context).pop();
-                  return;
-                }
-              }
-              widget.setRange(value);
-            }
-            Navigator.of(context).pop();
-          },
+                },
+              ),
+            ),
+          ],
         ),
       ),
+
+      // AlertDialog(
+      //   title: ListTile(
+      //     contentPadding: EdgeInsets.zero,
+      //     title: Text('Wybierz okres trwania zamówienia'),
+      //     trailing: ElevatedButton(
+      //       child: Icon(Icons.edit),
+      //       style: ElevatedButton.styleFrom(
+      //         primary: _selectedColor,
+      //         shape: CircleBorder(),
+      //       ),
+      //       onPressed: () => showDialog(
+      //         context: context,
+      //         builder: (_) => AlertDialog(
+      //           title: Text('Wybierz kolor zamówienia'),
+      //           content: MaterialColorPicker(
+      //             selectedColor: _selectedColor,
+      //             colors: widget._colors,
+      //             onColorChange: (value) {
+      //               setState(() {
+      //                 _selectedColor = value;
+      //               });
+      //               widget.setColor(value);
+      //             },
+      //           ),
+      //           actions: [
+      //             TextButton(
+      //               child: Text('Ok'),
+      //               onPressed: () => Navigator.of(context).pop(),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      //   content: Container(
+      //     width: 300,
+      //     child: SfDateRangePicker(
+      //       showActionButtons: true,
+      //       cancelText: 'Anuluj',
+      //       confirmText: 'Potwierdź',
+      //       showNavigationArrow: true,
+      //       enablePastDates: false,
+      //       initialSelectedRange: PickerDateRange(
+      //         DateTime.now(),
+      //         DateTime.now().add(Duration(days: 2)),
+      //       ),
+      //       monthViewSettings:
+      //           DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+      //       selectionMode: DateRangePickerSelectionMode.range,
+      //       onCancel: () => Navigator.of(context).pop(),
+      //       onSubmit: (value) async {
+      //         if (value is PickerDateRange) {
+      //           if (value.endDate == null) {
+      //             final TimeOfDay? timeFrom = await showTimePicker(
+      //               context: context,
+      //               initialTime: TimeOfDay.now(),
+      //               helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
+      //               builder: (BuildContext context, Widget? child) {
+      //                 return MediaQuery(
+      //                   data: MediaQuery.of(context)
+      //                       .copyWith(alwaysUse24HourFormat: true),
+      //                   child: child!,
+      //                 );
+      //               },
+      //             );
+      //
+      //             final TimeOfDay? timeTo = timeFrom != null
+      //                 ? await showTimePicker(
+      //                     context: context,
+      //                     initialTime: timeFrom,
+      //                     builder: (BuildContext context, Widget? child) {
+      //                       return MediaQuery(
+      //                         data: MediaQuery.of(context)
+      //                             .copyWith(alwaysUse24HourFormat: true),
+      //                         child: child!,
+      //                       );
+      //                     },
+      //                   )
+      //                 : null;
+      //
+      //             if (timeFrom != null && timeTo != null) {
+      //               if (timeOfDayIsAfter(
+      //                   context: context, timeFrom: timeFrom, timeTo: timeTo)) {
+      //                 widget.setRange(
+      //                   PickerDateRange(
+      //                     DateTime(
+      //                       value.startDate!.year,
+      //                       value.startDate!.month,
+      //                       value.startDate!.day,
+      //                       timeFrom.hour,
+      //                       timeFrom.minute,
+      //                     ),
+      //                     DateTime(
+      //                       value.startDate!.year,
+      //                       value.startDate!.month,
+      //                       value.startDate!.day,
+      //                       timeTo.hour,
+      //                       timeTo.minute,
+      //                     ),
+      //                   ),
+      //                 );
+      //               }
+      //               Navigator.of(context).pop();
+      //               return;
+      //             }
+      //           }
+      //           widget.setRange(value);
+      //         }
+      //         Navigator.of(context).pop();
+      //       },
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

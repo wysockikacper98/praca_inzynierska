@@ -82,12 +82,7 @@ End Date: ${range.endDate}
     final _widthOfWidgets = _width * 0.8;
 
     return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
+      onTap: () => unfocusedContext(context),
       child: Scaffold(
         appBar: AppBar(
           title: Text("Utwórz zamówienie"),
@@ -165,6 +160,13 @@ End Date: ${range.endDate}
     );
   }
 
+  void unfocusedContext(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
+
   Form buildTitleAndDescriptionForm(double width) {
     return Form(
       key: _formKey,
@@ -234,14 +236,27 @@ End Date: ${range.endDate}
               ElevatedButton.icon(
                 icon: Icon(Icons.date_range_outlined),
                 label: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
-                onPressed: () => showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (_) => BuildAlertDialogForDatePicker(
-                    _setRange,
-                    _setColor,
-                  ),
-                ),
+                onPressed: () {
+                  unfocusedContext(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => BuildAlertDialogForDatePicker(
+                        _setRange,
+                        _setColor,
+                      ),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                //     showDialog(
+                //   context: context,
+                //   barrierDismissible: false,
+                //   builder: (_) => BuildAlertDialogForDatePicker(
+                //     _setRange,
+                //     _setColor,
+                //   ),
+                // ),
               ),
             ],
           ),
