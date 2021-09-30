@@ -162,7 +162,6 @@ Future<void> _cancelOrder(
   Navigator.of(context).pop();
 }
 
-
 class BuildAlertDialogForDatePicker extends StatefulWidget {
   final List<ColorSwatch> _colors = [
     Colors.red,

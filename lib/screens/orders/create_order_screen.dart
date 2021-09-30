@@ -2,18 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/models/meeting.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/calendar/calendar_screen.dart';
-import 'package:praca_inzynierska/screens/orders/widget/alerts_dialog_for_orders.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/firebaseHelper.dart';
 import '../../models/address.dart';
 import '../../models/firm.dart';
+import '../../models/meeting.dart';
 import '../../models/order.dart';
+import '../../models/users.dart';
+import '../calendar/calendar_screen.dart';
 import 'search_users.dart';
+import 'widget/alerts_dialog_for_orders.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   static const routeName = '/search-user';

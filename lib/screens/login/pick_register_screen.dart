@@ -60,8 +60,8 @@ class PickRegisterScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            RegisterContractorScreen(categories: data.data()!['categoryListPL']),
+        builder: (context) => RegisterContractorScreen(
+            categories: data.data()!['categoryListPL']),
       ),
     );
   }

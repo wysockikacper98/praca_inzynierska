@@ -101,7 +101,10 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                 itemSize: 40.0,
               ),
               Text(
-                provider.user.rating! + ' (' + provider.user.ratingNumber! + ')',
+                provider.user.rating! +
+                    ' (' +
+                    provider.user.ratingNumber! +
+                    ')',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               SizedBox(height: 15),

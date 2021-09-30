@@ -54,6 +54,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   String? _phone;
   String? _location;
   String? _description;
+
   // List<String>? _picture;
 
   Future<void> _trySubmit(
@@ -874,8 +875,8 @@ class _EditFirmFormState extends State<EditFirmForm> {
                             context,
                             MaterialPageRoute(builder: (_) {
                               return FullScreenImage(
-                                  imageAssetsPath:
-                                      firmProvider.firm.details!.pictures![index],
+                                  imageAssetsPath: firmProvider
+                                      .firm.details!.pictures![index],
                                   tag: tag);
                             }),
                           );

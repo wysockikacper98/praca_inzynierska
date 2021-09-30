@@ -29,7 +29,9 @@ class Message extends StatelessWidget {
                     .collection('messages')
                     .orderBy('createdAt', descending: true)
                     .snapshots(),
-                builder: (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> messageSnapshot) {
+                builder: (ctx,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        messageSnapshot) {
                   if (messageSnapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());

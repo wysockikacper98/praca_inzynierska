@@ -166,13 +166,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   Future<void> _finishOrder(
     BuildContext context,
-    String id,) async {
+    String id,
+  ) async {
     Navigator.of(context).pop();
     await FirebaseFirestore.instance.collection('orders').doc(id).update({
-      'status': Status.COMPLETED
-          .toString()
-          .split('.')
-          .last,
+      'status': Status.COMPLETED.toString().split('.').last,
       'canUserComment': true,
       'canFirmComment': true,
     });
@@ -180,7 +178,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   Widget _buildDatePreview(
-      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  ) {
     PickerDateRange _range = PickerDateRange(
         snapshot.data!.data()?['dateFrom'].toDate(),
         snapshot.data!.data()?['dateTo'].toDate());
@@ -207,8 +206,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
   }
 
-  Padding _buildDescription(BuildContext context,
-      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
+  Padding _buildDescription(
+    BuildContext context,
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(

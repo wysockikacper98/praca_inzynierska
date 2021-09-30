@@ -42,8 +42,9 @@ Widget imagePickerFirm(
     children: [
       CircleAvatar(
         backgroundImage: (firmProvider.firm.avatar == ''
-            ? AssetImage('assets/images/user.png')
-            : NetworkImage(firmProvider.firm.avatar!)) as ImageProvider<Object>?,
+                ? AssetImage('assets/images/user.png')
+                : NetworkImage(firmProvider.firm.avatar!))
+            as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),

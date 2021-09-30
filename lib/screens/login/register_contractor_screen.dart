@@ -218,7 +218,8 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       InputDecoration(labelText: 'Email'),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
-                                    if (value!.isEmpty || !value.contains('@')) {
+                                    if (value!.isEmpty ||
+                                        !value.contains('@')) {
                                       return 'Proszę podać poprawy adres email.';
                                     }
                                     return null;
