@@ -15,11 +15,6 @@ Future<void> loginUser(
   String email,
   String password,
 ) async {
-  //TODO: Delete delay after testing
-  print("Star of delay");
-  await Future.delayed(const Duration(seconds: 3), () {
-    print("End of delay");
-  });
   UserCredential authResult;
   try {
     final _auth = FirebaseAuth.instance;
@@ -50,12 +45,6 @@ Future<void> loginUser(
 
 Future<bool> registerUser(
     BuildContext context, Users user, String userPassword) async {
-  //TODO: Delete after testing
-  print("Start delay");
-  await Future.delayed(Duration(seconds: 3), () {
-    print("Stop delay");
-  });
-
   try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
@@ -82,11 +71,6 @@ Future<bool> registerUser(
 
 Future<bool> registerFirm(
     BuildContext context, Firm firm, String password) async {
-  //TODO: Delete after testing
-  print("Start delay");
-  await Future.delayed(Duration(seconds: 3), () {
-    print("Stop delay");
-  });
   late UserCredential authResult;
   final _auth = FirebaseAuth.instance;
   // print("Test Zapisu Firmy: ${firm.toJson()}");

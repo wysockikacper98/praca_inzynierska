@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../models/firm.dart';
 import '../../models/order.dart';
@@ -75,7 +77,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     print('build -> order_details_screen');
-    final provider = Provider.of<UserProvider>(context, listen:false);
+    final provider = Provider.of<UserProvider>(context, listen: false);
     final UserType userType = provider.user.type;
 
     return Scaffold(
@@ -123,8 +125,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     bold: snapshot.data!.data()!['title'],
                   ),
                   _buildDescription(context, snapshot),
-                  //TODO: wyświetlanie okresu / dnia wykonania zamówienia
-                  _buildDatePreview(),
+                  _buildDatePreview(snapshot),
                   SizedBox(height: 16),
                   _buildContactButtons(
                     context: context,
@@ -165,30 +166,49 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   Future<void> _finishOrder(
     BuildContext context,
-    String id,
-  ) async {
+    String id,) async {
     Navigator.of(context).pop();
     await FirebaseFirestore.instance.collection('orders').doc(id).update({
-      'status': Status.COMPLETED.toString().split('.').last,
+      'status': Status.COMPLETED
+          .toString()
+          .split('.')
+          .last,
       'canUserComment': true,
       'canFirmComment': true,
     });
     setState(() {});
   }
 
-  Center _buildDatePreview() {
-    return Center(
-      child: Text(
-        'Tutaj wyświetlać dzień / okres wykonania usługi',
-        style: TextStyle(color: Colors.red),
-      ),
-    );
+  Widget _buildDatePreview(
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
+    PickerDateRange _range = PickerDateRange(
+        snapshot.data!.data()?['dateFrom'].toDate(),
+        snapshot.data!.data()?['dateTo'].toDate());
+    if (_range.endDate == null) return Text('Nie wybrano daty zamówienia.');
+    if (_range.startDate!.year != _range.endDate!.year ||
+        _range.startDate!.month != _range.endDate!.month ||
+        _range.startDate!.day != _range.endDate!.day) {
+      return Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(DateFormat.yMMMMEEEEd('pl_PL').format(_range.startDate!)),
+          Icon(Icons.arrow_right_alt),
+          Text(DateFormat.yMMMMEEEEd('pl_PL').format(_range.endDate!)),
+        ],
+      );
+    } else {
+      return Text(
+        DateFormat.Hm('pl_PL').format(_range.startDate!) +
+            ' - ' +
+            DateFormat.Hm('pl_PL').format(_range.endDate!) +
+            ' ' +
+            DateFormat.yMMMMEEEEd('pl_PL').format(_range.startDate!),
+      );
+    }
   }
 
-  Padding _buildDescription(
-    BuildContext context,
-    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  ) {
+  Padding _buildDescription(BuildContext context,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(

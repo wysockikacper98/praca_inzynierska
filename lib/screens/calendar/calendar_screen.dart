@@ -46,6 +46,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         }),
       ),
       body: FutureBuilder(
+        // TODO: zastanowić się czy nie wypadało by ograniczyć ilość zapytań do 2 obecnych miesięcy, sam kalendarz powinien mieć wbudowane wsparcie do tego
         future: FirebaseFirestore.instance
             .collection(collectionString)
             .doc(currentUserId)

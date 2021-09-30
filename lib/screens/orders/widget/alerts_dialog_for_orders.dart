@@ -162,144 +162,6 @@ Future<void> _cancelOrder(
   Navigator.of(context).pop();
 }
 
-AlertDialog buildAlertDialogForDatePicker(
-    BuildContext context,
-    void Function(PickerDateRange range) setRange,
-    void Function(Color color) setColor) {
-  Color _selectedColor = Colors.green;
-  List<ColorSwatch> _colors = [
-    Colors.red,
-    Colors.pink,
-    Colors.purple,
-    Colors.deepPurple,
-    Colors.indigo,
-    Colors.blue,
-    Colors.lightBlue,
-    Colors.cyan,
-    Colors.teal,
-    Colors.green,
-    Colors.lightGreen,
-    Colors.lime,
-    Colors.yellow,
-    Colors.amber,
-    Colors.orange,
-    Colors.deepOrange,
-    Colors.brown,
-    Colors.grey,
-    Colors.blueGrey,
-  ];
-
-  return AlertDialog(
-    title: ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text('Wybierz okres trwania zamówienia'),
-      trailing: ElevatedButton(
-        child: Icon(Icons.edit),
-        style: ElevatedButton.styleFrom(
-          primary: _selectedColor,
-          shape: CircleBorder(),
-        ),
-        onPressed: () => showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: Text('Wybierz kolor zamówienia'),
-            content: MaterialColorPicker(
-              selectedColor: _selectedColor,
-              colors: _colors,
-              onColorChange: (value) {
-                _selectedColor = value;
-                setColor(value);
-              },
-            ),
-            actions: [
-              TextButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-    content: Container(
-      width: 300,
-      child: SfDateRangePicker(
-        showActionButtons: true,
-        cancelText: 'Anuluj',
-        confirmText: 'Potwierdź',
-        showNavigationArrow: true,
-        enablePastDates: false,
-        initialSelectedRange: PickerDateRange(
-          DateTime.now(),
-          DateTime.now().add(Duration(days: 2)),
-        ),
-        monthViewSettings: DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-        selectionMode: DateRangePickerSelectionMode.range,
-        onCancel: () => Navigator.of(context).pop(),
-        onSubmit: (value) async {
-          if (value is PickerDateRange) {
-            if (value.endDate == null) {
-              final TimeOfDay? timeFrom = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.now(),
-                helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
-                builder: (BuildContext context, Widget? child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context)
-                        .copyWith(alwaysUse24HourFormat: true),
-                    child: child!,
-                  );
-                },
-              );
-
-              final TimeOfDay? timeTo = timeFrom != null
-                  ? await showTimePicker(
-                      context: context,
-                      initialTime: timeFrom,
-                      builder: (BuildContext context, Widget? child) {
-                        return MediaQuery(
-                          data: MediaQuery.of(context)
-                              .copyWith(alwaysUse24HourFormat: true),
-                          child: child!,
-                        );
-                      },
-                    )
-                  : null;
-
-              if (timeFrom != null && timeTo != null) {
-                if (timeOfDayIsAfter(
-                    context: context, timeFrom: timeFrom, timeTo: timeTo)) {
-                  setRange(
-                    PickerDateRange(
-                      DateTime(
-                        value.startDate!.year,
-                        value.startDate!.month,
-                        value.startDate!.day,
-                        timeFrom.hour,
-                        timeFrom.minute,
-                      ),
-                      DateTime(
-                        value.startDate!.year,
-                        value.startDate!.month,
-                        value.startDate!.day,
-                        timeTo.hour,
-                        timeTo.minute,
-                      ),
-                    ),
-                  );
-                }
-                Navigator.of(context).pop();
-                return;
-              }
-            }
-            setRange(value);
-          }
-          Navigator.of(context).pop();
-        },
-      ),
-    ),
-  );
-}
 
 class BuildAlertDialogForDatePicker extends StatefulWidget {
   final List<ColorSwatch> _colors = [
@@ -323,8 +185,8 @@ class BuildAlertDialogForDatePicker extends StatefulWidget {
     Colors.grey,
     Colors.blueGrey,
   ];
-  void Function(PickerDateRange range) setRange;
-  void Function(Color color) setColor;
+  final void Function(PickerDateRange range) setRange;
+  final void Function(Color color) setColor;
 
   BuildAlertDialogForDatePicker(this.setRange, this.setColor);
 
