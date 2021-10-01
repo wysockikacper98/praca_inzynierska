@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import 'pick_register_screen.dart';
 
 class LoginFormScreen extends StatefulWidget {

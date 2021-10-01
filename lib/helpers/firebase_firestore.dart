@@ -37,7 +37,7 @@ Future<void> loginUser(
         Users.fromJson(data.data()!);
     // await saveUserInfo(Users.fromJson(data.data()));
   } on FirebaseAuthException catch (error) {
-    handleFirebaseError(context, error);
+    handleFirebaseAuthError(context, error);
   } catch (error) {
     print(error);
   }
@@ -61,7 +61,7 @@ Future<bool> registerUser(
     // await saveUserInfo(user);
     return true;
   } on FirebaseAuthException catch (error) {
-    handleFirebaseError(context, error);
+    handleFirebaseAuthError(context, error);
     return false;
   } catch (error) {
     print(error);
@@ -91,7 +91,7 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
     // await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
-    handleFirebaseError(context, error);
+    handleFirebaseAuthError(context, error);
     authResult.user!.delete();
     setLoading(false);
     return false;
@@ -103,7 +103,24 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
   }
 }
 
-void handleFirebaseError(BuildContext context, FirebaseAuthException error) {
+void handleFirebaseAuthError(
+    BuildContext context, FirebaseAuthException error) {
+  String errorMessage = "Wystąpił błąd. Proszę sprawedzić dane logowania.";
+  if (error.message != null) {
+    errorMessage = error.message!;
+  }
+  print(errorMessage);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(errorMessage),
+      duration: Duration(seconds: 3),
+      backgroundColor: Theme.of(context).errorColor,
+    ),
+  );
+}
+
+void handleFirebaseException(BuildContext context, FirebaseException error) {
   String errorMessage = "Wystąpił błąd. Proszę sprawedzić dane logowania.";
   if (error.message != null) {
     errorMessage = error.message!;

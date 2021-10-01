@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/firm/build_firm_info.dart';
 
 import '../../models/firm.dart';
+import '../../widgets/firm/build_firm_info.dart';
 
 class SearchFirms extends SearchDelegate<Firm?> {
   final Stream<QuerySnapshot<Map<String, dynamic>>> _firms = FirebaseFirestore

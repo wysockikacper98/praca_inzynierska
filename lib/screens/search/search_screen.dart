@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/search/search_firms.dart';
 
 import '../../widgets/search/build_firm_list_with_filter.dart';
 import '../../widgets/search/filter.dart';
+import 'search_firms.dart';
 
 class SearchScreen extends StatelessWidget {
   static const routeName = '/search';

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/meeting.dart';

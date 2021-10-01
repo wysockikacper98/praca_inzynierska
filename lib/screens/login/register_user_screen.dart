@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/users.dart';
 
 class RegisterUserScreen extends StatefulWidget {

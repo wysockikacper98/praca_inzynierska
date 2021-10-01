@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/users.dart';
 import '../../widgets/pickers/image_picker.dart';
 
