@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../firm/build_firm_info.dart';
 
 Widget buildFirmListWithFilter() {

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/users.dart';
 import '../../widgets/firm/build_firm_info.dart';
 import '../full_screen_image.dart';
@@ -83,7 +83,7 @@ class FirmProfileScreen extends StatelessWidget {
                                 child: Hero(
                                   tag: tag,
                                   child: Container(
-                                    child: Image.asset(pictures[index]),
+                                    child: Image.network(pictures[index]),
                                     color: Colors.white30,
                                   ),
                                 ),
@@ -92,7 +92,7 @@ class FirmProfileScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(builder: (_) {
                                       return FullScreenImage(
-                                          imageAssetsPath: pictures[index],
+                                          imageURLPath: pictures[index],
                                           tag: tag);
                                     }),
                                   );

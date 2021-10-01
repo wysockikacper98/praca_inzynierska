@@ -1,9 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:praca_inzynierska/helpers/fiebase_storage.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/firebaseHelper.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
@@ -26,7 +27,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
   bool _editPhoneNumber = false;
   bool _editLocation = false;
   bool _editDescription = false;
-  bool _editPicture = false;
 
   bool _isLoading = false;
 
@@ -834,21 +834,15 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text("Zdjęcia:"),
-              trailing: IconButton(
-                color: _editPicture
-                    ? Theme.of(context).errorColor
-                    : Theme.of(context).primaryColor,
-                icon: _editPicture ? Icon(Icons.close) : Icon(Icons.edit),
-                onPressed: () {
-                  if (!_editPicture) {
-                    _descriptionController.text =
-                        firmProvider.firm.details!.description!;
-                  }
-                  setState(() {
-                    _editPicture = !_editPicture;
-                  });
-                },
-              ),
+              trailing: firmProvider.firm.details!.pictures!.length < 5
+                  ? IconButton(
+                      icon: Icon(
+                        Icons.add_photo_alternate,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () => addPictureToFirmProfile(context),
+                    )
+                  : null,
             ),
             firmProvider.firm.details!.pictures!.length > 0
                 ? CarouselSlider.builder(
@@ -857,7 +851,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                       disableCenter: true,
                       autoPlayInterval: const Duration(seconds: 8),
                       enlargeCenterPage: true,
-                      autoPlay: true,
+                      autoPlay: false,
                     ),
                     itemCount: firmProvider.firm.details!.pictures!.length,
                     itemBuilder: (ctx, index, tag) {
@@ -865,7 +859,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                         child: Hero(
                           tag: tag,
                           child: Container(
-                            child: Image.asset(
+                            child: Image.network(
                                 firmProvider.firm.details!.pictures![index]),
                             color: Colors.white30,
                           ),
@@ -875,9 +869,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
                             context,
                             MaterialPageRoute(builder: (_) {
                               return FullScreenImage(
-                                  imageAssetsPath: firmProvider
-                                      .firm.details!.pictures![index],
-                                  tag: tag);
+                                imageURLPath:
+                                    firmProvider.firm.details!.pictures![index],
+                                tag: tag,
+                                editable: true,
+                              );
                             }),
                           );
                         },

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
+import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/users.dart';
@@ -187,6 +189,7 @@ class _AppDrawerState extends State<AppDrawer> {
             iconColor: Theme.of(context).primaryColorLight,
             collapsedIconColor: Theme.of(context).primaryColorLight,
             tilePadding: EdgeInsets.zero,
+            childrenPadding: EdgeInsets.zero,
             title: Text(
               '${user.firstName} ${user.lastName}',
               style: textTheme.headline6,
@@ -197,20 +200,40 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             children: [
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: Icon(
                   Icons.person,
                   color: Theme.of(context).primaryColorLight,
                 ),
-                title: Text('Podgląd profilu'),
-                onTap: () {},
+                title: Text(
+                  'Podgląd profilu',
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
+                onTap: user.type == UserType.Firm
+                    ? () {
+                        Navigator.of(context).pushNamed(
+                          FirmProfileScreen.routeName,
+                          arguments:
+                              FirmsAuth(FirebaseAuth.instance.currentUser!.uid),
+                        );
+                      }
+                    //TODO: Dodać przejście do podglądu profilu użytkownika
+                    : null,
               ),
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: Icon(
                   Icons.manage_accounts,
                   color: Theme.of(context).primaryColorLight,
                 ),
-                title: Text('Edycja profilu'),
-                onTap: () {},
+                title: Text(
+                  'Edycja profilu',
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
+                onTap: user.type == UserType.Firm
+                    ? () => Navigator.of(context)
+                        .popAndPushNamed(FirmEditProfileScreen.routeName)
+                    : null,
               ),
             ],
           ),
