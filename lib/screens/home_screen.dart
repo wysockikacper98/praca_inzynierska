@@ -104,6 +104,8 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(title: 'Test'),
+      //TODO: Usunąć jeśli nie pomogło z wyświetlaniem Drawer'a na prawdziwym urządzeniu
+      endDrawerEnableOpenDragGesture: false,
     );
   }
 }
