@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
-import 'package:praca_inzynierska/screens/firm/firm_profile_screen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../models/users.dart';
@@ -43,112 +42,139 @@ class _AppDrawerState extends State<AppDrawer> {
     return Drawer(
       child: Container(
         color: theme.primaryColorLight,
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            Container(
-              color: theme.primaryColor,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Consumer<UserProvider>(
-                    builder: (ctx, provider, _) =>
-                        buildHeader(ctx, textTheme, provider.user),
-                  ),
-                ),
-              ),
-            ),
-            Divider(
-              height: 1,
-              thickness: 1,
-            ),
-            ListTile(
-                leading: Icon(Icons.home),
-                title: Text('Strona główna'),
-                selected: _selectedDestination == 0,
-                onTap: () {
-                  selectDestination(0);
-                  Navigator.of(context).pushReplacementNamed('/');
-                }),
-            ListTile(
-              leading: Icon(Icons.search),
-              title: Text('Wyszukiwarka'),
-              selected: _selectedDestination == 1,
-              onTap: () {
-                selectDestination(1);
-                Navigator.of(context).popAndPushNamed(SearchScreen.routeName);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.email),
-              title: Text('Wiadomości'),
-              selected: _selectedDestination == 2,
-              onTap: () {
-                selectDestination(2);
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatsScreen(
-                      key: ValueKey(FirebaseAuth.instance.currentUser!.uid),
-                      user: provider.user,
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  Container(
+                    color: theme.primaryColor,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Consumer<UserProvider>(
+                          builder: (ctx, provider, _) =>
+                              buildHeader(ctx, textTheme, provider.user),
+                        ),
+                      ),
                     ),
                   ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.build),
-              title: Text('Zamówienia'),
-              selected: _selectedDestination == 3,
-              onTap: () {
-                selectDestination(3);
-                Navigator.of(context).popAndPushNamed(OrdersScreen.routeName);
-              },
-            ),
-            provider.user.type == UserType.Firm
-                ? ListTile(
-                    leading: Icon(Icons.today_outlined),
-                    title: Text('Kalendarz'),
-                    selected: _selectedDestination == 4,
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                  ),
+                  ListTile(
+                      leading: Icon(Icons.home),
+                      title: Text('Strona główna'),
+                      selected: _selectedDestination == 0,
+                      onTap: () {
+                        selectDestination(0);
+                        Navigator.of(context).pushReplacementNamed('/');
+                      }),
+                  ListTile(
+                    leading: Icon(Icons.search),
+                    title: Text('Wyszukiwarka'),
+                    selected: _selectedDestination == 1,
                     onTap: () {
-                      selectDestination(4);
+                      selectDestination(1);
                       Navigator.of(context)
-                          .popAndPushNamed(CalendarScreen.routeName);
-                    },
-                  )
-                : ListTile(
-                    leading: Icon(Icons.warning_outlined),
-                    title: Text('Awarie'),
-                    selected: _selectedDestination == 5,
-                    onTap: () {
-                      selectDestination(5);
-                      Navigator.of(context)
-                          .popAndPushNamed(EmergencyScreen.routeName);
+                          .popAndPushNamed(SearchScreen.routeName);
                     },
                   ),
-            Divider(
-              height: 1,
-              thickness: 1,
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text('Wiadomości'),
+                    selected: _selectedDestination == 2,
+                    onTap: () {
+                      selectDestination(2);
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatsScreen(
+                            key: ValueKey(
+                                FirebaseAuth.instance.currentUser!.uid),
+                            user: provider.user,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.build),
+                    title: Text('Zamówienia'),
+                    selected: _selectedDestination == 3,
+                    onTap: () {
+                      selectDestination(3);
+                      Navigator.of(context)
+                          .popAndPushNamed(OrdersScreen.routeName);
+                    },
+                  ),
+                  provider.user.type == UserType.Firm
+                      ? ListTile(
+                          leading: Icon(Icons.today_outlined),
+                          title: Text('Kalendarz'),
+                          selected: _selectedDestination == 4,
+                          onTap: () {
+                            selectDestination(4);
+                            Navigator.of(context)
+                                .popAndPushNamed(CalendarScreen.routeName);
+                          },
+                        )
+                      : ListTile(
+                          leading: Icon(Icons.warning_outlined),
+                          title: Text('Awarie'),
+                          selected: _selectedDestination == 5,
+                          onTap: () {
+                            selectDestination(5);
+                            Navigator.of(context)
+                                .popAndPushNamed(EmergencyScreen.routeName);
+                          },
+                        ),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('Ustawienia'),
+                    selected: _selectedDestination == 6,
+                    onTap: () {
+                      selectDestination(6);
+                      Navigator.of(context)
+                          .popAndPushNamed(SettingsScreen.routeName);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('Wyloguj'),
+                    selected: _selectedDestination == 7,
+                    onTap: () {
+                      selectDestination(7);
+                      FirebaseAuth.instance.signOut();
+                      provider.clearUserInfo();
+                    },
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Ustawienia'),
-              selected: _selectedDestination == 6,
-              onTap: () {
-                selectDestination(6);
-                Navigator.of(context).popAndPushNamed(SettingsScreen.routeName);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Wyloguj'),
-              selected: _selectedDestination == 7,
-              onTap: () {
-                selectDestination(7);
-                FirebaseAuth.instance.signOut();
-                provider.clearUserInfo();
-              },
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FutureBuilder(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (ctx, AsyncSnapshot<PackageInfo> snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          '${snapshot.data!.appName} v${snapshot.data!.version}+${snapshot.data!.buildNumber} ',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        );
+                      } else
+                        return Container();
+                    }),
+              ),
             ),
           ],
         ),
@@ -158,7 +184,6 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget buildHeader(BuildContext context, TextTheme textTheme, Users user) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
