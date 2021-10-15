@@ -1,16 +1,19 @@
 class Comment {
   double rating;
   String? comment;
+  DateTime dateTime;
 
   Comment({
     required this.rating,
     this.comment,
+    required this.dateTime,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       rating: json['rating'] ?? 0,
       comment: json['comment'] ?? '',
+      dateTime: json['dateTime'].toDate() ?? '',
     );
   }
 
@@ -18,11 +21,12 @@ class Comment {
     return {
       'rating': this.rating,
       'comment': this.comment,
+      'dateTime': this.dateTime,
     };
   }
 
   @override
   String toString() {
-    return 'Comment{rating: $rating, comment: $comment}';
+    return 'Comment{rating: $rating, comment: $comment, dateTime: $dateTime}';
   }
 }

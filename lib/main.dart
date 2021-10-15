@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'models/firm.dart';
 import 'models/users.dart';
@@ -20,6 +20,7 @@ import 'screens/orders/orders_screen.dart';
 import 'screens/search/search_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/user/user_edit_profile_screen.dart';
+import 'screens/user/user_profile_screen.dart';
 import 'widgets/theme/theme_Provider.dart';
 import 'widgets/theme/theme_dark.dart';
 import 'widgets/theme/theme_light.dart';
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),
                 CreateOrderScreen.routeName: (ctx) => CreateOrderScreen(),
                 CalendarScreen.routeName: (ctx) => CalendarScreen(),
+                UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
               },
             );
           }),

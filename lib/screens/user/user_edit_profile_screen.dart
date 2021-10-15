@@ -76,7 +76,6 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   Widget build(BuildContext context) {
     final sizeMediaQuery = MediaQuery.of(context).size;
     final width = sizeMediaQuery.width;
-    // final height = sizeMediaQuery.height;
     final provider = Provider.of<UserProvider>(context);
 
     return Scaffold(
@@ -89,21 +88,20 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Text(snapshot.data.data().toString()),
               SizedBox(height: 20),
               imagePicker(provider, width),
               SizedBox(height: 15),
               RatingBarIndicator(
-                rating: double.parse(provider.user.rating!),
+                rating: provider.user.rating!,
                 itemBuilder: (_, index) =>
                     Icon(Icons.star, color: Colors.amber),
                 itemCount: 5,
                 itemSize: 40.0,
               ),
               Text(
-                provider.user.rating! +
+                provider.user.rating.toString() +
                     ' (' +
-                    provider.user.ratingNumber! +
+                    provider.user.ratingNumber.toString() +
                     ')',
                 style: Theme.of(context).textTheme.subtitle1,
               ),

@@ -355,12 +355,27 @@ Future<void> addCommentToFirebase(
   return FirebaseFirestore.instance
       .collection('orders')
       .doc(orderID)
-      .update({updateField: false}).then((value) => FirebaseFirestore.instance
-          .collection(collection)
-          .doc(docID)
-          .collection('comments')
-          .add(comment.toJson())
-          .then((value) => print('Value:\n${value.toString()}')));
+      .update({updateField: false}).then(
+    (value) => FirebaseFirestore.instance
+        .collection(collection)
+        .doc(docID)
+        .collection('comments')
+        .add(comment.toJson())
+        .then(
+      (_) async {
+        final DocumentSnapshot<Map<String, dynamic>> data =
+            await FirebaseFirestore.instance
+                .collection(collection)
+                .doc(docID)
+                .get();
+        final Users users = Users.fromJson(data.data()!);
+        FirebaseFirestore.instance.collection(collection).doc(docID).update({
+          'rating': (comment.rating + users.rating!),
+          'ratingNumber': (users.ratingNumber! + 1),
+        });
+      },
+    ),
+  );
 }
 
 Future<void> addMeetingToUser({

@@ -13,6 +13,8 @@ import '../screens/messages/chats_screen.dart';
 import '../screens/orders/orders_screen.dart';
 import '../screens/search/search_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/user/user_edit_profile_screen.dart';
+import '../screens/user/user_profile_screen.dart';
 import 'theme/theme_Provider.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -237,15 +239,13 @@ class _AppDrawerState extends State<AppDrawer> {
                   style: TextStyle(color: Theme.of(context).primaryColorLight),
                 ),
                 onTap: user.type == UserType.Firm
-                    ? () {
-                        Navigator.of(context).pushNamed(
+                    ? () => Navigator.of(context).popAndPushNamed(
                           FirmProfileScreen.routeName,
                           arguments:
                               FirmsAuth(FirebaseAuth.instance.currentUser!.uid),
-                        );
-                      }
-                    //TODO: Dodać przejście do podglądu profilu użytkownika
-                    : null,
+                        )
+                    : () => Navigator.of(context)
+                        .popAndPushNamed(UserProfileScreen.routeName),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -260,7 +260,8 @@ class _AppDrawerState extends State<AppDrawer> {
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context)
                         .popAndPushNamed(FirmEditProfileScreen.routeName)
-                    : null,
+                    : () => Navigator.of(context)
+                        .popAndPushNamed(UserEditProfileScreen.routeName),
               ),
             ],
           ),

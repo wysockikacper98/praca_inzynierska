@@ -92,6 +92,7 @@ class _BuildAlertDialogAddCommentState
                               Comment comment = Comment(
                                 rating: rating,
                                 comment: _controller.text,
+                                dateTime: DateTime.now(),
                               );
                               addCommentToFirebase(
                                 userType,

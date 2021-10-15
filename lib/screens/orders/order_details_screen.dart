@@ -88,64 +88,67 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           ctx,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
         ) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData) {
-            return buildErrorMessage(context);
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (!snapshot.hasData) {
+              print('TO NIE MA DANYCH:\n${snapshot.data}');
+              return buildErrorMessage(context);
+            } else {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    userType == UserType.Firm
+                        ? _createUserToShowInDetails(
+                            context,
+                            provider,
+                            userToShowInDetails,
+                          )
+                        : _createFirmToShowInDetails(
+                            context,
+                            provider,
+                            firmToShowInDetails,
+                          ),
+                    _buildTextNormalThenBold(
+                      context: context,
+                      normal: 'Rodzaj usługi: ',
+                      bold: snapshot.data!.data()!['category'],
+                    ),
+                    _buildTextNormalThenBold(
+                      context: context,
+                      normal: 'Status usługi: ',
+                      bold: translateStatusEnumStringToString(
+                          snapshot.data!.data()!['status']),
+                    ),
+                    _buildTextNormalThenBold(
+                      context: context,
+                      normal: 'Tytuł: ',
+                      bold: snapshot.data!.data()!['title'],
+                    ),
+                    _buildDescription(context, snapshot),
+                    _buildDatePreview(snapshot),
+                    SizedBox(height: 16),
+                    _buildContactButtons(
+                      context: context,
+                      snapshot: snapshot,
+                      userType: userType,
+                      chatName: chatName,
+                      listID: idList,
+                      contactPhoneNumber: userType == UserType.Firm
+                          ? userToShowInDetails.telephone!
+                          : firmToShowInDetails.telephone!,
+                      contactEmail: userType == UserType.Firm
+                          ? userToShowInDetails.email
+                          : firmToShowInDetails.email,
+                    ),
+                    SizedBox(height: 16),
+                    _buildButtonsDependingOnStatus(
+                        context, snapshot, userType, idList),
+                  ],
+                ),
+              );
+            }
           } else {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  userType == UserType.Firm
-                      ? _createUserToShowInDetails(
-                          context,
-                          provider,
-                          userToShowInDetails,
-                        )
-                      : _createFirmToShowInDetails(
-                          context,
-                          provider,
-                          firmToShowInDetails,
-                        ),
-                  _buildTextNormalThenBold(
-                    context: context,
-                    normal: 'Rodzaj usługi: ',
-                    bold: snapshot.data!.data()!['category'],
-                  ),
-                  _buildTextNormalThenBold(
-                    context: context,
-                    normal: 'Status usługi: ',
-                    bold: translateStatusEnumStringToString(
-                        snapshot.data!.data()!['status']),
-                  ),
-                  _buildTextNormalThenBold(
-                    context: context,
-                    normal: 'Tytuł: ',
-                    bold: snapshot.data!.data()!['title'],
-                  ),
-                  _buildDescription(context, snapshot),
-                  _buildDatePreview(snapshot),
-                  SizedBox(height: 16),
-                  _buildContactButtons(
-                    context: context,
-                    snapshot: snapshot,
-                    userType: userType,
-                    chatName: chatName,
-                    listID: idList,
-                    contactPhoneNumber: userType == UserType.Firm
-                        ? userToShowInDetails.telephone!
-                        : firmToShowInDetails.telephone!,
-                    contactEmail: userType == UserType.Firm
-                        ? userToShowInDetails.email
-                        : firmToShowInDetails.email,
-                  ),
-                  SizedBox(height: 16),
-                  _buildButtonsDependingOnStatus(
-                      context, snapshot, userType, idList),
-                ],
-              ),
-            );
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -488,7 +491,7 @@ ListTile _createUserToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: double.parse(user.rating!),
+          rating: user.rating!,
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -499,7 +502,7 @@ ListTile _createUserToShowInDetails(
         ),
         RichText(
           text: TextSpan(
-            text: user.rating,
+            text: user.rating.toString(),
             style: Theme.of(context).textTheme.headline6,
             children: [
               TextSpan(

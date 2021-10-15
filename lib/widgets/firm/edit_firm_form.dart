@@ -124,7 +124,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
             imagePickerFirm(firmProvider, userProvider, width),
             SizedBox(height: 15),
             RatingBarIndicator(
-              rating: double.parse(userProvider.user.rating!),
+              rating: userProvider.user.rating!,
               itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
               itemCount: 5,
               itemSize: 40.0,

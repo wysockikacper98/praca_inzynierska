@@ -9,8 +9,8 @@ class Users {
   final String email;
   final String firstName;
   final String lastName;
-  final String? rating;
-  final String? ratingNumber;
+  final double? rating;
+  final double? ratingNumber;
   final String? telephone;
   final String? avatar;
   final UserType type;
@@ -31,8 +31,8 @@ class Users {
       firstName: parsedJson['firstName'] ?? '',
       lastName: parsedJson['lastName'] ?? '',
       email: parsedJson['email'] ?? '',
-      rating: parsedJson['rating'] ?? '0',
-      ratingNumber: parsedJson['ratingNumber'] ?? '0',
+      rating: parsedJson['rating'] ?? 0.0,
+      ratingNumber: parsedJson['ratingNumber'] ?? 0.0,
       avatar: parsedJson['avatar'] ?? '',
       telephone: parsedJson['telephone'] ?? '',
       type: parsedJson['type'] == 'PrivateUser'
@@ -50,9 +50,9 @@ class Users {
         "\nEmail:" +
         this.email +
         "\nRating:" +
-        this.rating! +
+        this.rating.toString() +
         "\nRating Number:" +
-        this.ratingNumber! +
+        this.ratingNumber.toString() +
         "\nTelephone:" +
         this.telephone! +
         "\nAvatar:" +
