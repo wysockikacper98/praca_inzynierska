@@ -15,9 +15,9 @@ Widget imagePicker(UserProvider provider, double width) {
   return Stack(
     children: [
       CircleAvatar(
-        backgroundImage: (provider.user.avatar == ''
+        backgroundImage: (provider.user!.avatar == ''
             ? AssetImage('assets/images/user.png')
-            : NetworkImage(provider.user.avatar!)) as ImageProvider<Object>?,
+            : NetworkImage(provider.user!.avatar!)) as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),
@@ -41,9 +41,9 @@ Widget imagePickerFirm(
   return Stack(
     children: [
       CircleAvatar(
-        backgroundImage: (firmProvider.firm.avatar == ''
+        backgroundImage: (firmProvider.firm!.avatar == ''
                 ? AssetImage('assets/images/user.png')
-                : NetworkImage(firmProvider.firm.avatar!))
+                : NetworkImage(firmProvider.firm!.avatar!))
             as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,

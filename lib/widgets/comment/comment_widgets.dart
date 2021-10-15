@@ -29,7 +29,7 @@ class _BuildAlertDialogAddCommentState
 
   @override
   Widget build(BuildContext context) {
-    final userType = Provider.of<UserProvider>(context).user.type;
+    final userType = Provider.of<UserProvider>(context).user!.type;
 
     return Dialog(
       backgroundColor: Colors.transparent,

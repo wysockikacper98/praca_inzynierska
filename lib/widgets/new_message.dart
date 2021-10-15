@@ -21,7 +21,7 @@ class _NewMessageState extends State<NewMessage> {
   Future<void> _sendMessage(UserProvider provider) async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser!;
-    final Users userData = provider.user;
+    final Users userData = provider.user!;
 
     await FirebaseFirestore.instance
         .collection('chats')

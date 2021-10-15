@@ -115,7 +115,7 @@ class UserProfileScreen extends StatelessWidget {
             .copyWith(fontWeight: FontWeight.bold),
         children: <TextSpan>[
           TextSpan(
-            text: ' (${provider.user.ratingNumber})',
+            text: ' (${provider.user!.ratingNumber})',
             style: TextStyle(fontWeight: FontWeight.normal),
           ),
         ],
@@ -124,17 +124,17 @@ class UserProfileScreen extends StatelessWidget {
   }
 
   double _calculateRating(UserProvider provider) {
-    if (provider.user.ratingNumber != 0.0) {
-      return (provider.user.rating! / provider.user.ratingNumber!);
+    if (provider.user!.ratingNumber != 0.0) {
+      return (provider.user!.rating! / provider.user!.ratingNumber!);
     } else
       return 0.0;
   }
 
   CircleAvatar _buildAvatar(UserProvider provider, double width) {
     return CircleAvatar(
-      backgroundImage: (provider.user.avatar == ''
+      backgroundImage: (provider.user!.avatar == ''
           ? AssetImage('assets/images/user.png')
-          : NetworkImage(provider.user.avatar!)) as ImageProvider<Object>?,
+          : NetworkImage(provider.user!.avatar!)) as ImageProvider<Object>?,
       backgroundColor: Colors.orangeAccent.shade100,
       radius: width * 0.15,
     );

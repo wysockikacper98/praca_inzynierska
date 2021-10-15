@@ -57,7 +57,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         padding: const EdgeInsets.all(16.0),
                         child: Consumer<UserProvider>(
                           builder: (ctx, provider, _) =>
-                              buildHeader(ctx, textTheme, provider.user),
+                              buildHeader(ctx, textTheme, provider.user!),
                         ),
                       ),
                     ),
@@ -97,7 +97,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           builder: (context) => ChatsScreen(
                             key: ValueKey(
                                 FirebaseAuth.instance.currentUser!.uid),
-                            user: provider.user,
+                            user: provider.user!,
                           ),
                         ),
                       );
@@ -113,7 +113,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           .popAndPushNamed(OrdersScreen.routeName);
                     },
                   ),
-                  provider.user.type == UserType.Firm
+                  provider.user!.type == UserType.Firm
                       ? ListTile(
                           leading: Icon(Icons.today_outlined),
                           title: Text('Kalendarz'),

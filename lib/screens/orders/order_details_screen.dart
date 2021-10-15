@@ -51,7 +51,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       final firm = Provider.of<FirmProvider>(context, listen: false).firm;
       chatName = [
         '${userToShowInDetails.lastName} ${userToShowInDetails.firstName}',
-        '${firm.lastName} ${firm.firstName}, ${firm.firmName}',
+        '${firm!.lastName} ${firm.firstName}, ${firm.firmName}',
       ];
     } else {
       firmToShowInDetails = Firm.fromJson(dataFromFirebase.data()!);
@@ -63,7 +63,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       //creating chat name
       final user = Provider.of<UserProvider>(context, listen: false).user;
       chatName = [
-        '${user.lastName} ${user.firstName}',
+        '${user!.lastName} ${user.firstName}',
         '${firmToShowInDetails.lastName} ${firmToShowInDetails.firstName}, ${firmToShowInDetails.firmName}',
       ];
     }
@@ -78,7 +78,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget build(BuildContext context) {
     print('build -> order_details_screen');
     final provider = Provider.of<UserProvider>(context, listen: false);
-    final UserType userType = provider.user.type;
+    final UserType userType = provider.user!.type;
 
     return Scaffold(
       appBar: AppBar(title: Text('Szczegóły zamówienia')),

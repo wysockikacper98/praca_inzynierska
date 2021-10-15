@@ -38,7 +38,7 @@ AlertDialog buildAlertDialogForNewMessage({
           Navigator.of(context).pop();
           createOrOpenChat(
             context,
-            currentLoggedUser,
+            currentLoggedUser!,
             addressee,
             chatName,
             listID,

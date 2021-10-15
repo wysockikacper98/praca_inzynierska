@@ -382,7 +382,7 @@ End Date: ${range.endDate}
         height: 2,
         color: Theme.of(context).colorScheme.secondary,
       ),
-      items: provider.firm.category!.map((value) {
+      items: provider.firm!.category!.map((value) {
         return DropdownMenuItem(
           value: value.toString(),
           child: Text(value.toString()),
@@ -474,8 +474,8 @@ End Date: ${range.endDate}
       _formKey.currentState!.save();
 
       _order.firmID = FirebaseAuth.instance.currentUser!.uid.toString();
-      _order.firmName = provider.firm.firmName;
-      _order.firmAvatar = provider.firm.avatar!;
+      _order.firmName = provider.firm!.firmName;
+      _order.firmAvatar = provider.firm!.avatar!;
       _order.userID = _user!.id;
       _order.userName = _user!['firstName'] + ' ' + _user!['lastName'];
       _order.userAvatar = _user!['avatar'];

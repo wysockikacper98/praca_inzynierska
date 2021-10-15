@@ -78,11 +78,11 @@ class Users {
 class UserProvider with ChangeNotifier {
   Users? _user;
 
-  Users get user {
-    return _user!;
+  Users? get user {
+    return _user;
   }
 
-  set user(Users value) {
+  set user(Users? value) {
     print("User Updated");
     _user = value;
     notifyListeners();

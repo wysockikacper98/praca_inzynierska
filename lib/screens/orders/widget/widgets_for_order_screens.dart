@@ -11,7 +11,7 @@ Padding buildOrderListTile(
 ) {
   final provider = Provider.of<UserProvider>(context, listen: false);
   final ThemeData themeData = Theme.of(context);
-  final UserType userType = provider.user.type;
+  final UserType userType = provider.user!.type;
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10),

@@ -54,14 +54,14 @@ Container buildUserInfo(BuildContext context, Users user) {
             icon: FaIcon(FontAwesomeIcons.userEdit),
             color: Theme.of(context).colorScheme.secondary,
             onPressed: () {
-              provider.user.type == UserType.Firm
+              provider.user!.type == UserType.Firm
                   ? Navigator.of(context)
                       .pushNamed(FirmEditProfileScreen.routeName)
                   : Navigator.of(context).pop();
             },
           ),
           onTap: () {
-            provider.user.type == UserType.PrivateUser
+            provider.user!.type == UserType.PrivateUser
                 ? Navigator.of(context)
                     .popAndPushNamed(UserEditProfileScreen.routeName)
                 : Navigator.of(context).popAndPushNamed(

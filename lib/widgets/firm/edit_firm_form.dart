@@ -74,7 +74,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
 
       formKey.currentState!.save();
 
-      Firm updatedFirm = firmProvider.firm;
+      Firm updatedFirm = firmProvider.firm!;
 
       //update Firm
       if (_firmName != null) {
@@ -124,15 +124,15 @@ class _EditFirmFormState extends State<EditFirmForm> {
             imagePickerFirm(firmProvider, userProvider, width),
             SizedBox(height: 15),
             RatingBarIndicator(
-              rating: userProvider.user.rating!,
+              rating: userProvider.user!.rating!,
               itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
               itemCount: 5,
               itemSize: 40.0,
             ),
             Text(
-              firmProvider.firm.rating! +
+              firmProvider.firm!.rating! +
                   ' (' +
-                  firmProvider.firm.ratingNumber! +
+                  firmProvider.firm!.ratingNumber! +
                   ')',
               style: Theme.of(context).textTheme.subtitle1,
             ),
@@ -147,11 +147,12 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 !_editFirmName
                     ? TextButton(
                         child: Text(
-                          firmProvider.firm.firmName,
+                          firmProvider.firm!.firmName,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         onPressed: () {
-                          _firmNameController.text = firmProvider.firm.firmName;
+                          _firmNameController.text =
+                              firmProvider.firm!.firmName;
                           setState(() {
                             _editFirmName = !_editFirmName;
                           });
@@ -305,16 +306,16 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 !_editNameAndSurname
                     ? TextButton(
                         child: Text(
-                          firmProvider.firm.firstName +
+                          firmProvider.firm!.firstName +
                               " " +
-                              firmProvider.firm.lastName,
+                              firmProvider.firm!.lastName,
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         onPressed: () {
                           if (!_editNameAndSurname) {
-                            _nameController.text = firmProvider.firm.firstName;
+                            _nameController.text = firmProvider.firm!.firstName;
                             _surnameController.text =
-                                firmProvider.firm.lastName;
+                                firmProvider.firm!.lastName;
                           }
                           setState(() {
                             _editNameAndSurname = !_editNameAndSurname;
@@ -526,11 +527,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 !_editPhoneNumber
                     ? TextButton(
                         child: Text(
-                          _formatPhoneNumber(firmProvider.firm.telephone!),
+                          _formatPhoneNumber(firmProvider.firm!.telephone!),
                           style: Theme.of(context).textTheme.headline6,
                         ),
                         onPressed: () {
-                          _phoneController.text = firmProvider.firm.telephone!;
+                          _phoneController.text = firmProvider.firm!.telephone!;
                           setState(() {
                             _editPhoneNumber = !_editPhoneNumber;
                           });
@@ -683,7 +684,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 icon: _editLocation ? Icon(Icons.close) : Icon(Icons.edit),
                 onPressed: () {
                   if (!_editLocation) {
-                    _locationController.text = firmProvider.firm.location!;
+                    _locationController.text = firmProvider.firm!.location!;
                   }
                   setState(() {
                     _editLocation = !_editLocation;
@@ -693,7 +694,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ),
             !_editLocation
                 ? Text(
-                    firmProvider.firm.location!,
+              firmProvider.firm!.location!,
                     style: Theme.of(context).textTheme.headline6,
                   )
                 : Form(
@@ -759,7 +760,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 onPressed: () {
                   if (!_editDescription) {
                     _descriptionController.text =
-                        firmProvider.firm.details!.description!;
+                        firmProvider.firm!.details!.description!;
                   }
                   setState(() {
                     _editDescription = !_editDescription;
@@ -771,7 +772,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 ? RichText(
                     text: TextSpan(
                       children: [
-                        TextSpan(text: firmProvider.firm.details!.description),
+                        TextSpan(text: firmProvider.firm!.details!.description),
                       ],
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
@@ -834,7 +835,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text("Zdjęcia:"),
-              trailing: firmProvider.firm.details!.pictures!.length < 5
+              trailing: firmProvider.firm!.details!.pictures!.length < 5
                   ? IconButton(
                       icon: Icon(
                         Icons.add_photo_alternate,
@@ -844,23 +845,23 @@ class _EditFirmFormState extends State<EditFirmForm> {
                     )
                   : null,
             ),
-            firmProvider.firm.details!.pictures!.length > 0
+            firmProvider.firm!.details!.pictures!.length > 0
                 ? CarouselSlider.builder(
-                    options: CarouselOptions(
+              options: CarouselOptions(
                       aspectRatio: 2.5,
                       disableCenter: true,
                       autoPlayInterval: const Duration(seconds: 8),
                       enlargeCenterPage: true,
                       autoPlay: false,
                     ),
-                    itemCount: firmProvider.firm.details!.pictures!.length,
+                    itemCount: firmProvider.firm!.details!.pictures!.length,
                     itemBuilder: (ctx, index, tag) {
                       return GestureDetector(
                         child: Hero(
                           tag: tag,
                           child: Container(
                             child: Image.network(
-                                firmProvider.firm.details!.pictures![index]),
+                                firmProvider.firm!.details!.pictures![index]),
                             color: Colors.white30,
                           ),
                         ),
@@ -869,8 +870,8 @@ class _EditFirmFormState extends State<EditFirmForm> {
                             context,
                             MaterialPageRoute(builder: (_) {
                               return FullScreenImage(
-                                imageURLPath:
-                                    firmProvider.firm.details!.pictures![index],
+                                imageURLPath: firmProvider
+                                    .firm!.details!.pictures![index],
                                 tag: tag,
                                 editable: true,
                               );

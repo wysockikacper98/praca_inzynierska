@@ -50,7 +50,7 @@ functionTemp(UserProvider user, BuildContext context) async {
 
   await getUserInfoFromFirebase(context, userId);
 
-  if (user.user.type == UserType.Firm) {
+  if (user.user!.type == UserType.Firm) {
     print("GetFirm info provider: " + userId);
     await getFirmInfoFromFirebase(context, userId);
   }

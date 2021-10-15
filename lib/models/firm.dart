@@ -97,11 +97,11 @@ class Firm {
 class FirmProvider with ChangeNotifier {
   Firm? _firm;
 
-  Firm get firm {
-    return _firm!;
+  Firm? get firm {
+    return _firm;
   }
 
-  set firm(Firm value) {
+  set firm(Firm? value) {
     print("Firm Updated");
     _firm = value;
     notifyListeners();

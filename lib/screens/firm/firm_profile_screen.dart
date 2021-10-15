@@ -34,7 +34,7 @@ class FirmProfileScreen extends StatelessWidget {
     final DateTime dateTime = DateTime.now();
     final String userID = FirebaseAuth.instance.currentUser!.uid;
     final UserType userType =
-        Provider.of<UserProvider>(context, listen: false).user.type;
+        Provider.of<UserProvider>(context, listen: false).user!.type;
 
     return Scaffold(
       appBar: AppBar(
@@ -214,7 +214,7 @@ class FirmProfileScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                   // createNewChat(context, getCurrentUser(), firm);
-                  createNewChat(context, user, firm);
+                  createNewChat(context, user!, firm);
                 },
               ),
             ],

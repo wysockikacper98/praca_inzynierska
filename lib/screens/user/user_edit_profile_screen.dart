@@ -47,11 +47,11 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
       formKey.currentState!.save();
 
       if (_name == null || _surname == null) {
-        _name = provider.user.firstName;
-        _surname = provider.user.lastName;
+        _name = provider.user!.firstName;
+        _surname = provider.user!.lastName;
       }
       if (_phone == null) {
-        _phone = provider.user.telephone;
+        _phone = provider.user!.telephone;
       }
 
       await updateUserInFirebase(context, _name!, _surname!, _phone!);
@@ -92,16 +92,16 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               imagePicker(provider, width),
               SizedBox(height: 15),
               RatingBarIndicator(
-                rating: provider.user.rating!,
+                rating: provider.user!.rating!,
                 itemBuilder: (_, index) =>
                     Icon(Icons.star, color: Colors.amber),
                 itemCount: 5,
                 itemSize: 40.0,
               ),
               Text(
-                provider.user.rating.toString() +
+                provider.user!.rating.toString() +
                     ' (' +
-                    provider.user.ratingNumber.toString() +
+                    provider.user!.ratingNumber.toString() +
                     ')',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
@@ -120,8 +120,8 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           });
                         }
                       : () {
-                          _nameController.text = provider.user.firstName;
-                          _surnameController.text = provider.user.lastName;
+                          _nameController.text = provider.user!.firstName;
+                          _surnameController.text = provider.user!.lastName;
                           setState(() {
                             _userNameEdit = !_userNameEdit;
                           });
@@ -130,7 +130,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ),
               !_userNameEdit
                   ? Text(
-                      provider.user.firstName + ' ' + provider.user.lastName,
+                provider.user!.firstName + ' ' + provider.user!.lastName,
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(
@@ -217,7 +217,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           });
                         }
                       : () {
-                          _phoneController.text = provider.user.telephone!;
+                    _phoneController.text = provider.user!.telephone!;
                           setState(() {
                             _userPhoneEdit = !_userPhoneEdit;
                           });
@@ -226,7 +226,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ),
               !_userPhoneEdit
                   ? Text(
-                      _formatPhoneNumber(provider.user.telephone!),
+                _formatPhoneNumber(provider.user!.telephone!),
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(

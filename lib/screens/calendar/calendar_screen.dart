@@ -30,7 +30,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     print('build -> calendar_screen');
     UserType userType =
-        Provider.of<UserProvider>(context, listen: false).user.type;
+        Provider.of<UserProvider>(context, listen: false).user!.type;
     String currentUserId = FirebaseAuth.instance.currentUser!.uid;
     String collectionString = userType == UserType.Firm ? 'firms' : 'users';
 
