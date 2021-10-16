@@ -53,18 +53,16 @@ Future<void> deleteImageFromStorage(BuildContext context, String url) async {
   int start = url.indexOf(startString) + startString.length;
   String fileName = url.substring(start, url.indexOf('.jpg') + 4);
 
+  final provider = Provider.of<FirmProvider>(context, listen: false);
+  provider.deleteImageUrl(url);
+
   await FirebaseStorage.instance
       .ref('firms_images')
       .child(userID)
       .child(fileName)
-      .delete();
+      .delete()
+      .catchError((_) => provider.restoreDeletedUrl(url));
   await FirebaseFirestore.instance.collection('firms').doc(userID).update({
     'details.pictures': FieldValue.arrayRemove([url])
-  });
-
-  final data =
-      await FirebaseFirestore.instance.collection('firms').doc(userID).get();
-
-  Provider.of<FirmProvider>(context, listen: false)
-      .updateFirm(Firm.fromJson(data.data()!));
+  }).catchError((_) => provider.restoreDeletedUrl(url));
 }

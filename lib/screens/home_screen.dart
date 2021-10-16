@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
-    // final provider = Provider.of<UserProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -37,12 +37,10 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(getCurrentUser().toString()),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
               'Najczęstsze kategorie',
-              // style: TextStyle(fontWeight: FontWeight.bold),
               style: Theme.of(context).textTheme.headline6,
             ),
           ),

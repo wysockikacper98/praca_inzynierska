@@ -154,6 +154,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     selected: _selectedDestination == 7,
                     onTap: () {
                       selectDestination(7);
+                      Navigator.of(context).pop();
                       FirebaseAuth.instance.signOut();
                       provider.clearUserInfo();
                     },

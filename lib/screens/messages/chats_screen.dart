@@ -44,7 +44,6 @@ class ChatsScreen extends StatelessWidget {
             return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
             print(chatSnapshot.data!.docs.length.toString());
-            // dev.debugger();
             final List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs =
                 chatSnapshot.data!.docs;
 

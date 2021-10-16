@@ -26,6 +26,15 @@ class Users {
     required this.type,
   });
 
+  factory Users.emptyUser() {
+    return Users(
+      firstName: '',
+      lastName: '',
+      email: '',
+      type: UserType.PrivateUser,
+    );
+  }
+
   factory Users.fromJson(Map<String, dynamic> parsedJson) {
     return Users(
       firstName: parsedJson['firstName'] ?? '',
@@ -94,7 +103,7 @@ class UserProvider with ChangeNotifier {
   }
 
   void clearUserInfo() {
-    _user = null;
+    _user = Users.emptyUser();
     notifyListeners();
   }
 }

@@ -55,6 +55,17 @@ class Firm {
         '\nDetails:${details.toString()}';
   }
 
+  factory Firm.emptyFirm() {
+    return Firm(
+      firmName: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      nip: '',
+      type: UserType.Firm,
+    );
+  }
+
   factory Firm.fromJson(Map<String, dynamic> parsedJson) {
     return Firm(
       firmName: parsedJson['firmName'] ?? "",
@@ -89,7 +100,7 @@ class Firm {
       'ratingNumber': this.ratingNumber,
       'category': this.category,
       'type': this.type.toString().split('.').last,
-      'details': this.details!.toJson(),
+      'details': this.details?.toJson(),
     };
   }
 }
@@ -107,13 +118,23 @@ class FirmProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateFirm(Firm updatedFirm) {
+  void updateFirm(Firm? updatedFirm) {
     _firm = updatedFirm;
     notifyListeners();
   }
 
   void clearFirmInfo() {
-    _firm = null;
+    _firm = Firm.emptyFirm();
+    notifyListeners();
+  }
+
+  void deleteImageUrl(String url) {
+    _firm!.details!.pictures!.remove(url);
+    notifyListeners();
+  }
+
+  void restoreDeletedUrl(String url) {
+    _firm!.details!.pictures!.add(url);
     notifyListeners();
   }
 }

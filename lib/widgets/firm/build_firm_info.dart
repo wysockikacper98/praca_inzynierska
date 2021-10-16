@@ -6,9 +6,6 @@ import '../../screens/firm/firm_profile_screen.dart';
 import '../calculate_rating.dart';
 
 ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
-  // dev.debugger();
-  // final double rating = firm.data()['rating'].toDouble() ?? 0.0;
-
   final double rating = calculateRating(
     firm.data()['rating'].toDouble(),
     firm.data()['ratingNumber'].toDouble(),
@@ -50,10 +47,10 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
     onTap: disable
         ? null
         : () {
-      Navigator.of(context).pushNamed(
-        FirmProfileScreen.routeName,
-        arguments: FirmsAuth(firm.id),
-      );
-    },
+            Navigator.of(context).pushNamed(
+              FirmProfileScreen.routeName,
+              arguments: FirmsAuth(firm.id),
+            );
+          },
   );
 }
