@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/comment.dart';
 import '../../models/users.dart';
+import '../../widgets/calculate_rating.dart';
 
 class UserProfileScreen extends StatelessWidget {
   static const routeName = '/user-profile';
@@ -28,13 +29,16 @@ class UserProfileScreen extends StatelessWidget {
               SizedBox(height: 20),
               _buildAvatar(provider, width),
               RatingBarIndicator(
-                rating: _calculateRating(provider),
+                rating: calculateRating(
+                    provider.user!.rating!, provider.user!.ratingNumber!),
                 itemBuilder: (_, index) =>
                     Icon(Icons.star, color: Colors.amber),
                 itemCount: 5,
                 itemSize: 40.0,
               ),
               _ratingNumbers(provider, context),
+              SizedBox(height: 8),
+              _userInfo(provider.user!, context),
               SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerLeft,
@@ -43,12 +47,20 @@ class UserProfileScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               _buildCommentSection(),
-              //TODO: Usunąć po ukoczeniu widoku:
-              _displayUserInfo(provider),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _userInfo(Users user, BuildContext context) {
+    return Column(
+      children: [
+        Text('${user.firstName} ${user.lastName}',
+            style: Theme.of(context).textTheme.headline5),
+        Text(user.email, style: Theme.of(context).textTheme.subtitle1),
+      ],
     );
   }
 
@@ -62,7 +74,7 @@ class UserProfileScreen extends StatelessWidget {
       builder:
           (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || snapshot.data!.size == 0) {
             return Center(child: Text('Brak komentarzy'));
           } else {
             final data = snapshot.data!.docs;
@@ -108,7 +120,10 @@ class UserProfileScreen extends StatelessWidget {
   RichText _ratingNumbers(UserProvider provider, BuildContext context) {
     return RichText(
       text: TextSpan(
-        text: _calculateRating(provider).toString(),
+        text: calculateRating(
+          provider.user!.rating!,
+          provider.user!.ratingNumber!,
+        ).toString(),
         style: Theme.of(context)
             .textTheme
             .subtitle1!
@@ -123,13 +138,6 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 
-  double _calculateRating(UserProvider provider) {
-    if (provider.user!.ratingNumber != 0.0) {
-      return (provider.user!.rating! / provider.user!.ratingNumber!);
-    } else
-      return 0.0;
-  }
-
   CircleAvatar _buildAvatar(UserProvider provider, double width) {
     return CircleAvatar(
       backgroundImage: (provider.user!.avatar == ''
@@ -138,9 +146,5 @@ class UserProfileScreen extends StatelessWidget {
       backgroundColor: Colors.orangeAccent.shade100,
       radius: width * 0.15,
     );
-  }
-
-  Text _displayUserInfo(UserProvider provider) {
-    return Text(provider.user.toString());
   }
 }

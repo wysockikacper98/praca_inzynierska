@@ -8,6 +8,7 @@ import '../../helpers/firebase_firestore.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
+import '../calculate_rating.dart';
 import '../pickers/image_picker.dart';
 
 class EditFirmForm extends StatefulWidget {
@@ -130,10 +131,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
               itemSize: 40.0,
             ),
             Text(
-              firmProvider.firm!.rating! +
-                  ' (' +
-                  firmProvider.firm!.ratingNumber! +
-                  ')',
+              '${calculateRating(firmProvider.firm!.rating!, firmProvider.firm!.ratingNumber!)} (${firmProvider.firm!.ratingNumber})',
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 15),

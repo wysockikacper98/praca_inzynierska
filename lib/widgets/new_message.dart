@@ -32,7 +32,10 @@ class _NewMessageState extends State<NewMessage> {
       'createdAt': Timestamp.now(),
       'creatorID': user.uid,
       'userName': userData.firstName,
-    });
+    }).then((_) => FirebaseFirestore.instance
+            .collection('chats')
+            .doc(widget.chatsID)
+            .update({'updatedAt': DateTime.now()}));
     _controller.clear();
     setState(() {
       _enterMessage = '';

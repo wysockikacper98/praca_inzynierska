@@ -40,13 +40,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     range: "",
     nip: "",
     avatar: "",
-    rating: '0',
-    ratingNumber: '0',
+    rating: 0.0,
+    ratingNumber: 0.0,
     category: [],
     type: UserType.Firm,
     details: Details(
         pictures: List.empty(),
-        calendar: "Not implemented yet ¯\\_(ツ)_/¯",
         prices: "Brak informacji",
         description: "Dodaj opis firmy"),
   );

@@ -13,8 +13,8 @@ class Firm {
   String? range;
   String nip;
   String? avatar;
-  String? rating;
-  String? ratingNumber;
+  double? rating;
+  double? ratingNumber;
   List<dynamic>? category;
   UserType type;
   Details? details;

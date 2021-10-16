@@ -10,6 +10,7 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
+import '../../widgets/calculate_rating.dart';
 import '../../widgets/comment/comment_widgets.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 import 'widget/widgets_for_order_screens.dart';
@@ -539,7 +540,7 @@ ListTile _createFirmToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: double.parse(firm.rating!),
+          rating: calculateRating(firm.rating!, firm.ratingNumber!),
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -550,7 +551,7 @@ ListTile _createFirmToShowInDetails(
         ),
         RichText(
           text: TextSpan(
-            text: firm.rating,
+            text: calculateRating(firm.rating!, firm.ratingNumber!).toString(),
             style: Theme.of(context).textTheme.headline6,
             children: [
               TextSpan(

@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../screens/firm/firm_profile_screen.dart';
+import '../calculate_rating.dart';
 
 ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
-  final double rating = double.tryParse(firm.data()['rating']) != null
-      ? double.parse(firm.data()['rating'])
-      : 0;
+  // dev.debugger();
+  // final double rating = firm.data()['rating'].toDouble() ?? 0.0;
 
+  final double rating = calculateRating(
+    firm.data()['rating'].toDouble(),
+    firm.data()['ratingNumber'].toDouble(),
+  );
   return ListTile(
     leading: CircleAvatar(
       radius: 30,
@@ -46,10 +50,10 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
     onTap: disable
         ? null
         : () {
-            Navigator.of(context).pushNamed(
-              FirmProfileScreen.routeName,
-              arguments: FirmsAuth(firm.id),
-            );
-          },
+      Navigator.of(context).pushNamed(
+        FirmProfileScreen.routeName,
+        arguments: FirmsAuth(firm.id),
+      );
+    },
   );
 }

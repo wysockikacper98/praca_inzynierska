@@ -44,9 +44,13 @@ class ChatsScreen extends StatelessWidget {
             return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
             print(chatSnapshot.data!.docs.length.toString());
+            // dev.debugger();
+            final List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs =
+                chatSnapshot.data!.docs;
 
-            final chatDocs = chatSnapshot.data!.docs;
-            //TODO: sortowanie listy przed budowaniem
+            chatDocs.sort((a, b) =>
+                b['updatedAt'].toDate().compareTo(a['updatedAt'].toDate()));
+
             //TODO: wyświetlanie tylko tych które posiadają collection('messages')
             // print('Zobaczymy co tu się takiego dzieje');
             // print(chatSnapshot.data.docs[0]['chatName']);
@@ -61,8 +65,11 @@ class ChatsScreen extends StatelessWidget {
 
                   return ListTile(
                     title: Text(currentChatName),
-                    trailing: Text(DateFormat('dd-MM-yyyy hh:mm')
-                        .format(chatDocs[index]['updatedAt'].toDate())),
+                    trailing: Text(
+                      DateFormat.yMd('pl_PL')
+                          .add_Hm()
+                          .format(chatDocs[index]['updatedAt'].toDate()),
+                    ),
                     onTap: () {
                       print(chatDocs[index].reference.id);
                       Navigator.push(
