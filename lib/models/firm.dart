@@ -55,14 +55,22 @@ class Firm {
         '\nDetails:${details.toString()}';
   }
 
-  factory Firm.emptyFirm() {
+  factory Firm.empty() {
     return Firm(
       firmName: '',
       firstName: '',
       lastName: '',
+      telephone: '',
       email: '',
+      location: '',
+      range: '',
       nip: '',
+      category: [],
+      avatar: '',
+      rating: 0.0,
+      ratingNumber: 0.0,
       type: UserType.Firm,
+      details: Details.empty(),
     );
   }
 
@@ -124,7 +132,7 @@ class FirmProvider with ChangeNotifier {
   }
 
   void clearFirmInfo() {
-    _firm = Firm.emptyFirm();
+    _firm = Firm.empty();
     notifyListeners();
   }
 

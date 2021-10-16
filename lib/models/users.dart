@@ -26,11 +26,15 @@ class Users {
     required this.type,
   });
 
-  factory Users.emptyUser() {
+  factory Users.empty() {
     return Users(
+      email: '',
       firstName: '',
       lastName: '',
-      email: '',
+      rating: 0.0,
+      ratingNumber: 0.0,
+      telephone: '',
+      avatar: '',
       type: UserType.PrivateUser,
     );
   }
@@ -103,7 +107,7 @@ class UserProvider with ChangeNotifier {
   }
 
   void clearUserInfo() {
-    _user = Users.emptyUser();
+    _user = Users.empty();
     notifyListeners();
   }
 }

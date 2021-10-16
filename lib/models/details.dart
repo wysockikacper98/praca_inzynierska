@@ -16,6 +16,14 @@ class Details {
         '\nPrices:\n$prices';
   }
 
+  factory Details.empty() {
+    return Details(
+      description: '',
+      pictures: [],
+      prices: '',
+    );
+  }
+
   factory Details.fromJson(Map<String, dynamic> parsedJson) {
     return Details(
       description: parsedJson['description'],
