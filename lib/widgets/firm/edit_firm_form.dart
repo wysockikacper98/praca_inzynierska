@@ -8,6 +8,7 @@ import '../../helpers/firebase_firestore.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
+import '../../screens/location/maps_demo.dart';
 import '../calculate_rating.dart';
 import '../pickers/image_picker.dart';
 
@@ -672,6 +673,13 @@ class _EditFirmFormState extends State<EditFirmForm> {
             //         ),
             //       ),
             SizedBox(height: 15),
+            ElevatedButton.icon(
+              icon: Icon(Icons.location_on),
+              label: Text('Mapy'),
+              onPressed: () {
+                Navigator.of(context).pushNamed(MapDemo.routeName);
+              },
+            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text("Lokalizacja:"),
