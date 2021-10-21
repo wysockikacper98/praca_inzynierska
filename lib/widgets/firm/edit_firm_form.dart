@@ -677,7 +677,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
               icon: Icon(Icons.location_on),
               label: Text('Mapy'),
               onPressed: () {
-                Navigator.of(context).pushNamed(MapDemo.routeName);
+                Navigator.of(context).pushNamed(MapsDemo.routeName);
               },
             ),
             ListTile(

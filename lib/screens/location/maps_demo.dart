@@ -1,38 +1,70 @@
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapDemo extends StatefulWidget {
-  static const routeName = '/map-sample';
+import 'animate_camera.dart';
+import 'drag_marker.dart';
+import 'map_click.dart';
+import 'map_coordinates.dart';
+import 'map_ui.dart';
+import 'marker_icons.dart';
+import 'move_camera.dart';
+import 'padding.dart';
+import 'page.dart';
+import 'place_circle.dart';
+import 'place_marker.dart';
+import 'place_polygon.dart';
+import 'place_polyline.dart';
+import 'scrolling_map.dart';
+import 'snapshot.dart';
+import 'tile_overlay.dart';
 
-  @override
-  _MapDemoState createState() => _MapDemoState();
-}
+final List<GoogleMapExampleAppPage> _allPages = <GoogleMapExampleAppPage>[
+  PlaceMarkerPage(),
+  DragMarkerPage(),
+  MapClickPage(),
+  MapCoordinatesPage(),
+  MapUiPage(),
+  MarkerIconsPage(),
+  MoveCameraPage(),
+  PaddingPage(),
+  PlaceCirclePage(),
+  PlacePolygonPage(),
+  PlacePolylinePage(),
+  ScrollingMapPage(),
+  SnapshotPage(),
+  TileOverlayPage(),
+  AnimateCameraPage(),
+];
 
-class _MapDemoState extends State<MapDemo> {
-  late GoogleMapController mapController;
+class MapsDemo extends StatelessWidget {
+  static const routeName = '/maps-demo';
 
-  final LatLng _center = const LatLng(50.0482, 21.9850);
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  void _pushPage(BuildContext context, GoogleMapExampleAppPage page) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(page.title)),
+          body: page,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Maps Sample App'),
-      ),
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        compassEnabled: true,
-        mapToolbarEnabled: true,
-        mapType: MapType.normal,
-        myLocationButtonEnabled: true,
-        myLocationEnabled: true,
-        initialCameraPosition: CameraPosition(
-          target: _center,
-          zoom: 13.0,
+      appBar: AppBar(title: const Text('GoogleMaps examples')),
+      body: ListView.builder(
+        itemCount: _allPages.length,
+        itemBuilder: (_, int index) => ListTile(
+          leading: _allPages[index].leading,
+          title: Text(_allPages[index].title),
+          onTap: () => _pushPage(context, _allPages[index]),
         ),
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:praca_inzynierska/screens/location/maps_demo.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -13,6 +12,7 @@ import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/location/maps_demo.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/pick_register_screen.dart';
 import 'screens/login/register_user_screen.dart';
@@ -90,7 +90,7 @@ class MyApp extends StatelessWidget {
                 CreateOrderScreen.routeName: (ctx) => CreateOrderScreen(),
                 CalendarScreen.routeName: (ctx) => CalendarScreen(),
                 UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
-                MapDemo.routeName: (ctx) => MapDemo(),
+                MapsDemo.routeName: (ctx) => MapsDemo(),
               },
             );
           }),
