@@ -1,14 +1,18 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:provider/provider.dart';
 
 import '../../helpers/fiebase_storage.dart';
 import '../../helpers/firebase_firestore.dart';
+import '../../helpers/permision_handler.dart';
+import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
-import '../../screens/location/maps_demo.dart';
+import '../../screens/location/pick_location_screen.dart';
+import '../../screens/location_example/maps_demo.dart';
 import '../calculate_rating.dart';
 import '../pickers/image_picker.dart';
 
@@ -21,13 +25,11 @@ class _EditFirmFormState extends State<EditFirmForm> {
   final _formFirmNameKey = GlobalKey<FormState>();
   final _formNameAndSurnameKey = GlobalKey<FormState>();
   final _formPhoneNumberKey = GlobalKey<FormState>();
-  final _formLocationKey = GlobalKey<FormState>();
   final _formDescriptionKey = GlobalKey<FormState>();
 
   bool _editFirmName = false;
   bool _editNameAndSurname = false;
   bool _editPhoneNumber = false;
-  bool _editLocation = false;
   bool _editDescription = false;
 
   bool _isLoading = false;
@@ -36,7 +38,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _surnameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
-  TextEditingController _locationController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
 
   @override
@@ -46,7 +47,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
     _nameController.dispose();
     _surnameController.dispose();
     _phoneController.dispose();
-    _locationController.dispose();
     _descriptionController.dispose();
   }
 
@@ -54,7 +54,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   String? _name;
   String? _surname;
   String? _phone;
-  String? _location;
+  Address? _address;
   String? _description;
 
   // List<String>? _picture;
@@ -89,9 +89,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
       if (_phone != null) {
         updatedFirm.telephone = _phone;
       }
-      if (_location != null) {
-        updatedFirm.location = _location;
-      }
       if (_description != null) {
         updatedFirm.details!.description = _description;
       }
@@ -105,7 +102,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
         _editFirmName = false;
         _editNameAndSurname = false;
         _editPhoneNumber = false;
-        _editLocation = false;
         _editDescription = false;
       });
     }
@@ -672,88 +668,50 @@ class _EditFirmFormState extends State<EditFirmForm> {
             //           ],
             //         ),
             //       ),
+            //TODO: delete this button after implementing maps
             SizedBox(height: 15),
-            ElevatedButton.icon(
-              icon: Icon(Icons.location_on),
-              label: Text('Mapy'),
-              onPressed: () {
-                Navigator.of(context).pushNamed(MapsDemo.routeName);
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  icon: Icon(Icons.location_on),
+                  label: Text('Google Map Example'),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(MapsDemo.routeName);
+                  },
+                ),
+              ],
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text("Lokalizacja:"),
-              trailing: IconButton(
-                color: _editLocation
-                    ? Theme.of(context).errorColor
-                    : Theme.of(context).primaryColor,
-                icon: _editLocation ? Icon(Icons.close) : Icon(Icons.edit),
+              trailing: ElevatedButton.icon(
+                icon: Icon(Icons.location_on),
+                label: Text('Mapy'),
                 onPressed: () {
-                  if (!_editLocation) {
-                    _locationController.text = firmProvider.firm!.location!;
-                  }
-                  setState(() {
-                    _editLocation = !_editLocation;
+                  locationPermissions().then((value) {
+                    if (value == ph.PermissionStatus.granted) {
+                      Navigator.of(context)
+                          .pushNamed(PickLocationScreen.routeName);
+                    } else if (value == ph.PermissionStatus.permanentlyDenied) {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return buildAlertDialogForPermissionsPermanentlyDenied(
+                            ctx,
+                          );
+                        },
+                      );
+                    }
                   });
                 },
               ),
             ),
-            !_editLocation
-                ? Text(
-              firmProvider.firm!.location!,
-                    style: Theme.of(context).textTheme.headline6,
-                  )
-                : Form(
-                    key: _formLocationKey,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: width * 0.80,
-                          child: TextFormField(
-                            key: ValueKey("location"),
-                            controller: _locationController,
-                            textCapitalization: TextCapitalization.words,
-                            decoration: InputDecoration(
-                              hintText: "Lokalizacja",
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.clear),
-                                onPressed: _locationController.clear,
-                              ),
-                            ),
-                            validator: (value) {
-                              value = value!.trim();
-
-                              if (value.isEmpty || value.length < 3) {
-                                return 'Proszę podać przynajmniej 3 znaki.';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _location = value!.trim();
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        _isLoading
-                            ? Center(child: CircularProgressIndicator())
-                            : ElevatedButton(
-                                child: SizedBox(
-                                  width: width * 0.8,
-                                  child: Text(
-                                    "Zapisz",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  _trySubmit(
-                                    context,
-                                    _formLocationKey,
-                                  );
-                                },
-                              ),
-                      ],
-                    ),
-                  ),
+            if (_address != null) Text(_address.toString()),
+            Text(
+              firmProvider.firm!.address!.toString(),
+              style: Theme.of(context).textTheme.headline6,
+            ),
             SizedBox(height: 15),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -897,6 +855,15 @@ class _EditFirmFormState extends State<EditFirmForm> {
       ),
     );
   }
+
+// void updateAddress(Address value) {
+//   if(this.mounted){
+//     setState(() {
+//       _address = value;
+//     });
+//
+//   }
+// }
 }
 
 String _formatPhoneNumber(String phone) {

@@ -259,7 +259,7 @@ Future<void> updateFirmInFirebase(
     'firstName': firm.firstName,
     'lastName': firm.lastName,
     'telephone': firm.telephone,
-    'location': firm.location,
+    'location': firm.address,
     'details': firm.details!.toJson(),
   });
 

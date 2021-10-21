@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'address.dart';
 import 'details.dart';
 import 'users.dart';
 
@@ -9,7 +10,7 @@ class Firm {
   String lastName;
   String? telephone;
   String email;
-  String? location;
+  Address? address;
   String? range;
   String nip;
   String? avatar;
@@ -25,7 +26,7 @@ class Firm {
     required this.lastName,
     this.telephone,
     required this.email,
-    this.location,
+    this.address,
     this.range,
     required this.nip,
     this.category,
@@ -43,7 +44,7 @@ class Firm {
         '\nLastName:$lastName' +
         '\nPhone:$telephone' +
         '\nEmail:$email' +
-        '\nLocation:$location' +
+        '\nLocation:${address.toString()}' +
         '\nRange$range' +
         '\nNip$nip' +
         '\nAvatar:$avatar' +
@@ -62,7 +63,7 @@ class Firm {
       lastName: '',
       telephone: '',
       email: '',
-      location: '',
+      address: Address.empty(),
       range: '',
       nip: '',
       category: [],
@@ -81,7 +82,7 @@ class Firm {
       lastName: parsedJson['lastName'] ?? "",
       telephone: parsedJson['telephone'] ?? "",
       email: parsedJson['email'] ?? "",
-      location: parsedJson['location'] ?? "",
+      address: Address.fromJson(parsedJson['address']),
       range: parsedJson['range'] ?? "",
       nip: parsedJson['nip'] ?? "",
       avatar: parsedJson['avatar'] ?? "",
@@ -100,7 +101,7 @@ class Firm {
       'lastName': this.lastName,
       'telephone': this.telephone,
       'email': this.email,
-      'location': this.location,
+      'location': this.address,
       'range': this.range,
       'nip': this.nip,
       'avatar': this.avatar,
@@ -128,6 +129,11 @@ class FirmProvider with ChangeNotifier {
 
   void updateFirm(Firm? updatedFirm) {
     _firm = updatedFirm;
+    notifyListeners();
+  }
+
+  void updateAddress(Address address) {
+    _firm!.address = address;
     notifyListeners();
   }
 

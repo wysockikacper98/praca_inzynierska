@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:praca_inzynierska/models/address.dart';
 import 'package:praca_inzynierska/models/details.dart';
 import 'package:praca_inzynierska/models/firm.dart';
 import 'package:praca_inzynierska/models/users.dart';
@@ -24,7 +25,7 @@ void main() {
           prices: '123',
         ),
         range: '123',
-        location: 'Rzeszow',
+        address: Address.empty(),
         category: ['here', 'some', 'category'],
       );
     });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../helpers/firebase_firestore.dart';
+import '../../models/address.dart';
 import '../../models/details.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
@@ -31,15 +32,15 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
   final _scrollController = ScrollController();
 
   Firm _firm = Firm(
-    firmName: "",
-    firstName: "",
-    lastName: "",
-    telephone: "",
-    email: "",
-    location: "",
-    range: "",
-    nip: "",
-    avatar: "",
+    firmName: '',
+    firstName: '',
+    lastName: '',
+    telephone: '',
+    email: '',
+    address: Address.empty(),
+    range: '',
+    nip: '',
+    avatar: '',
     rating: 0.0,
     ratingNumber: 0.0,
     category: [],
@@ -241,9 +242,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     }
                                     return null;
                                   },
-                                  onSaved: (value) {
-                                    _firm.location = value;
-                                  },
+                                  //TODO: onSave?
                                 ),
                                 // TextFormField(
                                 //   decoration: InputDecoration(

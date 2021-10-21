@@ -12,7 +12,8 @@ import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/location/maps_demo.dart';
+import 'screens/location/pick_location_screen.dart';
+import 'screens/location_example/maps_demo.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/pick_register_screen.dart';
 import 'screens/login/register_user_screen.dart';
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
                 CalendarScreen.routeName: (ctx) => CalendarScreen(),
                 UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
                 MapsDemo.routeName: (ctx) => MapsDemo(),
+                PickLocationScreen.routeName: (ctx) => PickLocationScreen(),
               },
             );
           }),

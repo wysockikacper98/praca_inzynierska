@@ -44,6 +44,9 @@ dependencies:
   flutter_svg: ^0.23.0+1
   google_maps_flutter: ^2.0.11
   location: ^4.3.0
+  permission_handler: ^8.2.5
+  geocoding: ^2.0.1
+  circular_menu: ^1.2.3
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +65,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/svg/
+    - assets/night_mode.json
   #   - images/a_dot_ham.jpeg
 
   fonts:
