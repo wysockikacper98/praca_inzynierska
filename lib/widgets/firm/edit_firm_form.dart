@@ -4,13 +4,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:provider/provider.dart';
 
-import '../../helpers/fiebase_storage.dart';
 import '../../helpers/firebase_firestore.dart';
-import '../../helpers/permision_handler.dart';
-import '../../models/address.dart';
+import '../../helpers/firebase_storage.dart';
+import '../../helpers/permission_handler.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
+import '../../screens/location/address_widgets.dart';
 import '../../screens/location/pick_location_screen.dart';
 import '../../screens/location_example/maps_demo.dart';
 import '../calculate_rating.dart';
@@ -54,10 +54,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   String? _name;
   String? _surname;
   String? _phone;
-  Address? _address;
   String? _description;
-
-  // List<String>? _picture;
 
   Future<void> _trySubmit(
     BuildContext context,
@@ -217,80 +214,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
                   ],
                 ),
               ),
-            // ListTile(
-            //   title: Text("Nazwa Firmy:"),
-            //   trailing: IconButton(
-            //     color: _editFirmName
-            //         ? Theme.of(context).errorColor
-            //         : Theme.of(context).primaryColor,
-            //     icon: _editFirmName ? Icon(Icons.close) : Icon(Icons.edit),
-            //     onPressed: () {
-            //       if (!_editFirmName)
-            //         _firmNameController.text = firmProvider.firm.firmName;
-            //       setState(() {
-            //         _editFirmName = !_editFirmName;
-            //       });
-            //     },
-            //   ),
-            // ),
-            // !_editFirmName
-            //     ? Text(
-            //         firmProvider.firm.firmName,
-            //         style: Theme.of(context).textTheme.headline6,
-            //       )
-            //     : Form(
-            //         key: _formFirmNameKey,
-            //         child: Column(
-            //           children: [
-            //             Container(
-            //               width: width * 0.80,
-            //               child: TextFormField(
-            //                 key: ValueKey("firmName"),
-            //                 controller: _firmNameController,
-            //                 textCapitalization: TextCapitalization.words,
-            //                 decoration: InputDecoration(
-            //                   hintText: "Nazwa Firmy",
-            //                   suffixIcon: IconButton(
-            //                     icon: Icon(Icons.clear),
-            //                     onPressed: _firmNameController.clear,
-            //                   ),
-            //                 ),
-            //                 validator: (value) {
-            //                   value = value.trim();
-            //
-            //                   if (value.isEmpty || value.length < 3) {
-            //                     return 'Proszę podać przynajmniej 3 znaki.';
-            //                   }
-            //                   return null;
-            //                 },
-            //                 onSaved: (value) {
-            //                   value = value.trim();
-            //
-            //                   _firmName = value;
-            //                 },
-            //               ),
-            //             ),
-            //             SizedBox(height: 20),
-            //             _isLoading
-            //                 ? Center(child: CircularProgressIndicator())
-            //                 : ElevatedButton(
-            //                     child: SizedBox(
-            //                       width: width * 0.8,
-            //                       child: Text(
-            //                         "Zapisz",
-            //                         textAlign: TextAlign.center,
-            //                       ),
-            //                     ),
-            //                     onPressed: () {
-            //                       _trySubmit(
-            //                         context,
-            //                         _formFirmNameKey,
-            //                       );
-            //                     },
-            //                   ),
-            //           ],
-            //         ),
-            //       ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -406,112 +329,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
                   ],
                 ),
               ),
-            // ListTile(
-            //   title: Text("Właściciel:"),
-            //   trailing: IconButton(
-            //     color: _editNameAndSurname
-            //         ? Theme.of(context).errorColor
-            //         : Theme.of(context).primaryColor,
-            //     icon:
-            //         _editNameAndSurname ? Icon(Icons.close) : Icon(Icons.edit),
-            //     onPressed: () {
-            //       if (!_editNameAndSurname) {
-            //         _nameController.text = firmProvider.firm.firstName;
-            //         _surnameController.text = firmProvider.firm.lastName;
-            //       }
-            //       setState(() {
-            //         _editNameAndSurname = !_editNameAndSurname;
-            //       });
-            //     },
-            //   ),
-            // ),
-            // !_editNameAndSurname
-            //     ? Text(
-            //         firmProvider.firm.firstName +
-            //             " " +
-            //             firmProvider.firm.lastName,
-            //         style: Theme.of(context).textTheme.headline6,
-            //       )
-            //     : Form(
-            //         key: _formNameAndSurnameKey,
-            //         child: Column(
-            //           children: [
-            //             Container(
-            //               width: width * 0.80,
-            //               child: TextFormField(
-            //                 key: ValueKey("name"),
-            //                 controller: _nameController,
-            //                 textCapitalization: TextCapitalization.words,
-            //                 decoration: InputDecoration(
-            //                   hintText: "Imie",
-            //                   suffixIcon: IconButton(
-            //                     icon: Icon(Icons.clear),
-            //                     onPressed: _nameController.clear,
-            //                   ),
-            //                 ),
-            //                 validator: (value) {
-            //                   value = value.trim();
-            //
-            //                   if (value.isEmpty || value.length < 3) {
-            //                     return 'Proszę podać przynajmniej 3 znaki.';
-            //                   }
-            //                   return null;
-            //                 },
-            //                 onSaved: (value) {
-            //                   value = value.trim();
-            //
-            //                   _name = value;
-            //                 },
-            //               ),
-            //             ),
-            //             Container(
-            //               width: width * 0.80,
-            //               child: TextFormField(
-            //                 key: ValueKey("surname"),
-            //                 controller: _surnameController,
-            //                 textCapitalization: TextCapitalization.words,
-            //                 decoration: InputDecoration(
-            //                   hintText: "Nazwisko",
-            //                   suffixIcon: IconButton(
-            //                     icon: Icon(Icons.clear),
-            //                     onPressed: _surnameController.clear,
-            //                   ),
-            //                 ),
-            //                 validator: (value) {
-            //                   value = value.trim();
-            //                   if (value.isEmpty || value.length < 3) {
-            //                     return 'Proszę podać przynajmniej 3 znaki.';
-            //                   }
-            //                   return null;
-            //                 },
-            //                 onSaved: (value) {
-            //                   value = value.trim();
-            //                   _surname = value;
-            //                 },
-            //               ),
-            //             ),
-            //             SizedBox(height: 20),
-            //             _isLoading
-            //                 ? Center(child: CircularProgressIndicator())
-            //                 : ElevatedButton(
-            //                     child: SizedBox(
-            //                       width: width * 0.8,
-            //                       child: Text(
-            //                         "Zapisz",
-            //                         textAlign: TextAlign.center,
-            //                       ),
-            //                     ),
-            //                     onPressed: () {
-            //                       _trySubmit(
-            //                         context,
-            //                         _formNameAndSurnameKey,
-            //                       );
-            //                     },
-            //                   ),
-            //           ],
-            //         ),
-            //       ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -592,82 +409,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
                   ],
                 ),
               ),
-            // SizedBox(height: 15),
-            // ListTile(
-            //   title: Text("Numer Telefonu:"),
-            //   trailing: IconButton(
-            //     color: _editPhoneNumber
-            //         ? Theme.of(context).errorColor
-            //         : Theme.of(context).primaryColor,
-            //     icon: _editPhoneNumber ? Icon(Icons.close) : Icon(Icons.edit),
-            //     onPressed: () {
-            //       if (!_editPhoneNumber) {
-            //         _phoneController.text = firmProvider.firm.telephone;
-            //       }
-            //       setState(() {
-            //         _editPhoneNumber = !_editPhoneNumber;
-            //       });
-            //     },
-            //   ),
-            // ),
-            // !_editPhoneNumber
-            //     ? Text(
-            //         _formatPhoneNumber(firmProvider.firm.telephone),
-            //         style: Theme.of(context).textTheme.headline6,
-            //       )
-            //     : Form(
-            //         key: _formPhoneNumberKey,
-            //         child: Column(
-            //           children: [
-            //             Container(
-            //               width: width * 0.80,
-            //               child: TextFormField(
-            //                 key: ValueKey("phone"),
-            //                 controller: _phoneController,
-            //                 textAlign: TextAlign.center,
-            //                 keyboardType: TextInputType.phone,
-            //                 decoration: InputDecoration(
-            //                   hintText: "Numer Telefonu",
-            //                   suffixIcon: IconButton(
-            //                     icon: Icon(Icons.clear),
-            //                     onPressed: _phoneController.clear,
-            //                   ),
-            //                 ),
-            //                 validator: (value) {
-            //                   value = value.replaceAll(' ', '');
-            //                   if (int.tryParse(value) == null) {
-            //                     return 'Podaj numer telefonu';
-            //                   } else if (value.isEmpty || value.length < 9) {
-            //                     return 'Podaj poprawny numer telefonu';
-            //                   }
-            //                   return null;
-            //                 },
-            //                 onSaved: (value) {
-            //                   _phone = value.replaceAll(' ', '');
-            //                 },
-            //               ),
-            //             ),
-            //             SizedBox(height: 20),
-            //             _isLoading
-            //                 ? Center(child: CircularProgressIndicator())
-            //                 : ElevatedButton(
-            //                     child: SizedBox(
-            //                       width: width * 0.8,
-            //                       child: Text(
-            //                         "Zapisz",
-            //                         textAlign: TextAlign.center,
-            //                       ),
-            //                     ),
-            //                     onPressed: () {
-            //                       _trySubmit(
-            //                         context,
-            //                         _formPhoneNumberKey,
-            //                       );
-            //                     },
-            //                   ),
-            //           ],
-            //         ),
-            //       ),
             //TODO: delete this button after implementing maps
             SizedBox(height: 15),
             Row(
@@ -684,7 +425,10 @@ class _EditFirmFormState extends State<EditFirmForm> {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text("Lokalizacja:"),
+              title: Text(
+                "Lokalizacja:",
+                style: Theme.of(context).textTheme.headline6,
+              ),
               trailing: ElevatedButton.icon(
                 icon: Icon(Icons.location_on),
                 label: Text('Mapy'),
@@ -707,11 +451,9 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 },
               ),
             ),
-            if (_address != null) Text(_address.toString()),
-            Text(
-              firmProvider.firm!.address!.toString(),
-              style: Theme.of(context).textTheme.headline6,
-            ),
+            firmProvider.firm!.address != null
+                ? editAddress(context, firmProvider.firm!.address!)
+                : Text('Nie wybrano adresu.'),
             SizedBox(height: 15),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -855,15 +597,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
       ),
     );
   }
-
-// void updateAddress(Address value) {
-//   if(this.mounted){
-//     setState(() {
-//       _address = value;
-//     });
-//
-//   }
-// }
 }
 
 String _formatPhoneNumber(String phone) {

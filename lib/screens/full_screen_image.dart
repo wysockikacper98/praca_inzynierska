@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../helpers/fiebase_storage.dart';
+import '../helpers/firebase_storage.dart';
 
 class FullScreenImage extends StatelessWidget {
   final String imageURLPath;

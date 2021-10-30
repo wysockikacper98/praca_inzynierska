@@ -6,15 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/address.dart';
 import '../../models/firm.dart';
 
 class PickLocationScreen extends StatefulWidget {
   static const String routeName = '/pick-location';
-
-  // PickLocationScreen(this.updateAddress);
-  //
-  // final void Function(Address value) updateAddress;
 
   @override
   _PickLocationScreenState createState() => _PickLocationScreenState();
@@ -28,7 +25,7 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
   late GoogleMapController _controller;
   MapType _mapType = MapType.normal;
   Set<Marker> _marker = Set<Marker>.of([]);
-  Address? addressTest;
+  Address? address;
   bool _isMapCreated = false;
   bool _nightMode = false;
 
@@ -67,12 +64,12 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            if (addressTest != null) ...[
-              Text('Ulica: ${addressTest!.streetAndHouseNumber}'),
-              Text('Kod pocztowy: ${addressTest!.zipCode}'),
-              Text('Miejscowość: ${addressTest!.city}'),
-              Text('Powiat: ${addressTest!.subAdministrativeArea ?? ''}'),
-              Text('Województwo: ${addressTest!.administrativeArea ?? ''}'),
+            if (address != null) ...[
+              Text('Ulica: ${address!.streetAndHouseNumber}'),
+              Text('Kod pocztowy: ${address!.zipCode}'),
+              Text('Miejscowość: ${address!.city}'),
+              Text('Powiat: ${address!.subAdministrativeArea ?? ''}'),
+              Text('Województwo: ${address!.administrativeArea ?? ''}'),
             ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -85,13 +82,13 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
                 ElevatedButton.icon(
                   icon: Icon(Icons.save),
                   label: Text('Zapisz'),
-                  onPressed: (addressTest == null || addressTest!.zipCode == '')
+                  onPressed: (address == null || address!.zipCode == '')
                       ? null
                       : () {
-                          Navigator.of(context).pop();
                           Provider.of<FirmProvider>(context, listen: false)
-                              .updateAddress(addressTest!);
-                          // widget.updateAddress(addressTest!);
+                              .updateAddress(address!);
+                          updateUserAddress(address!);
+                          Navigator.of(context).pop();
                         },
                 ),
               ],
@@ -144,7 +141,7 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
         .then((value) {
       printColor(text: value.first.toString(), color: PrintColor.blue);
       setState(() {
-        addressTest = Address(
+        address = Address(
           streetAndHouseNumber: value.first.street ?? '',
           city: value.first.locality ?? '',
           zipCode: value.first.postalCode ?? '',

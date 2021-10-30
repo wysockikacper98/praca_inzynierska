@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/address.dart';
 import '../models/comment.dart';
 import '../models/firm.dart';
 import '../models/meeting.dart';
@@ -389,4 +390,12 @@ Future<void> addMeetingToUser({
       .doc(userID)
       .collection('meetings')
       .add(meeting.toJson());
+}
+
+Future<void> updateUserAddress(Address address) async {
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
+  FirebaseFirestore.instance
+      .collection('firms')
+      .doc(uid)
+      .update({'address': address.toJson()});
 }

@@ -44,7 +44,7 @@ class Firm {
         '\nLastName:$lastName' +
         '\nPhone:$telephone' +
         '\nEmail:$email' +
-        '\nLocation:${address.toString()}' +
+        '\nAddress:${address.toString()}' +
         '\nRange$range' +
         '\nNip$nip' +
         '\nAvatar:$avatar' +

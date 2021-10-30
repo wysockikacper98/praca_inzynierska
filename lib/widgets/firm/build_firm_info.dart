@@ -27,7 +27,7 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
       overflow: TextOverflow.ellipsis,
     ),
     //TODO: get only city
-    subtitle: Text(firm.data()['address'].toString()),
+    subtitle: Text(firm.data()['address']['city'] ?? ''),
     trailing: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
