@@ -129,6 +129,23 @@ class _EditFirmFormState extends State<EditFirmForm> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(height: 15),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                "Kategorie:",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            buildCategories(context, firmProvider.firm!.category),
+            SizedBox(height: 15),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                "Dane Firmy:",
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -595,6 +612,35 @@ class _EditFirmFormState extends State<EditFirmForm> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildCategories(BuildContext context, List<dynamic>? category) {
+    if (category == null) category = [];
+    bool _isSelected = true;
+    return Wrap(
+      children: [
+        ...category
+            .map(
+              (e) => InputChip(
+                label: Text(e.toString()),
+                showCheckmark: true,
+                deleteIcon: Icon(Icons.clear),
+                selected: e.toString().length % 2 == 0 ? true : false,
+                onSelected: (value) {
+                  print(value.toString());
+                },
+                onDeleted: () {
+                  print('onDeleted');
+                },
+              ),
+            )
+            .toList(),
+        InputChip(
+          label: Text('Malowanie Domu'),
+          selected: false,
+        )
+      ],
     );
   }
 }

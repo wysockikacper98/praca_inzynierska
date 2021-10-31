@@ -8,6 +8,7 @@ import '../models/users.dart';
 import '../screens/calendar/calendar_screen.dart';
 import '../screens/emergency_screen.dart';
 import '../screens/firm/firm_edit_profile_screen.dart';
+import '../screens/firm/firm_edit_profile_v2_screen.dart';
 import '../screens/firm/firm_profile_screen.dart';
 import '../screens/messages/chats_screen.dart';
 import '../screens/orders/orders_screen.dart';
@@ -56,8 +57,8 @@ class _AppDrawerState extends State<AppDrawer> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Consumer<UserProvider>(
-                          builder: (ctx, provider, _) =>
-                              buildHeader(ctx, textTheme, provider.user!),
+                          builder: (ctx, prov, _) =>
+                              buildHeader(ctx, textTheme, prov.user!),
                         ),
                       ),
                     ),
@@ -261,6 +262,22 @@ class _AppDrawerState extends State<AppDrawer> {
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context)
                         .popAndPushNamed(FirmEditProfileScreen.routeName)
+                    : () => Navigator.of(context)
+                        .popAndPushNamed(UserEditProfileScreen.routeName),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.manage_accounts,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+                title: Text(
+                  'Edycja profilu v2',
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
+                onTap: user.type == UserType.Firm
+                    ? () => Navigator.of(context)
+                        .popAndPushNamed(FirmEditProfileV2Screen.routeName)
                     : () => Navigator.of(context)
                         .popAndPushNamed(UserEditProfileScreen.routeName),
               ),

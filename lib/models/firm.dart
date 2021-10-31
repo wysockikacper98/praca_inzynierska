@@ -151,4 +151,10 @@ class FirmProvider with ChangeNotifier {
     _firm!.details!.pictures!.add(url);
     notifyListeners();
   }
+
+  void updateCategories(List<dynamic> categoriesSelected) {
+    print('Category Updated');
+    _firm!.category = categoriesSelected;
+    notifyListeners();
+  }
 }

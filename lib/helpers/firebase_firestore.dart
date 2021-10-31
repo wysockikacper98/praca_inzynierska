@@ -8,6 +8,7 @@ import '../models/comment.dart';
 import '../models/firm.dart';
 import '../models/meeting.dart';
 import '../models/order.dart';
+import '../models/useful_data.dart';
 import '../models/users.dart';
 import '../screens/messages/messages.dart';
 
@@ -398,4 +399,23 @@ Future<void> updateUserAddress(Address address) async {
       .collection('firms')
       .doc(uid)
       .update({'address': address.toJson()});
+}
+
+Future<void> getCategories(BuildContext context) async {
+  // dev.debugger();
+  final data = await FirebaseFirestore.instance
+      .collection('usefulData')
+      .doc('mKT6HCrf066qkE3MTNL0')
+      .get();
+
+  Provider.of<UsefulData>(context, listen: false).categoriesList =
+      data.data()!['categoryListPL'].cast<String>();
+}
+
+Future<void> updateCategories(List<dynamic> categories) async {
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
+  FirebaseFirestore.instance
+      .collection('firms')
+      .doc(uid)
+      .update({'category': categories});
 }

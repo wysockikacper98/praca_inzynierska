@@ -20,7 +20,7 @@ class FirmEditProfileScreen extends StatelessWidget {
         // future: getFirmInfoFromFirebase(context, userID),
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.data == null) {
+            if (!snapshot.hasData) {
               return Center(child: Text("Firm not found"));
             }
             return EditFirmForm();

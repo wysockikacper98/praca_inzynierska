@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
           return FutureBuilder(
-            future: functionTemp(user, context),
+            future: getDataBeforeLogIn(user, context),
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(
@@ -44,11 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-functionTemp(UserProvider user, BuildContext context) async {
+getDataBeforeLogIn(UserProvider user, BuildContext context) async {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final provider = Provider.of<ThemeProvider>(context, listen: false);
 
   await getUserInfoFromFirebase(context, userId);
+
+  // dev.debugger();
+
+  await getCategories(context);
 
   if (user.user!.type == UserType.Firm) {
     print("GetFirm info provider: " + userId);

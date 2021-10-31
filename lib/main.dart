@@ -6,10 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import 'models/firm.dart';
+import 'models/useful_data.dart';
 import 'models/users.dart';
 import 'screens/calendar/calendar_screen.dart';
 import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
+import 'screens/firm/firm_edit_profile_v2_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/location/pick_location_screen.dart';
@@ -49,6 +51,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (ctx) => UserProvider()),
         ChangeNotifierProvider(create: (ctx) => FirmProvider()),
+        ChangeNotifierProvider(create: (ctx) => UsefulData()),
       ],
       child: ChangeNotifierProvider(
           create: (context) => ThemeProvider(),
@@ -85,6 +88,8 @@ class MyApp extends StatelessWidget {
                     UserEditProfileScreen(),
                 FirmEditProfileScreen.routeName: (ctx) =>
                     FirmEditProfileScreen(),
+                FirmEditProfileV2Screen.routeName: (ctx) =>
+                    FirmEditProfileV2Screen(),
                 SearchScreen.routeName: (ctx) => SearchScreen(),
                 SettingsScreen.routeName: (ctx) => SettingsScreen(),
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),

@@ -60,6 +60,7 @@ ThemeData themeLight() {
     tabBarTheme: tabBarTheme(),
     primaryIconTheme: IconThemeData(color: primaryColorLight),
     // iconTheme: IconThemeData(color: primaryColorLight),
+    chipTheme: chipThemeData(),
     appBarTheme: appBarTheme(),
 
     scaffoldBackgroundColor: primaryColorLight,
@@ -117,6 +118,26 @@ TextButtonThemeData textButtonTheme() {
 ElevatedButtonThemeData elevatedButtonTheme() {
   return ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+  );
+}
+
+ChipThemeData chipThemeData() {
+  return ChipThemeData(
+    elevation: 5,
+    backgroundColor: Colors.grey,
+    disabledColor: Colors.black38,
+    checkmarkColor: Colors.white.withOpacity(0.8),
+    selectedColor: kOrangeColor.shade400,
+    secondarySelectedColor: kOrangeColor.shade300,
+    padding: EdgeInsets.all(5.0),
+    labelStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Colors.white.withOpacity(0.8),
+    ),
+    secondaryLabelStyle: TextStyle(
+      color: primaryColorLight,
+    ),
+    brightness: Brightness.light,
   );
 }
 
