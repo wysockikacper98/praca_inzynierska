@@ -101,7 +101,7 @@ class Firm {
       'lastName': this.lastName,
       'telephone': this.telephone,
       'email': this.email,
-      'location': this.address,
+      'address': this.address,
       'range': this.range,
       'nip': this.nip,
       'avatar': this.avatar,

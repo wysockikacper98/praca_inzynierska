@@ -11,7 +11,6 @@ import '../../models/firm.dart';
 import '../../models/users.dart';
 import '../../screens/full_screen_image.dart';
 import '../../screens/location/address_widgets.dart';
-import '../../screens/location/pick_location_screen.dart';
 import '../../screens/location_example/maps_demo.dart';
 import '../calculate_rating.dart';
 import '../pickers/image_picker.dart';
@@ -455,8 +454,8 @@ class _EditFirmFormState extends State<EditFirmForm> {
                 onPressed: () {
                   locationPermissions().then((value) {
                     if (value == ph.PermissionStatus.granted) {
-                      Navigator.of(context)
-                          .pushNamed(PickLocationScreen.routeName);
+                      // Navigator.of(context)
+                      //     .pushNamed(PickLocationScreen.routeName);
                     } else if (value == ph.PermissionStatus.permanentlyDenied) {
                       showDialog(
                         context: context,

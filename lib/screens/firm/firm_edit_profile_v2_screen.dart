@@ -1,17 +1,23 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fraction/fraction.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:provider/provider.dart';
 
+import '../../helpers/firebase_firestore.dart';
+import '../../helpers/firebase_storage.dart';
 import '../../helpers/permission_handler.dart';
+import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/useful_data.dart';
 import '../../models/users.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/pickers/image_picker.dart';
+import '../full_screen_image.dart';
 import '../location/pick_location_screen.dart';
 import 'buildCategories.dart';
 
@@ -27,6 +33,8 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
   bool _dirty = false;
   bool _dataInitialized = false;
   final _formKey = GlobalKey<FormState>();
+  late Firm _updatedFirm;
+  List<String> _categoriesList = [];
 
   TextEditingController _firmNameController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
@@ -38,6 +46,7 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
   TextEditingController _subAdministrativeAreaController =
       TextEditingController();
   TextEditingController _administrativeAreaController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -51,6 +60,7 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
     _cityController.dispose();
     _subAdministrativeAreaController.dispose();
     _administrativeAreaController.dispose();
+    _descriptionController.dispose();
   }
 
   @override
@@ -75,46 +85,109 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
         ),
         title: AutoSizeText('Edycja profilu firmy 2', maxLines: 1),
         actions: [
-          if (_dataInitialized)
+          if (_dataInitialized && _dirty)
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () => setState(() {
                 _dataInitialized = false;
+                makeClean();
               }),
             ),
           if (_dirty)
             IconButton(
               icon: Icon(Icons.save),
-              onPressed: () => makeClean(),
+              onPressed: () {
+                makeClean();
+                _trySubmit();
+              },
             ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text('Dirty:$_dirty'),
-            Text('Data Initialized:$_dataInitialized'),
-            // Text('Category Provider:\n${firmProvider.firm!.category!}\n'),
-            SizedBox(height: 20),
-            Text(firmProvider.firm.toString()),
-            SizedBox(height: 20),
+            SizedBox(height: 16.0),
             imagePickerFirm(firmProvider, userProvider, _width),
             buildRatingBarIndicator(userProvider, firmProvider),
-            // buildCategories(context, firmProvider.firm!.category!),
             BuildCategories(
               firmProvider.firm!.category!.cast<String>(),
               Provider.of<UsefulData>(context, listen: false).categoriesList,
               makeDirty,
+              _updateCategories,
             ),
             buildFirmData(context, firmProvider.firm!, _width),
-            Container(),
+            SizedBox(height: 16),
+            buildPictureEditor(context, firmProvider),
+            SizedBox(height: 100),
           ],
         ),
       ),
     );
   }
 
-  Widget buildFirmData(BuildContext context, Firm firm, double width) {
+  Widget buildPictureEditor(BuildContext context, FirmProvider firmProvider) {
+    var amountOfPictures = firmProvider.firm!.details!.pictures!.length;
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            'Zdjęcia:',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          trailing: amountOfPictures < 5
+              ? ElevatedButton.icon(
+                  label: Text(
+                      'Dodaj zdjecie ${Fraction(amountOfPictures, 5).toStringAsGlyph()}'),
+                  icon: Icon(Icons.add_photo_alternate),
+                  onPressed: () => addPictureToFirmProfile(context),
+                )
+              : null,
+        ),
+        SizedBox(height: 16.0),
+        amountOfPictures > 0
+            ? CarouselSlider.builder(
+                options: CarouselOptions(
+                  aspectRatio: 2.5,
+                  disableCenter: true,
+                  autoPlayInterval: const Duration(seconds: 8),
+                  enlargeCenterPage: true,
+                  autoPlay: false,
+                ),
+                itemCount: amountOfPictures,
+                itemBuilder: (ctx, index, tag) {
+                  return GestureDetector(
+                    child: Hero(
+                      tag: tag,
+                      child: Container(
+                        child: Image.network(
+                            firmProvider.firm!.details!.pictures![index]),
+                        color: Colors.white30,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) {
+                          return FullScreenImage(
+                            imageURLPath:
+                                firmProvider.firm!.details!.pictures![index],
+                            tag: tag,
+                            editable: true,
+                          );
+                        }),
+                      );
+                    },
+                  );
+                },
+              )
+            : Center(
+                child: Text('Brak zdjęć.'),
+              ),
+      ],
+    );
+  }
+
+  Column buildFirmData(BuildContext context, Firm firm, double width) {
     return Column(
       children: [
         ListTile(
@@ -148,7 +221,9 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     }
                     return null;
                   },
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    _updatedFirm.firmName = value!.trim();
+                  },
                 ),
                 TextFormField(
                   key: ValueKey('name'),
@@ -169,7 +244,9 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    _updatedFirm.firstName = value!.trim();
+                  },
                 ),
                 TextFormField(
                   key: ValueKey('surname'),
@@ -190,7 +267,9 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    _updatedFirm.lastName = value!.trim();
+                  },
                 ),
                 TextFormField(
                   key: ValueKey('phone'),
@@ -217,7 +296,9 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    _updatedFirm.telephone = value!.replaceAll('-', '');
+                  },
                 ),
                 SizedBox(height: 16.0),
                 ListTile(
@@ -232,8 +313,14 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     onPressed: () {
                       locationPermissions().then((value) {
                         if (value == ph.PermissionStatus.granted) {
-                          Navigator.of(context)
-                              .pushNamed(PickLocationScreen.routeName);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => PickLocationScreen(updateAddress),
+                            ),
+                          );
+                          //
+                          // Navigator.of(context)
+                          //     .pushNamed(PickLocationScreen.routeName);
                         } else if (value ==
                             ph.PermissionStatus.permanentlyDenied) {
                           showDialog(
@@ -268,7 +355,12 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    if (_updatedFirm.address == null) {
+                      _updatedFirm.address = Address.empty();
+                    }
+                    _updatedFirm.address!.streetAndHouseNumber = value!.trim();
+                  },
                 ),
                 TextFormField(
                   key: ValueKey('zipCode'),
@@ -292,9 +384,15 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (String value) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    if (_updatedFirm.address == null) {
+                      _updatedFirm.address = Address.empty();
+                    }
+                    _updatedFirm.address!.zipCode = value!;
+                  },
                 ),
                 TextFormField(
+                  key: ValueKey('city'),
                   controller: _cityController,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
@@ -312,51 +410,86 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
                     return null;
                   },
                   onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {},
+                  onSaved: (String? value) {
+                    if (_updatedFirm.address == null) {
+                      _updatedFirm.address = Address.empty();
+                    }
+                    _updatedFirm.address!.city = value!.trim();
+                  },
                 ),
                 TextFormField(
+                  key: ValueKey('subAdministrativeArea'),
                   controller: _subAdministrativeAreaController,
-                  decoration: InputDecoration(labelText: 'Powiat'),
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    labelText: 'Powiat',
+                    hintText: 'Powiat',
+                  ),
+                  validator: (_) {
+                    return null;
+                  },
+                  onChanged: (_) => makeDirty(),
+                  onSaved: (String? value) {
+                    if (_updatedFirm.address == null) {
+                      _updatedFirm.address = Address.empty();
+                    }
+                    _updatedFirm.address!.subAdministrativeArea =
+                        value == null ? '' : value.trim();
+                  },
                 ),
                 TextFormField(
+                  key: ValueKey('administrativeArea'),
                   controller: _administrativeAreaController,
-                  decoration: InputDecoration(labelText: 'Województwo'),
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    labelText: 'Województwo',
+                    hintText: 'Województwo',
+                  ),
+                  validator: (_) {
+                    return null;
+                  },
+                  onChanged: (_) => makeDirty(),
+                  onSaved: (String? value) {
+                    if (_updatedFirm.address == null) {
+                      _updatedFirm.address = Address.empty();
+                    }
+                    _updatedFirm.address!.administrativeArea =
+                        value == null ? '' : value.trim();
+                  },
+                ),
+                SizedBox(height: 16.0),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'O Firmie:',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                TextFormField(
+                  key: ValueKey('description'),
+                  controller: _descriptionController,
+                  keyboardType: TextInputType.multiline,
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: 6,
+                  minLines: 1,
+                  decoration: InputDecoration(
+                    labelText: 'Opis firmy',
+                    hintText: 'Opis firmy',
+                  ),
+                  validator: (_) {
+                    return null;
+                  },
+                  onChanged: (_) => makeDirty(),
+                  onSaved: (String? value) {
+                    _updatedFirm.details!.description =
+                        value == null ? '' : value.trimRight();
+                  },
                 ),
               ],
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget editAddress() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _streetController,
-            decoration: InputDecoration(labelText: 'Ulica i numer domu'),
-          ),
-          TextFormField(
-            controller: _zipCodeController,
-            decoration: InputDecoration(labelText: 'Kod pocztowy'),
-          ),
-          TextFormField(
-            controller: _cityController,
-            decoration: InputDecoration(labelText: 'Miejscowość'),
-          ),
-          TextFormField(
-            controller: _subAdministrativeAreaController,
-            decoration: InputDecoration(labelText: 'Powiat'),
-          ),
-          TextFormField(
-            controller: _administrativeAreaController,
-            decoration: InputDecoration(labelText: 'Województwo'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -376,6 +509,13 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
         ),
       ],
     );
+  }
+
+  void _updateCategories(Map<String, bool> categoriesMap) {
+    _categoriesList.clear();
+    categoriesMap.forEach((String key, bool value) {
+      if (value) _categoriesList.add(key);
+    });
   }
 
   void makeDirty() {
@@ -424,6 +564,8 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
 
   void setUpControllers(Firm firm) {
     if (!_dataInitialized) {
+      _updatedFirm = firm;
+
       _firmNameController.text = firm.firmName;
       _nameController.text = firm.firstName;
       _surnameController.text = firm.lastName;
@@ -441,9 +583,35 @@ class _FirmEditProfileV2ScreenState extends State<FirmEditProfileV2Screen> {
           firm.address!.subAdministrativeArea ?? '';
       _administrativeAreaController.text =
           firm.address!.administrativeArea ?? '';
-      // setState(() {
+      if (firm.details != null) {
+        _descriptionController.text = firm.details!.description!;
+      } else {
+        _descriptionController.text = '';
+      }
       _dataInitialized = true;
-      // });
+    }
+  }
+
+  void updateAddress(Address address) {
+    _streetController.text = address.streetAndHouseNumber;
+    _zipCodeController.text = address.zipCode;
+    _cityController.text = address.city;
+    _subAdministrativeAreaController.text = address.subAdministrativeArea ?? '';
+    _administrativeAreaController.text = address.administrativeArea ?? '';
+    setState(() {
+      _dirty = true;
+    });
+  }
+
+  Future<void> _trySubmit() async {
+    final _isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+
+    if (_isValid) {
+      _formKey.currentState!.save();
+      _updatedFirm.category = _categoriesList;
+      print(_updatedFirm.category);
+      await updateFirmInFirebase(context, _updatedFirm);
     }
   }
 }

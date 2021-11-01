@@ -5,9 +5,14 @@ class BuildCategories extends StatefulWidget {
   final List<String> _selectedCategoriesList;
   final List<String> _allCategories;
   final Function _makeDirty;
+  final Function(Map<String, bool> categories) _updateCategories;
 
   BuildCategories(
-      this._selectedCategoriesList, this._allCategories, this._makeDirty);
+    this._selectedCategoriesList,
+    this._allCategories,
+    this._makeDirty,
+    this._updateCategories,
+  );
 
   @override
   _BuildCategoriesState createState() => _BuildCategoriesState();
@@ -16,10 +21,12 @@ class BuildCategories extends StatefulWidget {
 class _BuildCategoriesState extends State<BuildCategories> {
   bool _editCategory = false;
   late Map<String, bool> _categoriesMap;
+  int _categoriesAmount = 0;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _categoriesAmount = widget._selectedCategoriesList.length;
     _categoriesMap = Map.fromIterable(widget._allCategories,
         key: (e) => e,
         value: (e) =>
@@ -32,7 +39,7 @@ class _BuildCategoriesState extends State<BuildCategories> {
       children: [
         ListTile(
           title: Text(
-            "Kategorie:",
+            "Kategorie:$_categoriesAmount",
             style: Theme.of(context).textTheme.headline6,
           ),
           trailing: IconButton(
@@ -59,7 +66,11 @@ class _BuildCategoriesState extends State<BuildCategories> {
                     scrollDirection: Axis.horizontal,
                     child: Wrap(
                       spacing: 5.0,
-                      children: [SizedBox(width: 16.0), ...buildChips()],
+                      children: [
+                        SizedBox(width: 16.0),
+                        ...buildChips(),
+                        SizedBox(width: 16.0),
+                      ],
                     ),
                   ),
           ),
@@ -79,9 +90,11 @@ class _BuildCategoriesState extends State<BuildCategories> {
             selected: value,
             label: Text(key),
             onSelected: (bool newValue) {
-              if (_editCategory) {
+              if (_editCategory && (_categoriesAmount > 1 || newValue)) {
                 setState(() {
                   _categoriesMap.update(key, (value) => newValue);
+                  value ? _categoriesAmount-- : _categoriesAmount++;
+                  widget._updateCategories(_categoriesMap);
                   widget._makeDirty();
                 });
               }

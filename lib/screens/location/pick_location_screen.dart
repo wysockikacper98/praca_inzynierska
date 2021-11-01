@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../helpers/colorfull_print_messages.dart';
-import '../../helpers/firebase_firestore.dart';
 import '../../models/address.dart';
-import '../../models/firm.dart';
 
 class PickLocationScreen extends StatefulWidget {
-  static const String routeName = '/pick-location';
+  final Function(Address address) _updateAddress;
+
+  PickLocationScreen(this._updateAddress);
 
   @override
   _PickLocationScreenState createState() => _PickLocationScreenState();
@@ -85,9 +84,10 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
                   onPressed: (address == null || address!.zipCode == '')
                       ? null
                       : () {
-                          Provider.of<FirmProvider>(context, listen: false)
-                              .updateAddress(address!);
-                          updateUserAddress(address!);
+                          // Provider.of<FirmProvider>(context, listen: false)
+                          //     .updateAddress(address!);
+                          // updateUserAddress(address!);
+                          widget._updateAddress(address!);
                           Navigator.of(context).pop();
                         },
                 ),

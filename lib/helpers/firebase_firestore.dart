@@ -261,8 +261,9 @@ Future<void> updateFirmInFirebase(
     'firstName': firm.firstName,
     'lastName': firm.lastName,
     'telephone': firm.telephone,
-    'location': firm.address,
-    'details': firm.details!.toJson(),
+    'category': firm.category,
+    'address': firm.address!.toJson(),
+    'details.description': firm.details!.description,
   });
 
   await getFirmInfoFromFirebase(context, userId);
