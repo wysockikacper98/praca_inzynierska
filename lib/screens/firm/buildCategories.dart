@@ -59,7 +59,7 @@ class _BuildCategoriesState extends State<BuildCategories> {
                     scrollDirection: Axis.horizontal,
                     child: Wrap(
                       spacing: 5.0,
-                      children: buildChips(),
+                      children: [SizedBox(width: 16.0), ...buildChips()],
                     ),
                   ),
           ),

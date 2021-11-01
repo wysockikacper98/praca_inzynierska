@@ -26,6 +26,7 @@ class _EditFirmFormState extends State<EditFirmForm> {
   final _formNameAndSurnameKey = GlobalKey<FormState>();
   final _formPhoneNumberKey = GlobalKey<FormState>();
   final _formDescriptionKey = GlobalKey<FormState>();
+  final _formLocation = GlobalKey<FormState>();
 
   bool _editFirmName = false;
   bool _editNameAndSurname = false;
@@ -116,6 +117,8 @@ class _EditFirmFormState extends State<EditFirmForm> {
         padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
         child: Column(
           children: [
+            Text(firmProvider.firm.toString()),
+            SizedBox(height: 15),
             imagePickerFirm(firmProvider, userProvider, width),
             SizedBox(height: 15),
             RatingBarIndicator(
@@ -469,7 +472,8 @@ class _EditFirmFormState extends State<EditFirmForm> {
               ),
             ),
             firmProvider.firm!.address != null
-                ? editAddress(context, firmProvider.firm!.address!)
+                ? editAddress(
+                    context, firmProvider.firm!.address!, _formLocation)
                 : Text('Nie wybrano adresu.'),
             SizedBox(height: 15),
             ListTile(
@@ -617,7 +621,6 @@ class _EditFirmFormState extends State<EditFirmForm> {
 
   Widget buildCategories(BuildContext context, List<dynamic>? category) {
     if (category == null) category = [];
-    bool _isSelected = true;
     return Wrap(
       children: [
         ...category

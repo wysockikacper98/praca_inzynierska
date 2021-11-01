@@ -44,10 +44,10 @@ class Firm {
         '\nLastName:$lastName' +
         '\nPhone:$telephone' +
         '\nEmail:$email' +
-        '\nAddress:${address.toString()}' +
+        '\n${address.toString()}' +
         '\nRange$range' +
         '\nNip$nip' +
-        '\nAvatar:$avatar' +
+        '\nAvatar:${avatar!.length > 2 ? true : false}' +
         '\nRating:$rating' +
         '\nRating Number:$ratingNumber' +
         '\nCategory:${category.toString()}' +

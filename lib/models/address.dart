@@ -25,7 +25,13 @@ class Address {
 
   @override
   String toString() {
-    return 'Address{streetAndHouseNumber: $streetAndHouseNumber, zipCode: $zipCode, city: $city, subAdministrativeArea: $subAdministrativeArea, administrativeArea: $administrativeArea}';
+    return '''Address:\n
+streetAndHouseNumber: $streetAndHouseNumber
+zipCode: $zipCode
+city: $city
+subAdministrativeArea: $subAdministrativeArea
+administrativeArea: $administrativeArea
+''';
   }
 
   factory Address.fromJson(Map<String, dynamic> json) {

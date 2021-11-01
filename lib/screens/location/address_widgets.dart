@@ -5,8 +5,8 @@ import '../../models/address.dart';
 Widget editAddress(
   BuildContext context,
   Address address,
+  GlobalKey<FormState> _formKey,
 ) {
-  final _formKey = GlobalKey<FormState>();
   TextEditingController streetController =
       TextEditingController(text: address.streetAndHouseNumber);
   TextEditingController zipCodeController =
