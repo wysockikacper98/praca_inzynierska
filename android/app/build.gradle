@@ -46,7 +46,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        manifestPlaceholders = [googleMapsAPIKey: keystoreProperties['googleMapsAPI']]
+        manifestPlaceholders = [googleMapsAPIKey: keystoreProperties['googleMapsAPI'],
+                                default_notification_channel_id: keystoreProperties['default_notification_channel_id']]
     }
 
     signingConfigs {

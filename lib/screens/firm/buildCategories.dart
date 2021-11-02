@@ -39,7 +39,7 @@ class _BuildCategoriesState extends State<BuildCategories> {
       children: [
         ListTile(
           title: Text(
-            "Kategorie:$_categoriesAmount",
+            "Kategorie:",
             style: Theme.of(context).textTheme.headline6,
           ),
           trailing: IconButton(

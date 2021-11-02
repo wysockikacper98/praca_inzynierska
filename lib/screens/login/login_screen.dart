@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../helpers/storage_manager.dart';
 import '../../models/users.dart';
+import '../../service/local_notification_service.dart';
 import '../../widgets/theme/theme_Provider.dart';
 import '../home_screen.dart';
 import 'login_form_screen.dart';
@@ -41,6 +44,51 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    LocalNotificationService.initialize();
+
+    ///gives you the message on which user taps
+    ///and it opened the app from terminated state
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        printColor(
+            text: 'Printing data from terminated state',
+            color: PrintColor.blue);
+        printColor(text: message.data["data"], color: PrintColor.cyan);
+      }
+    });
+
+    ///foreground work
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        printColor(
+            text: 'Printing data when app is on foreground',
+            color: PrintColor.magenta);
+        printColor(
+            text: message.notification!.body.toString(), color: PrintColor.red);
+        printColor(
+            text: message.notification!.title.toString(),
+            color: PrintColor.red);
+      }
+
+      LocalNotificationService.display(message);
+    });
+
+    ///When the app is in background but opened and user taps
+    ///on the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (message.notification != null) {
+        printColor(
+            text: 'Printing data when app is on background',
+            color: PrintColor.cyan);
+        printColor(text: message.data["data"], color: PrintColor.blue);
+      }
+    });
   }
 }
 

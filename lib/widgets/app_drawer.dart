@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../models/users.dart';
 import '../screens/calendar/calendar_screen.dart';
 import '../screens/emergency_screen.dart';
-import '../screens/firm/firm_edit_profile_screen.dart';
 import '../screens/firm/firm_edit_profile_v2_screen.dart';
 import '../screens/firm/firm_profile_screen.dart';
 import '../screens/messages/chats_screen.dart';
@@ -257,22 +256,6 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
                 title: Text(
                   'Edycja profilu',
-                  style: TextStyle(color: Theme.of(context).primaryColorLight),
-                ),
-                onTap: user.type == UserType.Firm
-                    ? () => Navigator.of(context)
-                        .popAndPushNamed(FirmEditProfileScreen.routeName)
-                    : () => Navigator.of(context)
-                        .popAndPushNamed(UserEditProfileScreen.routeName),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.manage_accounts,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                title: Text(
-                  'Edycja profilu v2',
                   style: TextStyle(color: Theme.of(context).primaryColorLight),
                 ),
                 onTap: user.type == UserType.Firm
