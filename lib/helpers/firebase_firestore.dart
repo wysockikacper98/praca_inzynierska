@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/models/notification.dart';
 import 'package:provider/provider.dart';
 
 import '../models/address.dart';
@@ -14,10 +17,9 @@ import '../models/users.dart';
 import '../screens/messages/messages.dart';
 import 'colorfull_print_messages.dart';
 
-Future<void> loginUser(
-  BuildContext context,
-  String email,
-  String password,
+Future<void> loginUser(BuildContext context,
+    String email,
+    String password,
 ) async {
   UserCredential authResult;
   try {
@@ -47,8 +49,7 @@ Future<void> loginUser(
   }
 }
 
-Future<bool> registerUser(
-    BuildContext context, Users user, String userPassword) async {
+Future<bool> registerUser(BuildContext context, Users user, String userPassword) async {
   try {
     UserCredential authResult;
     final _auth = FirebaseAuth.instance;
@@ -107,8 +108,7 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
   }
 }
 
-void handleFirebaseAuthError(
-    BuildContext context, FirebaseAuthException error) {
+void handleFirebaseAuthError(BuildContext context, FirebaseAuthException error) {
   String errorMessage = "Wystąpił błąd. Proszę sprawedzić dane logowania.";
   if (error.message != null) {
     errorMessage = error.message!;
@@ -203,31 +203,29 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
   }
 }
 
-Future<void> getUserInfoFromFirebase(
-  BuildContext context,
-  String userID,
+Future<void> getUserInfoFromFirebase(BuildContext context,
+    String userID,
 ) async {
   // await Future.delayed(Duration(seconds: 2));
   final provider = Provider.of<UserProvider>(context, listen: false);
   var data =
-      await FirebaseFirestore.instance.collection('users').doc(userID).get();
+  await FirebaseFirestore.instance.collection('users').doc(userID).get();
   if (!data.exists) {
     data =
-        await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+    await FirebaseFirestore.instance.collection('firms').doc(userID).get();
   }
   provider.user = Users.fromJson(data.data()!);
 }
 
-Future<void> getFirmInfoFromFirebase(
-  BuildContext context,
-  String userID,
+Future<void> getFirmInfoFromFirebase(BuildContext context,
+    String userID,
 ) async {
   // Future.delayed(Duration(seconds: 2));
   // print("czy to działa");
   final provider = Provider.of<FirmProvider>(context, listen: false);
   final providerUser = Provider.of<UserProvider>(context, listen: false);
   final data =
-      await FirebaseFirestore.instance.collection('firms').doc(userID).get();
+  await FirebaseFirestore.instance.collection('firms').doc(userID).get();
 
   // print("Data:" + data.data().toString());
 
@@ -240,11 +238,10 @@ Future<QuerySnapshot> getFirmList() async {
   return data;
 }
 
-Future<void> updateUserInFirebase(
-  BuildContext context,
-  String firstName,
-  String lastName,
-  String telephone,
+Future<void> updateUserInFirebase(BuildContext context,
+    String firstName,
+    String lastName,
+    String telephone,
 ) async {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   await FirebaseFirestore.instance.collection('users').doc(userId).update(
@@ -253,9 +250,8 @@ Future<void> updateUserInFirebase(
   await getUserInfoFromFirebase(context, userId);
 }
 
-Future<void> updateFirmInFirebase(
-  BuildContext context,
-  Firm firm,
+Future<void> updateFirmInFirebase(BuildContext context,
+    Firm firm,
 ) async {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   await FirebaseFirestore.instance.collection('firms').doc(userId).update({
@@ -271,8 +267,7 @@ Future<void> updateFirmInFirebase(
   await getFirmInfoFromFirebase(context, userId);
 }
 
-Future<DocumentReference<Map<String, dynamic>>> addOrderInFirebase(
-  Order order,
+Future<DocumentReference<Map<String, dynamic>>> addOrderInFirebase(Order order,
 ) async {
   return await FirebaseFirestore.instance
       .collection('orders')
@@ -282,18 +277,17 @@ Future<DocumentReference<Map<String, dynamic>>> addOrderInFirebase(
 /// ## Create or Open chat
 /// Function create new or open existing chat
 /// just give [context], [loggedUser] and [addressee]
-Future<void> createOrOpenChat(
-  BuildContext context,
-  Users loggedUser,
-  String addressee,
-  List<String> chatName,
-  List<String> listID,
+Future<void> createOrOpenChat(BuildContext context,
+    Users loggedUser,
+    String addressee,
+    List<String> chatName,
+    List<String> listID,
 ) async {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
   String loggedUserID = FirebaseAuth.instance.currentUser!.uid;
 
   final chatData =
-      await chats.where('users', arrayContains: loggedUserID).get();
+  await chats.where('users', arrayContains: loggedUserID).get();
 
   bool ifChatExist = false;
   late QueryDocumentSnapshot<Map<String, dynamic>> pickedChat;
@@ -344,35 +338,34 @@ Future<void> createOrOpenChat(
   }
 }
 
-Future<void> addCommentToFirebase(
-  UserType userType,
-  List<String> userAndFirmIds,
-  Comment comment,
-  String orderID,
+Future<void> addCommentToFirebase(UserType userType,
+    List<String> userAndFirmIds,
+    Comment comment,
+    String orderID,
 ) async {
   print('Dodawanie komentarza:\n${comment.toString()}');
   final String collection = userType == UserType.Firm ? 'users' : 'firms';
   final String docID =
-      userType == UserType.Firm ? userAndFirmIds.first : userAndFirmIds.last;
+  userType == UserType.Firm ? userAndFirmIds.first : userAndFirmIds.last;
   final String updateField =
-      userType == UserType.Firm ? 'canFirmComment' : 'canUserComment';
+  userType == UserType.Firm ? 'canFirmComment' : 'canUserComment';
 
   return FirebaseFirestore.instance
       .collection('orders')
       .doc(orderID)
       .update({updateField: false}).then(
-    (value) => FirebaseFirestore.instance
+        (value) => FirebaseFirestore.instance
         .collection(collection)
         .doc(docID)
         .collection('comments')
         .add(comment.toJson())
         .then(
-      (_) async {
+          (_) async {
         final DocumentSnapshot<Map<String, dynamic>> data =
-            await FirebaseFirestore.instance
-                .collection(collection)
-                .doc(docID)
-                .get();
+        await FirebaseFirestore.instance
+            .collection(collection)
+            .doc(docID)
+            .get();
         final Users users = Users.fromJson(data.data()!);
         FirebaseFirestore.instance.collection(collection).doc(docID).update({
           'rating': (comment.rating + users.rating!),
@@ -434,18 +427,54 @@ Future<void> saveTokenToDatabase(UserType userType, String token) async {
   });
 }
 
-Future<void> orderNotification(
-    String orderID, String userID, String firmID) async {
-  try {
-    HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('orderNotification');
-    await callable({
-      'orderID': orderID,
-      'userID': userID,
-      'firmID': firmID,
-    });
-    printColor(text: 'Udało się :)', color: PrintColor.green);
-  } catch (e) {
-    print(e);
+Future<void> sendPushMessage(
+  String userID,
+  NotificationData notification,
+  NotificationDetails notificationDetails,
+) async {
+  DocumentSnapshot<Map<String, dynamic>> user =
+      await FirebaseFirestore.instance.collection('users').doc(userID).get();
+  List<String>? _userTokens = user.data()!['tokens'].cast<String>();
+
+  if (_userTokens != null) {
+    try {
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('sendNewTripNotification');
+      callable(constructFCMPayload(
+              _userTokens, notification, notificationDetails))
+          .then(
+            (value) => printColor(
+              text: 'Udało się spingować',
+              color: PrintColor.cyan,
+            ),
+          )
+          .catchError(
+            (e) => printColor(
+              text: e.toString(),
+              color: PrintColor.red,
+            ),
+          );
+    } catch (e) {
+      printColor(
+        text: 'Nie udało się',
+        color: PrintColor.red,
+      );
+      print(e);
+    }
   }
+}
+
+String constructFCMPayload(List<String> token, NotificationData notification,
+    NotificationDetails details) {
+  return jsonEncode({
+    'tokens': token,
+    'data': {
+      'name': details.name,
+      'details': details.details,
+    },
+    'notification': {
+      'title': notification.title,
+      'body': notification.body,
+    },
+  });
 }

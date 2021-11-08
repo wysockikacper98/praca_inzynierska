@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:praca_inzynierska/helpers/firebase_firestore.dart';
+import 'package:praca_inzynierska/models/notification.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -100,10 +101,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.local_fire_department),
-                      onPressed: () => orderNotification(
-                          snapshot.data!.id,
+                      onPressed: () {
+                        sendPushMessage(
                           snapshot.data!.data()!['userID'],
-                          snapshot.data!.data()!['firmID']),
+                          NotificationData(
+                            title: 'Dodano nowe zamówienie',
+                            body: snapshot.data!.data()!['title'],
+                          ),
+                          NotificationDetails(
+                            name: OrderDetailsScreen.routeName,
+                            details: snapshot.data!.id,
+                          ),
+                        );
+                      },
+                      // => orderNotification(
+                      //     snapshot.data!.id,
+                      //     snapshot.data!.data()!['userID'],
+                      //     snapshot.data!.data()!['firmID']),
                     ),
                     SizedBox(height: 10),
                     userType == UserType.Firm

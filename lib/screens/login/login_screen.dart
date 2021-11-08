@@ -60,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
             text: 'Printing data from terminated state',
             color: PrintColor.blue);
         printColor(text: message.data["data"], color: PrintColor.cyan);
+        print(message.toString());
       }
     });
 
@@ -74,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
         printColor(
             text: message.notification!.title.toString(),
             color: PrintColor.red);
+        print(message.toString());
       }
 
       LocalNotificationService.display(message);
@@ -87,6 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
             text: 'Printing data when app is on background',
             color: PrintColor.cyan);
         printColor(text: message.data["data"], color: PrintColor.blue);
+        print(message.toString());
       }
     });
   }
