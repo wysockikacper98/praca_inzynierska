@@ -40,9 +40,6 @@ Padding buildOrderListTile(
           MaterialPageRoute(
             builder: (context) => OrderDetailsScreen(
               orderID: data.id,
-              userOrFirmID: userType == UserType.Firm
-                  ? data.data()['userID']
-                  : data.data()['firmID'],
             ),
           ),
         );

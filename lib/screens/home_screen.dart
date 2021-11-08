@@ -1,12 +1,14 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/firebase_firestore.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/firebase_firestore.dart';
 import '../models/users.dart';
+import '../service/local_notification_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/firm/firm_list.dart';
+import 'orders/order_details_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
@@ -78,7 +80,7 @@ class HomeScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 child:
-                Center(child: FittedBox(child: Text('Usługi finansowe'))),
+                    Center(child: FittedBox(child: Text('Usługi finansowe'))),
                 style: style(4),
                 onPressed: () {},
               ),
@@ -96,7 +98,7 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child:
-            Text('Polecane', style: Theme.of(context).textTheme.headline6),
+                Text('Polecane', style: Theme.of(context).textTheme.headline6),
           ),
           Consumer<UserProvider>(
             builder: (context, userProvider, _) =>
@@ -123,6 +125,48 @@ class HomeScreen extends StatelessWidget {
       }
       FirebaseMessaging.instance.onTokenRefresh
           .listen((event) => saveTokenToDatabase(userType, event));
+
+      LocalNotificationService.initialize(context);
+
+      ///gives you the message on which user taps
+      ///and it opened the app from terminated state
+      FirebaseMessaging.instance.getInitialMessage().then((message) {
+        if (message != null) {
+          if (message.data['name'] == OrderDetailsScreen.routeName) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    OrderDetailsScreen(orderID: message.data['details']),
+              ),
+            );
+          }
+        }
+      });
+
+      ///When the app is in background but opened and user taps
+      ///on the notification
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        if (message.notification != null) {
+          if (message.data['name'] == OrderDetailsScreen.routeName) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    OrderDetailsScreen(orderID: message.data['details']),
+              ),
+            );
+          }
+        }
+      });
+
+      ///foreground work
+      FirebaseMessaging.onMessage.listen((message) {
+        if (message.notification != null) {
+          //TODO: zrobic coś z wyświetlaniem w aplickaji
+          LocalNotificationService.display(message);
+        }
+      });
 
       _initialize = true;
     }

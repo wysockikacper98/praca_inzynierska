@@ -21,29 +21,38 @@ class OrderDetailsScreen extends StatefulWidget {
   static const String routeName = '/order-details';
 
   final String orderID;
-  final String userOrFirmID;
 
-  OrderDetailsScreen({required this.orderID, required this.userOrFirmID});
+  OrderDetailsScreen({required this.orderID});
 
   @override
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  late Users userToShowInDetails;
-  late Firm firmToShowInDetails;
-  late List<String> chatName;
-  late List<String> idList;
+  late final Users userToShowInDetails;
+  late final Firm firmToShowInDetails;
+  late final List<String> chatName;
+  late final List<String> idList;
+  late final String userOrFirmID;
 
   Future<DocumentSnapshot<Map<String, dynamic>>> _getOrderDetails(
     UserType userType,
   ) async {
     final String currentUserID = FirebaseAuth.instance.currentUser!.uid;
     final String collection = userType == UserType.Firm ? 'users' : 'firms';
+    final DocumentSnapshot<Map<String, dynamic>> orderDetails =
+        await FirebaseFirestore.instance
+            .collection('orders')
+            .doc(widget.orderID)
+            .get();
+    userOrFirmID = userType == UserType.Firm
+        ? orderDetails.data()!['userID']
+        : orderDetails.data()!['firmID'];
+
     final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
         await FirebaseFirestore.instance
             .collection(collection)
-            .doc(widget.userOrFirmID)
+            .doc(userOrFirmID)
             .get();
 
     if (userType == UserType.Firm) {
@@ -71,10 +80,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ];
     }
 
-    return FirebaseFirestore.instance
-        .collection('orders')
-        .doc(widget.orderID)
-        .get();
+    return orderDetails;
   }
 
   @override
@@ -114,10 +120,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           ),
                         );
                       },
-                      // => orderNotification(
-                      //     snapshot.data!.id,
-                      //     snapshot.data!.data()!['userID'],
-                      //     snapshot.data!.data()!['firmID']),
                     ),
                     SizedBox(height: 10),
                     userType == UserType.Firm

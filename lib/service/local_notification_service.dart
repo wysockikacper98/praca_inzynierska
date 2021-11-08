@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../helpers/colorfull_print_messages.dart';
+import '../screens/orders/order_details_screen.dart';
 
 class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static void initialize() {
+  static void initialize(BuildContext context) {
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: AndroidInitializationSettings('mipmap/ic_launcher'),
@@ -16,8 +19,16 @@ class LocalNotificationService {
     _notificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (String? data) async {
       if (data != null) {
-        //TODO: Do something onTap
-        printColor(text: data.toString(), color: PrintColor.blue);
+        Map<String, dynamic> _data = json.decode(data);
+        if (_data['name'] == OrderDetailsScreen.routeName) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  OrderDetailsScreen(orderID: _data['details']),
+            ),
+          );
+        }
       }
     });
   }
@@ -41,7 +52,7 @@ class LocalNotificationService {
         message.notification!.title,
         message.notification!.body,
         notificationDetails,
-        payload: message.data['data'],
+        payload: json.encode(message.data),
       );
     } catch (e) {
       print(e);
