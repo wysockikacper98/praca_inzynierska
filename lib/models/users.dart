@@ -15,6 +15,8 @@ class Users {
   final String? avatar;
   final UserType type;
 
+  final List<String>? tokens;
+
   Users({
     required this.email,
     required this.firstName,
@@ -24,6 +26,7 @@ class Users {
     this.telephone,
     this.avatar,
     required this.type,
+    this.tokens,
   });
 
   factory Users.empty() {
@@ -51,6 +54,9 @@ class Users {
       type: parsedJson['type'] == 'PrivateUser'
           ? UserType.PrivateUser
           : UserType.Firm,
+      tokens: parsedJson['tokens'] != null
+          ? parsedJson['tokens'].cast<String>()
+          : [],
     );
   }
 
@@ -71,7 +77,9 @@ class Users {
         "\nAvatar:" +
         this.avatar! +
         "\nType:" +
-        (this.type == UserType.Firm ? 'Firm' : 'Private User');
+        (this.type == UserType.Firm ? 'Firm' : 'Private User') +
+        "\nTokens:" +
+        (this.tokens != null ? 'exist' : 'does not exist');
   }
 
   Map<String, dynamic> toJson() {
@@ -84,6 +92,7 @@ class Users {
       'avatar': this.avatar,
       'telephone': this.telephone,
       'type': this.type.toString().split('.').last,
+      'tokens': this.tokens,
     };
   }
 }

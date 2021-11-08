@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/firebase_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../models/users.dart';
@@ -8,6 +10,7 @@ import '../widgets/firm/firm_list.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
+  bool _initialize = false;
 
   style(int number) {
     return ElevatedButton.styleFrom(
@@ -28,7 +31,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
-
+    initialize(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -75,7 +78,7 @@ class HomeScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 child:
-                    Center(child: FittedBox(child: Text('Usługi finansowe'))),
+                Center(child: FittedBox(child: Text('Usługi finansowe'))),
                 style: style(4),
                 onPressed: () {},
               ),
@@ -93,7 +96,7 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child:
-                Text('Polecane', style: Theme.of(context).textTheme.headline6),
+            Text('Polecane', style: Theme.of(context).textTheme.headline6),
           ),
           Consumer<UserProvider>(
             builder: (context, userProvider, _) =>
@@ -105,5 +108,23 @@ class HomeScreen extends StatelessWidget {
       //TODO: Usunąć jeśli nie pomogło z wyświetlaniem Drawer'a na prawdziwym urządzeniu
       // endDrawerEnableOpenDragGesture: false,
     );
+  }
+
+  void initialize(BuildContext context) async {
+    if (!_initialize) {
+      await Future.delayed(Duration(seconds: 1));
+      var userType =
+          Provider.of<UserProvider>(context, listen: false).user!.type;
+
+      String? token = await FirebaseMessaging.instance.getToken();
+
+      if (token != null) {
+        await saveTokenToDatabase(userType, token);
+      }
+      FirebaseMessaging.instance.onTokenRefresh
+          .listen((event) => saveTokenToDatabase(userType, event));
+
+      _initialize = true;
+    }
   }
 }

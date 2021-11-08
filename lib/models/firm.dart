@@ -20,6 +20,8 @@ class Firm {
   UserType type;
   Details? details;
 
+  List<String>? tokens;
+
   Firm({
     required this.firmName,
     required this.firstName,
@@ -35,6 +37,7 @@ class Firm {
     this.ratingNumber,
     required this.type,
     this.details,
+    this.tokens,
   });
 
   @override
@@ -53,7 +56,9 @@ class Firm {
         '\nCategory:${category.toString()}' +
         '\nType:' +
         (this.type == UserType.Firm ? "Firm" : "Private User") +
-        '\nDetails:${details.toString()}';
+        '\nDetails:${details.toString()}' +
+        '\nTokens:' +
+        (this.tokens != null ? 'exist' : 'does not exist');
   }
 
   factory Firm.empty() {
@@ -91,6 +96,9 @@ class Firm {
       category: parsedJson['category'] ?? [],
       type: parsedJson['type'] == 'Firm' ? UserType.Firm : UserType.PrivateUser,
       details: Details.fromJson(parsedJson['details']),
+      tokens: parsedJson['tokens'] != null
+          ? parsedJson['tokens'].cast<String>()
+          : [],
     );
   }
 
@@ -110,6 +118,7 @@ class Firm {
       'category': this.category,
       'type': this.type.toString().split('.').last,
       'details': this.details?.toJson(),
+      'tokens': this.tokens,
     };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../models/order.dart';
 import '../models/useful_data.dart';
 import '../models/users.dart';
 import '../screens/messages/messages.dart';
+import 'colorfull_print_messages.dart';
 
 Future<void> loginUser(
   BuildContext context,
@@ -419,4 +421,31 @@ Future<void> updateCategories(List<dynamic> categories) async {
       .collection('firms')
       .doc(uid)
       .update({'category': categories});
+}
+
+Future<void> saveTokenToDatabase(UserType userType, String token) async {
+  // Assume user is logged in for this example
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  String collection = userType == UserType.Firm ? 'firms' : 'users';
+
+  await FirebaseFirestore.instance.collection(collection).doc(userId).update({
+    'tokens': FieldValue.arrayUnion([token]),
+  });
+}
+
+Future<void> orderNotification(
+    String orderID, String userID, String firmID) async {
+  try {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('orderNotification');
+    await callable({
+      'orderID': orderID,
+      'userID': userID,
+      'firmID': firmID,
+    });
+    printColor(text: 'Udało się :)', color: PrintColor.green);
+  } catch (e) {
+    print(e);
+  }
 }
