@@ -9,9 +9,11 @@ import '../../helpers/firebase_firestore.dart';
 import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/meeting.dart';
+import '../../models/notification.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
 import '../calendar/calendar_screen.dart';
+import 'order_details_screen.dart';
 import 'search_users.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 
@@ -495,6 +497,7 @@ End Date: ${range.endDate}
                 ? Theme.of(context).colorScheme.primary
                 : _color!,
           );
+
           await addMeetingToUser(
             meeting: _meeting,
             userType: UserType.Firm,
@@ -503,6 +506,18 @@ End Date: ${range.endDate}
             print('Failed to add meeting: $error');
           });
         }
+
+        sendPushMessage(
+          _user!.id,
+          NotificationData(
+            title: 'Dodano nowe zamówienie',
+            body: _order.title,
+          ),
+          NotificationDetails(
+            name: OrderDetailsScreen.routeName,
+            details: value.id,
+          ),
+        );
       }).catchError((error) {
         print('Failed to add user: $error');
       });
