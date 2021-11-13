@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:praca_inzynierska/screens/search/search_screenv2.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -104,6 +105,7 @@ class MyApp extends StatelessWidget {
                 CalendarScreen.routeName: (ctx) => CalendarScreen(),
                 UserProfileScreen.routeName: (ctx) => UserProfileScreen(),
                 MapsDemo.routeName: (ctx) => MapsDemo(),
+                SearchScreenv2.routeName: (ctx) => SearchScreenv2(),
               },
             );
           }),

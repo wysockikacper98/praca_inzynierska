@@ -238,9 +238,8 @@ Future<void> getFirmInfoFromFirebase(
   providerUser.user = Users.fromJson(data.data()!);
 }
 
-Future<QuerySnapshot> getFirmList() async {
-  final data = await FirebaseFirestore.instance.collection('firms').get();
-  return data;
+Future<QuerySnapshot<Map<String, dynamic>>> getFirmList() async {
+  return FirebaseFirestore.instance.collection('firms').get();
 }
 
 Future<void> updateUserInFirebase(
