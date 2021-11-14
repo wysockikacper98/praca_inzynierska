@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:praca_inzynierska/screens/search/search_screenv2.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
@@ -13,7 +12,6 @@ import 'models/users.dart';
 import 'screens/calendar/calendar_screen.dart';
 import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
-import 'screens/firm/firm_edit_profile_v2_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/location_example/maps_demo.dart';
@@ -23,6 +21,7 @@ import 'screens/login/register_user_screen.dart';
 import 'screens/orders/create_order_screen.dart';
 import 'screens/orders/orders_screen.dart';
 import 'screens/search/search_screen.dart';
+import 'screens/search/search_screenv2.dart';
 import 'screens/settings_screen.dart';
 import 'screens/user/user_edit_profile_screen.dart';
 import 'screens/user/user_profile_screen.dart';
@@ -96,8 +95,6 @@ class MyApp extends StatelessWidget {
                     UserEditProfileScreen(),
                 FirmEditProfileScreen.routeName: (ctx) =>
                     FirmEditProfileScreen(),
-                FirmEditProfileV2Screen.routeName: (ctx) =>
-                    FirmEditProfileV2Screen(),
                 SearchScreen.routeName: (ctx) => SearchScreen(),
                 SettingsScreen.routeName: (ctx) => SettingsScreen(),
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),

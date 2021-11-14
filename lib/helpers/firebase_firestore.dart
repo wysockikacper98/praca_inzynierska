@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/address.dart';
 import '../models/comment.dart';
 import '../models/firm.dart';
 import '../models/meeting.dart';
@@ -398,14 +397,6 @@ Future<void> addMeetingToUser({
       .add(meeting.toJson());
 }
 
-Future<void> updateUserAddress(Address address) async {
-  final String uid = FirebaseAuth.instance.currentUser!.uid;
-  FirebaseFirestore.instance
-      .collection('firms')
-      .doc(uid)
-      .update({'address': address.toJson()});
-}
-
 Future<void> getCategories(BuildContext context) async {
   final data = await FirebaseFirestore.instance
       .collection('usefulData')
@@ -414,14 +405,6 @@ Future<void> getCategories(BuildContext context) async {
 
   Provider.of<UsefulData>(context, listen: false).categoriesList =
       data.data()!['categoryListPL'].cast<String>();
-}
-
-Future<void> updateCategories(List<dynamic> categories) async {
-  final String uid = FirebaseAuth.instance.currentUser!.uid;
-  FirebaseFirestore.instance
-      .collection('firms')
-      .doc(uid)
-      .update({'category': categories});
 }
 
 Future<void> saveTokenToDatabase(UserType userType, String token) async {

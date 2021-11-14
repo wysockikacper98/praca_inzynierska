@@ -51,6 +51,7 @@ dependencies:
   flutter_local_notifications: ^9.0.2
   animate_icons: ^2.0.0
   material_floating_search_bar: ^0.3.6
+  badges: ^2.0.1
 
 dev_dependencies:
   flutter_test:
