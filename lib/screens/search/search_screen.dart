@@ -28,6 +28,11 @@ class _SearchScreenState extends State<SearchScreen> {
   late ScrollController _scrollController;
   bool _showBackToTopButton = false;
 
+  List<String>? _categories;
+  String? _administrativeArea;
+  List<double>? _rangeMinMax;
+  List<int>? _popularityMinMax;
+
   @override
   void initState() {
     super.initState();
@@ -146,7 +151,13 @@ class _SearchScreenState extends State<SearchScreen> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => FilterScreen(_applyFilters),
+                builder: (ctx) => FilterScreen(
+                  _applyFilters,
+                  _categories,
+                  _administrativeArea,
+                  _rangeMinMax,
+                  _popularityMinMax,
+                ),
               ),
             );
           }),
@@ -156,21 +167,25 @@ class _SearchScreenState extends State<SearchScreen> {
   void _applyFilters(
     List<String>? categories,
     String? administrativeArea,
-    List<double>? rageMinMax,
+    List<double>? rangeMinMax,
     List<int>? popularityMinMax,
   ) {
     bool _shouldUpdate = false;
 
     if (categories != null) {
+      _categories = categories;
       _shouldUpdate = true;
     }
     if (administrativeArea != null) {
+      _administrativeArea = administrativeArea;
       _shouldUpdate = true;
     }
-    if (rageMinMax != null) {
+    if (rangeMinMax != null) {
+      _rangeMinMax = rangeMinMax;
       _shouldUpdate = true;
     }
     if (popularityMinMax != null) {
+      _popularityMinMax = popularityMinMax;
       _shouldUpdate = true;
     }
 

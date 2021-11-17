@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
@@ -17,16 +18,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late final dynamic _future;
+
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    _future = getDataBeforeLogIn(userProvider, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     print('build -> login_screen');
-    final user = Provider.of<UserProvider>(context, listen: false);
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, userSnapshot) {
         if (userSnapshot.hasData) {
           return FutureBuilder(
-            future: getDataBeforeLogIn(user, context),
+            future: _future,
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Scaffold(
@@ -44,7 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-getDataBeforeLogIn(UserProvider user, BuildContext context) async {
+Future<void> getDataBeforeLogIn(UserProvider user, BuildContext context) async {
+  printColor(text: 'getDataBeforeLogIn', color: PrintColor.magenta);
+
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final provider = Provider.of<ThemeProvider>(context, listen: false);
 
