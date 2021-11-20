@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
+import 'package:praca_inzynierska/models/meeting.dart';
+import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -41,7 +43,6 @@ class FirmProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final FirmsAuth data =
         ModalRoute.of(context)!.settings.arguments as FirmsAuth;
-    final DateTime dateTime = DateTime.now();
     final String userID = FirebaseAuth.instance.currentUser!.uid;
     final UserType userType =
         Provider.of<UserProvider>(context, listen: false).user!.type;
@@ -80,7 +81,7 @@ class FirmProfileScreen extends StatelessWidget {
                   buildHeadline("Zdjęcia:"),
                   buildPictures(pictures, context),
                   buildHeadline("Kalendarz:"),
-                  buildCalendar(dateTime),
+                  buildCalendar(getFirmMeeting(data.firmID)),
                   SizedBox(height: 50),
                   if (userType != UserType.Firm)
                     Padding(
@@ -161,17 +162,89 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  Padding buildCalendar(DateTime dateTime) {
+  Padding buildCalendar(Future<QuerySnapshot<Map<String, dynamic>>> _future) {
+    final DateTime date = DateTime.now();
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15),
-      child: SfCalendar(
-        view: CalendarView.month,
-        backgroundColor: Colors.white30,
-        firstDayOfWeek: 1,
-        minDate: DateTime.utc(dateTime.year, dateTime.month),
-        showDatePickerButton: true,
+      child: FutureBuilder(
+        future: _future,
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+        ) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SfCalendar(
+              view: CalendarView.month,
+              backgroundColor: Colors.white30,
+              firstDayOfWeek: 1,
+              minDate: DateTime.utc(date.year, date.month),
+              showDatePickerButton: true,
+            );
+          } else {
+            return SfCalendar(
+              view: CalendarView.month,
+              backgroundColor: Colors.white30,
+              firstDayOfWeek: 1,
+              minDate: DateTime.utc(date.year, date.month),
+              showDatePickerButton: true,
+              monthViewSettings: MonthViewSettings(
+                showTrailingAndLeadingDates: false,
+                appointmentDisplayMode: MonthAppointmentDisplayMode.none,
+              ),
+              dataSource: MeetingDataSource(snapshot.data!.docs
+                  .map((e) => Meeting.fromJson(e.data()))
+                  .toList()),
+              monthCellBuilder:
+                  (BuildContext context, MonthCellDetails details) {
+                final Color _background = getDayColor(context, details);
+                final Color _textColor = Colors.black;
+                return Container(
+                  decoration: BoxDecoration(
+                    color: _background,
+                    border: Border.all(color: Colors.transparent, width: 0.5),
+                  ),
+                  child: Center(
+                    child: Text(
+                      details.date.day.toString(),
+                      style: TextStyle(color: _textColor),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
+  }
+
+  Color getDayColor(BuildContext context, MonthCellDetails currentDay) {
+    if (currentDay.appointments.length == 0 &&
+        (DateTime.sunday == currentDay.date.weekday ||
+            DateTime.saturday == currentDay.date.weekday))
+      return Colors.orange.shade100;
+
+    int test = 0;
+    currentDay.appointments.cast<Meeting>().forEach((meeting) {
+      if (meeting.isAllDay) test = 100;
+    });
+
+    if (test > 0) return const Color(0x80FF4D1A);
+
+    switch (currentDay.appointments.length) {
+      case 0:
+        return const Color(0x8039D353);
+      case 1:
+        return const Color(0x809CB643);
+      case 2:
+        return const Color(0x80CEA83B);
+      case 3:
+        return const Color(0x80FF9933);
+      case 4:
+      default:
+        return const Color(0x80FF4D1A);
+    }
   }
 
   Padding buildPictures(pictures, BuildContext context) {

@@ -14,8 +14,13 @@ class Meeting {
     required this.from,
     required this.to,
     required this.background,
-    this.isAllDay = false,
+    required this.isAllDay,
   });
+
+  @override
+  String toString() {
+    return 'Meeting{eventName: $eventName, orderId: $orderId, from: $from, to: $to, background: $background, isAllDay: $isAllDay}';
+  }
 
   factory Meeting.fromJson(Map<String, dynamic> json) {
     return Meeting(

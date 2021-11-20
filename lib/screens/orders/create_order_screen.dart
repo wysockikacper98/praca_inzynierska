@@ -496,7 +496,7 @@ End Date: ${range.endDate}
             background: _color == null
                 ? Theme.of(context).colorScheme.primary
                 : _color!,
-          );
+            isAllDay: (_order.dateTo!.day - _order.dateFrom!.day) > 0);
 
           await addMeetingToUser(
             meeting: _meeting,
