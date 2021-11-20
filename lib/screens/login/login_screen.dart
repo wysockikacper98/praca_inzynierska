@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../helpers/storage_manager.dart';
 import '../../models/users.dart';
@@ -23,8 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    _future = getDataBeforeLogIn(userProvider, context);
+    _future = getDataBeforeLogIn(context);
   }
 
   @override
@@ -53,19 +52,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-Future<void> getDataBeforeLogIn(UserProvider user, BuildContext context) async {
+Future<void> getDataBeforeLogIn(BuildContext context) async {
+  final userProvider = Provider.of<UserProvider>(context, listen: false);
+
   printColor(text: 'getDataBeforeLogIn', color: PrintColor.magenta);
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final provider = Provider.of<ThemeProvider>(context, listen: false);
 
-  await getUserInfoFromFirebase(context, userId);
-
   await getCategories(context);
 
-  if (user.user!.type == UserType.Firm) {
+  await getUserInfoFromFirebase(context, userId);
+
+  if (userProvider.user!.type == UserType.Firm) {
     print("GetFirm info provider: " + userId);
     await getFirmInfoFromFirebase(context, userId);
+  } else {
+    printColor(text: 'GetUserInfo: $userId', color: PrintColor.magenta);
   }
 
   final String? themeMode = await StorageManager.readData('themeMode');

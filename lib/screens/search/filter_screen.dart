@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
 import '../../models/useful_data.dart';
-import '../firm/buildCategories.dart';
 
 class FilterScreen extends StatefulWidget {
   final void Function(
-    List<String>? categories,
-    String? administrativeArea,
-    List<double>? rageMinMax,
-    List<int>? popularityMinMax,
+    List<String> categories,
+    double ratingMin,
+    int popularityMin,
   ) _applyFilters;
 
   final List<String>? _defaultCategories;
-  final String? _defaultAdministrativeArea;
-  final List<double>? _defaultRageMinMax;
-  final List<int>? _defaultPopularityMinMax;
+  final double? _defaultRatingMin;
+  final int? _defaultPopularityMin;
 
   FilterScreen(
     this._applyFilters, [
     this._defaultCategories,
-    this._defaultAdministrativeArea,
-    this._defaultRageMinMax,
-    this._defaultPopularityMinMax,
+    this._defaultRatingMin,
+    this._defaultPopularityMin,
   ]);
 
   @override
@@ -31,13 +28,15 @@ class FilterScreen extends StatefulWidget {
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  bool _dirty = false;
-  late final List<String> _availableCategories;
+  bool _editCategory = false;
+  late Map<String, bool> _categoriesMap;
+  late List<String> _availableCategories;
 
   late List<String> _selectedCategories;
-  String? _selectedAdministrativeArea;
-  late List<double> _selectedRageMinMax;
-  late List<int> _selectedPopularityMinMax;
+  late double _selectedMinRating;
+  late int _selectedPopularityMin;
+
+  late TextEditingController _textPopularityController;
 
   @override
   void didChangeDependencies() {
@@ -47,14 +46,20 @@ class _FilterScreenState extends State<FilterScreen> {
         Provider.of<UsefulData>(context, listen: false).categoriesList;
 
     _selectedCategories = widget._defaultCategories ?? [];
-    _selectedAdministrativeArea = widget._defaultAdministrativeArea;
-    _selectedRageMinMax = widget._defaultRageMinMax ?? [];
-    _selectedPopularityMinMax = widget._defaultPopularityMinMax ?? [];
+    _categoriesMap = Map.fromIterable(_availableCategories,
+        key: (e) => e,
+        value: (e) => _selectedCategories.contains(e) ? true : false);
+
+    _selectedMinRating = widget._defaultRatingMin ?? 0.0;
+    _selectedPopularityMin = widget._defaultPopularityMin ?? 0;
+    _textPopularityController =
+        TextEditingController(text: _selectedPopularityMin.toString());
   }
 
-  void _makeDirty() {
-    printColor(text: 'Dirty', color: PrintColor.red);
-    setState(() => _dirty = true);
+  @override
+  void dispose() {
+    super.dispose();
+    _textPopularityController.dispose();
   }
 
   void _updateCategories(Map<String, bool> value) {
@@ -62,11 +67,11 @@ class _FilterScreenState extends State<FilterScreen> {
     value.entries.forEach((e) {
       if (e.value) _selectedCategories.add(e.key);
     });
-    printColor(text: _selectedCategories.toString(), color: PrintColor.black);
   }
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData _theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,79 +80,208 @@ class _FilterScreenState extends State<FilterScreen> {
         ),
         title: Text('Filtry'),
         actions: [
-          if (_dirty)
-            TextButton.icon(
-              icon: Icon(
-                Icons.cleaning_services,
-                color: Colors.white,
-              ),
-              label: Text(
-                'Wyczyść',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                printColor(text: 'Czyszczenie', color: PrintColor.blue);
-                setState(() {
-                  _selectedCategories.clear();
-                  _selectedAdministrativeArea = null;
-                  _selectedRageMinMax.clear();
-                  _selectedPopularityMinMax.clear();
-                  _dirty = false;
-                });
-              },
-            ),
+          IconButton(
+            icon: Icon(Icons.replay),
+            onPressed: cleanFilters,
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            //TODO: Kategorie
-            BuildCategories(
-              _selectedCategories,
-              _availableCategories,
-              _makeDirty,
-              _updateCategories,
-            ),
-            //TODO: Województwa
-            //TODO: Minimalna ocena
-            //TODO: Minimalna ilość ocen
-
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 20, horizontal: 16.0),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  child: Text(
-                    'Zastosuj',
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(color: Colors.white),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // <-- Radius
-                    ),
-                  ),
-                  onPressed: _dirty
-                      ? () {
-                          widget._applyFilters(
-                            _selectedCategories,
-                            _selectedAdministrativeArea,
-                            _selectedRageMinMax,
-                            _selectedPopularityMinMax,
-                          );
-                        }
-                      : null,
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  buildCategories(context),
+                  buildRating(),
+                  buildPopularity(_theme),
+                ],
               ),
-            )
+            ),
+          ),
+          buildConfirmButton(_theme),
+        ],
+      ),
+    );
+  }
+
+  Padding buildPopularity(ThemeData _theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 20.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Minimalna ilość ocen:",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(
+            width: 100,
+            child: TextField(
+              controller: _textPopularityController,
+              style: _theme.textTheme.headline6,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
+              decoration: InputDecoration(
+                hintText: 'np: 150',
+              ),
+              textAlign: TextAlign.center,
+              onChanged: (String? value) {
+                if (value != null)
+                  _selectedPopularityMin = int.tryParse(value) ?? 0;
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding buildConfirmButton(ThemeData _theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16.0),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: ElevatedButton(
+          child: Text('Zastosuj'),
+          style: ElevatedButton.styleFrom(
+            textStyle: _theme.textTheme.headline6!
+                .copyWith(color: _theme.colorScheme.onPrimary),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onPressed: () {
+            widget._applyFilters(
+              _selectedCategories,
+              _selectedMinRating,
+              _selectedPopularityMin,
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildRating() {
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Minimalna ocena:",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(height: 16.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RatingBar.builder(
+                  initialRating: _selectedMinRating,
+                  itemCount: 5,
+                  maxRating: 5.0,
+                  allowHalfRating: true,
+                  itemBuilder: (_, __) => Icon(Icons.star, color: Colors.amber),
+                  onRatingUpdate: (double value) {
+                    setState(() {
+                      _selectedMinRating = value;
+                    });
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void cleanFilters() {
+    setState(() {
+      _categoriesMap.updateAll((key, value) => false);
+      _updateCategories(_categoriesMap);
+      _textPopularityController.clear();
+      _selectedCategories.clear();
+      _selectedMinRating = 0.0;
+      _selectedPopularityMin = 0;
+    });
+  }
+
+  Column buildCategories(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            "Kategorie:",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          trailing: IconButton(
+            color: Theme.of(context).primaryColor,
+            icon: Icon(
+              _editCategory ? Icons.expand_less : Icons.expand_more,
+              size: 30.0,
+            ),
+            onPressed: () => setState(() {
+              _editCategory = !_editCategory;
+            }),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: _editCategory ? 16.0 : 0.0),
+          child: Container(
+            width: double.infinity,
+            child: _editCategory
+                ? Wrap(
+                    spacing: 5.0,
+                    children: buildChips(),
+                  )
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Wrap(
+                      spacing: 5.0,
+                      children: [
+                        SizedBox(width: 16.0),
+                        ...buildChips(),
+                        SizedBox(width: 16.0),
+                      ],
+                    ),
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<StatelessWidget> buildChips() {
+    List<InputChip> list = [];
+
+    _categoriesMap.forEach((key, value) {
+      if (_editCategory || value) {
+        list.add(
+          InputChip(
+            showCheckmark: true,
+            selected: value,
+            label: Text(key),
+            onSelected: (bool newValue) {
+              setState(() {
+                _categoriesMap.update(key, (value) => newValue);
+                _updateCategories(_categoriesMap);
+              });
+            },
+          ),
+        );
+      }
+    });
+    return list;
   }
 
   Text buildTODOText(BuildContext context, String text) {

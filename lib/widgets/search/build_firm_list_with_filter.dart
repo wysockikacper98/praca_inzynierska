@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../firm/build_firm_info.dart';
 

@@ -217,6 +217,7 @@ Future<void> getUserInfoFromFirebase(
     data =
         await FirebaseFirestore.instance.collection('firms').doc(userID).get();
   }
+
   provider.user = Users.fromJson(data.data()!);
 }
 

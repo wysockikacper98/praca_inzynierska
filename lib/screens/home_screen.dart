@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/search/search_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/firebase_firestore.dart';
@@ -61,28 +62,45 @@ class HomeScreen extends StatelessWidget {
               ElevatedButton(
                 child: Center(child: FittedBox(child: Text('Hydraulik'))),
                 style: style(0),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen('Hydraulik')),
+                ),
               ),
               ElevatedButton(
                 child: Center(child: FittedBox(child: Text('Elektryk'))),
                 style: style(1),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen('Elektryk')),
+                ),
               ),
               ElevatedButton(
                 child: Center(child: FittedBox(child: Text('Malarz'))),
                 style: style(2),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen('Malarz')),
+                ),
               ),
               ElevatedButton(
                 child: Center(child: FittedBox(child: Text('Zdrowie i uroda'))),
                 style: style(3),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SearchScreen('Zdrowie i uroda')),
+                ),
               ),
               ElevatedButton(
                 child:
                     Center(child: FittedBox(child: Text('Usługi finansowe'))),
                 style: style(4),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SearchScreen('Usługi finansowe')),
+                ),
               ),
               ElevatedButton(
                 child: Center(
@@ -91,7 +109,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 style: style(5),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SearchScreen('Hydraulik')),
+                ),
               ),
             ],
           ),
@@ -106,9 +127,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(title: 'Test'),
-      //TODO: Usunąć jeśli nie pomogło z wyświetlaniem Drawer'a na prawdziwym urządzeniu
-      // endDrawerEnableOpenDragGesture: false,
+      drawer: AppDrawer(),
     );
   }
 

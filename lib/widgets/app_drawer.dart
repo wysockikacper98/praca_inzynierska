@@ -18,9 +18,6 @@ import '../screens/user/user_profile_screen.dart';
 import 'theme/theme_Provider.dart';
 
 class AppDrawer extends StatefulWidget {
-  final String title;
-
-  AppDrawer({required this.title});
 
   @override
   _AppDrawerState createState() => _AppDrawerState();
