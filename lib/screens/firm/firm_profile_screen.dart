@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,8 +23,17 @@ class FirmsAuth {
 class FirmProfileScreen extends StatelessWidget {
   static const routeName = '/firm-profile';
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getDataAboutFirm(
-      firmID) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> getFirmMeeting(firmID) async {
+    printColor(text: 'getFirmMeeting', color: PrintColor.cyan);
+    return FirebaseFirestore.instance
+        .collection('firms')
+        .doc(firmID)
+        .collection('meetings')
+        .get();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getFirmData(firmID) async {
+    printColor(text: 'getDataAboutFirm', color: PrintColor.magenta);
     return FirebaseFirestore.instance.collection('firms').doc(firmID).get();
   }
 
@@ -42,7 +52,7 @@ class FirmProfileScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: getDataAboutFirm(data.firmID),
+        future: getFirmData(data.firmID),
         builder: (ctx,
             AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -53,6 +63,8 @@ class FirmProfileScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 15),
                   buildFirmInfo(context, snapshot.data, true),
+                  buildHeadline("Kategorie"),
+                  buildChips(snapshot.data!.data()!['category'].cast<String>()),
                   buildHeadline("O nas"),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -66,55 +78,9 @@ class FirmProfileScreen extends StatelessWidget {
                   //   child: Text("Lokalizacja", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                   // ),
                   buildHeadline("Zdjęcia:"),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: pictures.length > 0
-                        ? CarouselSlider.builder(
-                            options: CarouselOptions(
-                              aspectRatio: 2.5,
-                              disableCenter: true,
-                              autoPlayInterval: const Duration(seconds: 8),
-                              enlargeCenterPage: true,
-                              autoPlay: true,
-                            ),
-                            itemCount: pictures.length,
-                            itemBuilder: (ctx, index, tag) {
-                              return GestureDetector(
-                                child: Hero(
-                                  tag: tag,
-                                  child: Container(
-                                    child: Image.network(pictures[index]),
-                                    color: Colors.white30,
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) {
-                                      return FullScreenImage(
-                                          imageURLPath: pictures[index],
-                                          tag: tag);
-                                    }),
-                                  );
-                                },
-                              );
-                            },
-                          )
-                        : Center(
-                            child: Text('Brak zdjęć.'),
-                          ),
-                  ),
+                  buildPictures(pictures, context),
                   buildHeadline("Kalendarz:"),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: SfCalendar(
-                      view: CalendarView.month,
-                      backgroundColor: Colors.white30,
-                      firstDayOfWeek: 1,
-                      minDate: DateTime.utc(dateTime.year, dateTime.month),
-                      showDatePickerButton: true,
-                    ),
-                  ),
+                  buildCalendar(dateTime),
                   SizedBox(height: 50),
                   if (userType != UserType.Firm)
                     Padding(
@@ -191,6 +157,82 @@ class FirmProfileScreen extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
         },
+      ),
+    );
+  }
+
+  Padding buildCalendar(DateTime dateTime) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: SfCalendar(
+        view: CalendarView.month,
+        backgroundColor: Colors.white30,
+        firstDayOfWeek: 1,
+        minDate: DateTime.utc(dateTime.year, dateTime.month),
+        showDatePickerButton: true,
+      ),
+    );
+  }
+
+  Padding buildPictures(pictures, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: pictures.length > 0
+          ? CarouselSlider.builder(
+              options: CarouselOptions(
+                aspectRatio: 2.5,
+                disableCenter: true,
+                autoPlayInterval: const Duration(seconds: 8),
+                enlargeCenterPage: true,
+                autoPlay: true,
+              ),
+              itemCount: pictures.length,
+              itemBuilder: (ctx, index, tag) {
+                return GestureDetector(
+                  child: Hero(
+                    tag: tag,
+                    child: Container(
+                      child: Image.network(pictures[index]),
+                      color: Colors.white30,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) {
+                        return FullScreenImage(
+                            imageURLPath: pictures[index], tag: tag);
+                      }),
+                    );
+                  },
+                );
+              },
+            )
+          : Center(
+              child: Text('Brak zdjęć.'),
+            ),
+    );
+  }
+
+  Widget buildChips(List<String> _categories) {
+    List<InputChip> list = [];
+
+    _categories.forEach((value) {
+      list.add(
+        InputChip(
+          showCheckmark: false,
+          selected: true,
+          label: Text(value),
+          onSelected: (_) {},
+        ),
+      );
+    });
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Wrap(
+        spacing: 5.0,
+        children: list,
       ),
     );
   }
