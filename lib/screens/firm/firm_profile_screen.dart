@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:praca_inzynierska/models/meeting.dart';
 import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
+import 'package:praca_inzynierska/screens/comment/build_comment_section.dart';
+import 'package:praca_inzynierska/widgets/calculate_rating.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -84,72 +86,13 @@ class FirmProfileScreen extends StatelessWidget {
                   buildCalendar(getFirmMeeting(data.firmID)),
                   SizedBox(height: 50),
                   if (userType != UserType.Firm)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 7.5,
-                      ),
-                      child: AutoSizeText(
-                        'Napisz do nas w razie pytań lub chęci współpracy',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline5,
-                        maxLines: 2,
-                      ),
-                    ),
-                  if (userType != UserType.Firm) SizedBox(height: 50),
-                  if (userType != UserType.Firm)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.question_answer_outlined),
-                          iconSize: 80,
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => buildConfirmNewMessageDialog(
-                                context,
-                                userID,
-                                snapshot.data,
-                              ),
-                              barrierDismissible: true,
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.phone),
-                          iconSize: 80,
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => buildConfirmPhoneCall(
-                                context,
-                                userID,
-                                snapshot.data,
-                              ),
-                              barrierDismissible: true,
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.email_outlined),
-                          iconSize: 80,
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => buildConfirmNewEmailDialog(
-                                context,
-                                userID,
-                                snapshot.data,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    buildContactIcons(context, userID, snapshot),
+                  BuildCommentSection(
+                      data.firmID,
+                      calculateRating(
+                        snapshot.data!.data()!['rating'].toDouble(),
+                        snapshot.data!.data()!['ratingNumber'].toDouble(),
+                      )),
                   SizedBox(height: 50),
                 ],
               ),
@@ -159,6 +102,79 @@ class FirmProfileScreen extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  Column buildContactIcons(BuildContext context, String userID,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 7.5,
+          ),
+          child: AutoSizeText(
+            'Napisz do nas w razie pytań lub chęci współpracy',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline5,
+            maxLines: 2,
+          ),
+        ),
+        SizedBox(height: 50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              iconSize: 80,
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => buildConfirmNewMessageDialog(
+                    context,
+                    userID,
+                    snapshot.data,
+                  ),
+                  barrierDismissible: true,
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.phone),
+              iconSize: 80,
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => buildConfirmPhoneCall(
+                    context,
+                    userID,
+                    snapshot.data,
+                  ),
+                  barrierDismissible: true,
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.email_outlined),
+              iconSize: 80,
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => buildConfirmNewEmailDialog(
+                    context,
+                    userID,
+                    snapshot.data,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 

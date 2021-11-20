@@ -1,0 +1,214 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/models/comment.dart';
+
+import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/firebase_firestore.dart';
+
+class BuildCommentSection extends StatefulWidget {
+  final String _firmID;
+  final double _calculateRating;
+
+  BuildCommentSection(this._firmID, this._calculateRating);
+
+  @override
+  _BuildCommentSectionState createState() => _BuildCommentSectionState();
+}
+
+class _BuildCommentSectionState extends State<BuildCommentSection> {
+  late final Future<QuerySnapshot<Map<String, dynamic>>> _future;
+  late ThemeData _theme;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _future = getFirmComments(widget._firmID);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _theme = Theme.of(context);
+
+    return FutureBuilder(
+      future: _future,
+      builder: (
+        _,
+        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+      ) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) return buildCommentSection(snapshot);
+          return Center(
+            child: Text('Brak komentarzy'),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  Padding buildCommentSection(
+    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+  ) {
+    printColor(text: 'buildCommentSection', color: PrintColor.yellow);
+
+    int _numberOfReviews = 0;
+    int _numberOfRatings = 0;
+    List<Comment> _commentList = [];
+    Map<int, int> _numberOfRatingsMap = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    snapshot.data!.docs.forEach((element) {
+      _numberOfRatingsMap.update(
+        element.data()['rating'].toInt(),
+        (value) => ++value,
+      );
+
+      if (element.data()['comment'] == '' ||
+          element.data()['comment'] == null) {
+        _numberOfRatings++;
+      } else {
+        _numberOfReviews++;
+        _commentList.add(Comment.fromJson(element.data()));
+      }
+    });
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Column(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        text: widget._calculateRating.toString(),
+                        style: _theme.textTheme.headline4!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _theme.colorScheme.onSurface),
+                        children: [
+                          TextSpan(
+                            text: '/5',
+                            style: _theme.textTheme.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '$_numberOfRatings oceny i $_numberOfReviews recenzji',
+                      style: _theme.textTheme.caption,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: _numberOfRatingsMap.entries
+                      .map((e) =>
+                          buildRatings(e, _numberOfReviews + _numberOfRatings))
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.0),
+          Column(
+            children: _commentList.map((e) => buildCommentPreview(e)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListTile buildCommentPreview(Comment e) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: RatingBarIndicator(
+        unratedColor: Colors.amber,
+        rating: e.rating.toDouble(),
+        itemCount: 5,
+        itemSize: 15,
+        itemBuilder: (_, index) => Icon(
+          index >= e.rating ? Icons.star_outline : Icons.star,
+          color: Colors.amber,
+        ),
+      ),
+      subtitle: Text(
+        e.comment!,
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
+      trailing: Text(
+        DateFormat.yMMMMd('pl_PL').format(e.dateTime),
+      ),
+    );
+  }
+
+  Widget buildRatings(MapEntry<int, int> e, int allRatings) {
+    return Row(
+      children: [
+        Text(e.key.toString()),
+        SizedBox(width: 5),
+        RatingBarIndicator(
+          unratedColor: Colors.amber,
+          rating: e.key.toDouble(),
+          itemCount: 5,
+          itemSize: 15,
+          itemBuilder: (_, index) => Icon(
+            index >= e.key ? Icons.star_outline : Icons.star,
+            color: Colors.amber,
+          ),
+        ),
+        SizedBox(width: 5),
+        Expanded(
+          key: GlobalKey(),
+          child: LinearProgressIndicator(
+            value: e.value / allRatings,
+            color: Color(0xFFff5a00),
+            backgroundColor: Color(0xFFDDDDDD),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/*
+*
+*
+  Column(
+      children: [
+        ...snapshot.data!.docs
+            .map(
+              (e) => ListTile(
+                leading: Text(
+                  DateFormat.yMMMMd('pl_PL')
+                      .format(e.data()['dateTime'].toDate()),
+                ),
+                trailing: RatingBarIndicator(
+                  itemSize: 20,
+                  itemCount: 5,
+                  rating: e.data()['rating'],
+                  itemBuilder: (_, __) => Icon(Icons.star, color: Colors.amber),
+                ),
+              ),
+            )
+            .toList(),
+      ],
+    );
+* */

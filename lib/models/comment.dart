@@ -1,5 +1,5 @@
 class Comment {
-  double rating;
+  int rating;
   String? comment;
   DateTime dateTime;
 
@@ -11,7 +11,7 @@ class Comment {
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      rating: json['rating'] ?? 0,
+      rating: json['rating'].round() ?? 0,
       comment: json['comment'] ?? '',
       dateTime: json['dateTime'].toDate() ?? '',
     );

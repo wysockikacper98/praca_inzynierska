@@ -346,6 +346,15 @@ Future<void> createOrOpenChat(
   }
 }
 
+Future<QuerySnapshot<Map<String, dynamic>>> getFirmComments(
+    String firmID) async {
+  return FirebaseFirestore.instance
+      .collection('firms')
+      .doc(firmID)
+      .collection('comments')
+      .get();
+}
+
 Future<void> addCommentToFirebase(
   UserType userType,
   List<String> userAndFirmIds,

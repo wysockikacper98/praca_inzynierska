@@ -101,7 +101,7 @@ class UserProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             RatingBarIndicator(
-              rating: comment.rating,
+              rating: comment.rating.toDouble(),
               itemBuilder: (_, index) => Icon(Icons.star, color: Colors.amber),
               itemCount: 5,
               itemSize: 20,

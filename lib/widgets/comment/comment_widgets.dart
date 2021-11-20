@@ -51,8 +51,9 @@ class _BuildAlertDialogAddCommentState
                 RatingBar.builder(
                   initialRating: rating,
                   minRating: 1,
+                  maxRating: 5,
                   direction: Axis.horizontal,
-                  allowHalfRating: true,
+                  allowHalfRating: false,
                   itemCount: 5,
                   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                   itemBuilder: (context, _) => Icon(
@@ -90,7 +91,7 @@ class _BuildAlertDialogAddCommentState
                           ? null
                           : () {
                               Comment comment = Comment(
-                                rating: rating,
+                                rating: rating.round(),
                                 comment: _controller.text,
                                 dateTime: DateTime.now(),
                               );

@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/search/search_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/firebase_firestore.dart';
@@ -10,6 +9,7 @@ import '../service/local_notification_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/firm/firm_list.dart';
 import 'orders/order_details_screen.dart';
+import 'search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';

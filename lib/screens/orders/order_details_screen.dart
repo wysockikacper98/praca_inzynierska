@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -33,9 +34,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   late final List<String> idList;
   late final String userOrFirmID;
 
+  late final UserType _userType;
+  late Future<DocumentSnapshot<Map<String, dynamic>>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _userType = Provider.of<UserProvider>(context, listen: false).user!.type;
+
+    _future = _getOrderDetails(_userType);
+  }
+
   Future<DocumentSnapshot<Map<String, dynamic>>> _getOrderDetails(
     UserType userType,
   ) async {
+    printColor(text: '_getOrderDetails', color: PrintColor.cyan);
+
     final String currentUserID = FirebaseAuth.instance.currentUser!.uid;
     final String collection = userType == UserType.Firm ? 'users' : 'firms';
     final DocumentSnapshot<Map<String, dynamic>> orderDetails =
@@ -48,10 +62,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         : orderDetails.data()!['firmID'];
 
     final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
-        await FirebaseFirestore.instance
-            .collection(collection)
-            .doc(userOrFirmID)
-            .get();
+    await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(userOrFirmID)
+        .get();
 
     if (userType == UserType.Firm) {
       userToShowInDetails = Users.fromJson(dataFromFirebase.data()!);
@@ -85,12 +99,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget build(BuildContext context) {
     print('build -> order_details_screen');
     final provider = Provider.of<UserProvider>(context, listen: false);
-    final UserType userType = provider.user!.type;
 
     return Scaffold(
       appBar: AppBar(title: Text('Szczegóły zamówienia')),
       body: FutureBuilder(
-        future: _getOrderDetails(userType),
+        future: _future,
         builder: (
           ctx,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
@@ -104,7 +117,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 child: Column(
                   children: [
                     SizedBox(height: 10),
-                    userType == UserType.Firm
+                    _userType == UserType.Firm
                         ? _createUserToShowInDetails(
                             context,
                             provider,
@@ -137,19 +150,19 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     _buildContactButtons(
                       context: context,
                       snapshot: snapshot,
-                      userType: userType,
+                      userType: _userType,
                       chatName: chatName,
                       listID: idList,
-                      contactPhoneNumber: userType == UserType.Firm
+                      contactPhoneNumber: _userType == UserType.Firm
                           ? userToShowInDetails.telephone!
                           : firmToShowInDetails.telephone!,
-                      contactEmail: userType == UserType.Firm
+                      contactEmail: _userType == UserType.Firm
                           ? userToShowInDetails.email
                           : firmToShowInDetails.email,
                     ),
                     SizedBox(height: 16),
                     _buildButtonsDependingOnStatus(
-                        context, snapshot, userType, idList),
+                        context, snapshot, _userType, idList),
                   ],
                 ),
               );
@@ -393,7 +406,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   void refreshWidget() {
-    setState(() {});
+    setState(() {
+      _future = _getOrderDetails(_userType);
+    });
   }
 
   Status stringToStatus(String status) {

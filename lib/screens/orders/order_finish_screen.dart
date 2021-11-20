@@ -20,7 +20,6 @@ class OrderFinishScreen extends StatelessWidget {
           return Center(
             child: Column(
               children: [
-                Text('Still waiting'),
                 SizedBox(height: 100),
                 CircularProgressIndicator(),
               ],
