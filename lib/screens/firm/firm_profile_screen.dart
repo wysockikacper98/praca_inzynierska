@@ -4,18 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
-import 'package:praca_inzynierska/models/meeting.dart';
-import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
 import 'package:praca_inzynierska/screens/comment/build_comment_section.dart';
-import 'package:praca_inzynierska/widgets/calculate_rating.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
+import '../../models/meeting.dart';
 import '../../models/users.dart';
+import '../../widgets/calculate_rating.dart';
 import '../../widgets/firm/build_firm_info.dart';
+import '../calendar/meeting_data_source.dart';
 import '../full_screen_image.dart';
 
 class FirmsAuth {

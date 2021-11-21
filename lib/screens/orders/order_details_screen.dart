@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
@@ -28,11 +28,11 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  late final Users userToShowInDetails;
-  late final Firm firmToShowInDetails;
-  late final List<String> chatName;
-  late final List<String> idList;
-  late final String userOrFirmID;
+  late Users userToShowInDetails;
+  late Firm firmToShowInDetails;
+  late List<String> chatName;
+  late List<String> idList;
+  late String userOrFirmID;
 
   late final UserType _userType;
   late Future<DocumentSnapshot<Map<String, dynamic>>> _future;
@@ -41,7 +41,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   void initState() {
     super.initState();
     _userType = Provider.of<UserProvider>(context, listen: false).user!.type;
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _future = _getOrderDetails(_userType);
   }
 
@@ -57,6 +61,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             .collection('orders')
             .doc(widget.orderID)
             .get();
+
     userOrFirmID = userType == UserType.Firm
         ? orderDetails.data()!['userID']
         : orderDetails.data()!['firmID'];
@@ -109,8 +114,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.done) {
-            if (!snapshot.hasData) {
-              print('TO NIE MA DANYCH:\n${snapshot.data}');
+            if (snapshot.data == null) {
+              printColor(
+                text: 'TO NIE MA DANYCH:\n${snapshot.data?.data()}',
+                color: PrintColor.red,
+              );
               return buildErrorMessage(context);
             } else {
               return SingleChildScrollView(
@@ -180,11 +188,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     String id,
   ) async {
     Navigator.of(context).pop();
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('orders')
         .doc(id)
-        .update({'status': Status.PROCESSING.toString().split('.').last});
-    setState(() {});
+        .update({'status': Status.PROCESSING.toString().split('.').last}).then(
+            (_) => refreshWidget());
   }
 
   Future<void> _finishOrder(
@@ -196,8 +204,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       'status': Status.COMPLETED.toString().split('.').last,
       'canUserComment': true,
       'canFirmComment': true,
-    });
-    setState(() {});
+    }).then((value) => refreshWidget());
   }
 
   Widget _buildDatePreview(

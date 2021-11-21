@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/models/comment.dart';
 
 import '../../helpers/colorfull_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
+import '../../models/comment.dart';
 
 class BuildCommentSection extends StatefulWidget {
   final String _firmID;
