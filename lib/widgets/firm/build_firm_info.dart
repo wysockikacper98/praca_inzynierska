@@ -41,7 +41,7 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
           itemSize: 20.0,
           direction: Axis.horizontal,
         ),
-        Text("$rating (${firm.data()['ratingNumber']})"),
+        Text("$rating (${firm.data()['ratingNumber'].round()})"),
       ],
     ),
     // isThreeLine: true,

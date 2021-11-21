@@ -14,11 +14,16 @@ import '../../models/order.dart';
 import '../../models/users.dart';
 import '../calendar/calendar_screen.dart';
 import 'order_details_screen.dart';
+import 'orders_screen.dart';
 import 'search_users.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   static const routeName = '/search-user';
+
+  final String? defaultUser;
+
+  CreateOrderScreen([this.defaultUser]);
 
   @override
   State<CreateOrderScreen> createState() => _CreateOrderScreenState();
@@ -40,11 +45,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.defaultUser != null) initUser(widget.defaultUser!);
+
     users = FirebaseFirestore.instance
         .collection('users')
         .orderBy('lastName')
         .limit(20)
         .snapshots();
+  }
+
+  Future<void> initUser(String userID) async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .get()
+        .then((value) => _setUser(value));
   }
 
   void _setUser(DocumentSnapshot user) {
@@ -525,7 +541,11 @@ End Date: ${range.endDate}
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context).pop();
+      if (widget.defaultUser != null) {
+        Navigator.of(context).popAndPushNamed(OrdersScreen.routeName);
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 

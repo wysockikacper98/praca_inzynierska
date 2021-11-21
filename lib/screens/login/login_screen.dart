@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _futureInitialize = false;
-  late final Future<void> _future;
+  late Future<void> _future;
 
   // @override
   // void initState() {

@@ -445,7 +445,7 @@ Future<void> sendPushMessage(
               _userTokens, notification, notificationDetails))
           .then(
             (value) => printColor(
-              text: 'Udało się spingować',
+              text: 'Udało sie wysłać powiadomienie',
               color: PrintColor.cyan,
             ),
           )

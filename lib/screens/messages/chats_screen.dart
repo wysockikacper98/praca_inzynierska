@@ -2,18 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 
-import '../../models/users.dart';
 import 'messages.dart';
 
 class ChatsScreen extends StatelessWidget {
   static const routeName = '/chat-screen';
 
-  final Users user;
   final Key key;
 
   ChatsScreen({
-    required this.user,
     required this.key,
   });
 
@@ -68,13 +66,18 @@ class ChatsScreen extends StatelessWidget {
                           .format(chatDocs[index]['updatedAt'].toDate()),
                     ),
                     onTap: () {
-                      print(chatDocs[index].reference.id);
+                      printColor(
+                        text: chatDocs[index].id,
+                        color: PrintColor.blue,
+                      );
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Message(
                             chatID: chatDocs[index].id,
                             chatName: currentChatName,
+                            defaultUserID: chatDocs[index]['users'][0],
                           ),
                         ),
                       );

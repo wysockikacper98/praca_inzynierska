@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
+import 'package:praca_inzynierska/models/meeting.dart';
+import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../helpers/firebase_firestore.dart';
@@ -208,73 +213,123 @@ class _BuildAlertDialogForDatePickerState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Wybierz okres zamówienia')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton.icon(
-                icon: Icon(Icons.edit),
-                label: Text(' Wybierz kolor zamówienia'),
-                style: ElevatedButton.styleFrom(primary: _selectedColor),
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: Text('Wybierz kolor zamówienia'),
-                    content: MaterialColorPicker(
-                      selectedColor: _selectedColor,
-                      colors: widget._colors,
-                      onColorChange: (value) {
-                        setState(() {
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  icon: Icon(Icons.edit),
+                  label: Text(' Wybierz kolor zamówienia'),
+                  style: ElevatedButton.styleFrom(primary: _selectedColor),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Wybierz kolor zamówienia'),
+                      content: MaterialColorPicker(
+                        selectedColor: _selectedColor,
+                        colors: widget._colors,
+                        onColorChange: (value) {
+                          //   setState(() {
                           _selectedColor = value;
-                        });
-                        widget.setColor(value);
-                      },
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text('Ok'),
-                        onPressed: () => Navigator.of(context).pop(),
+                          //   });
+                          //   widget.setColor(value);
+                        },
                       ),
-                    ],
+                      actions: [
+                        TextButton(
+                            child: Text('Ok'),
+                            onPressed: () {
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-            // ListTile(
-            //   contentPadding: EdgeInsets.zero,
-            //   title: Text('Wybierz kolor zamówienia: '),
-            //   trailing: ElevatedButton(
-            //     child: Icon(Icons.edit),
-            //     style: ElevatedButton.styleFrom(
-            //       primary: _selectedColor,
-            //       shape: CircleBorder(),
-            //     ),
-            //     onPressed: () => showDialog(
-            //       context: context,
-            //       builder: (_) => AlertDialog(
-            //         title: Text('Wybierz kolor zamówienia'),
-            //         content: MaterialColorPicker(
-            //           selectedColor: _selectedColor,
-            //           colors: widget._colors,
-            //           onColorChange: (value) {
-            //             setState(() {
-            //               _selectedColor = value;
-            //             });
-            //             widget.setColor(value);
-            //           },
-            //         ),
-            //         actions: [
-            //           TextButton(
-            //             child: Text('Ok'),
-            //             onPressed: () => Navigator.of(context).pop(),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            SizedBox(height: 16),
+            // FIXME: Testowy kalenarz
+            FutureBuilder(
+              // TODO: zastanowić się czy nie wypadało by ograniczyć ilość zapytań do 2 obecnych miesięcy, sam kalendarz powinien mieć wbudowane wsparcie do tego
+              future: FirebaseFirestore.instance
+                  .collection('firms')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection('meetings')
+                  .get(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  return Container(
+                    height: 500,
+                    child: SfCalendar(
+                      view: CalendarView.month,
+                      firstDayOfWeek: 1,
+                      dataSource: MeetingDataSource(snapshot.data!.docs
+                          .map((e) => Meeting.fromJson(e.data()))
+                          .toList()),
+                      appointmentTimeTextFormat: 'HH:mm',
+                      showCurrentTimeIndicator: true,
+                      initialSelectedDate: DateTime.now(),
+                      showDatePickerButton: true,
+                      monthViewSettings: MonthViewSettings(
+                        showAgenda: true,
+                        appointmentDisplayMode:
+                            MonthAppointmentDisplayMode.indicator,
+                      ),
+                      headerDateFormat: 'LLLL  yyy',
+                      onTap: (value) {
+                        printColor(
+                            text: value.date.toString(),
+                            color: PrintColor.blue);
+                      },
+                      monthCellBuilder: (BuildContext buildContext,
+                          MonthCellDetails details) {
+                        if (details.date.day == DateTime.now().day) {
+                          double grayscale = (0.299 * _selectedColor.red) +
+                              (0.587 * _selectedColor.green) +
+                              (0.114 * _selectedColor.blue);
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: _selectedColor,
+                                border: Border.all(
+                                  color: _selectedColor,
+                                  width: 1,
+                                )),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          );
+                        } else
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 0.5,
+                            )),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          );
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
             SizedBox(height: 16),
             Container(
               color: Colors.white,
@@ -325,7 +380,6 @@ class _BuildAlertDialogForDatePickerState
                               },
                             )
                           : null;
-
                       if (timeFrom != null && timeTo != null) {
                         if (timeOfDayIsAfter(
                             context: context,
@@ -363,120 +417,6 @@ class _BuildAlertDialogForDatePickerState
           ],
         ),
       ),
-
-      // AlertDialog(
-      //   title: ListTile(
-      //     contentPadding: EdgeInsets.zero,
-      //     title: Text('Wybierz okres trwania zamówienia'),
-      //     trailing: ElevatedButton(
-      //       child: Icon(Icons.edit),
-      //       style: ElevatedButton.styleFrom(
-      //         primary: _selectedColor,
-      //         shape: CircleBorder(),
-      //       ),
-      //       onPressed: () => showDialog(
-      //         context: context,
-      //         builder: (_) => AlertDialog(
-      //           title: Text('Wybierz kolor zamówienia'),
-      //           content: MaterialColorPicker(
-      //             selectedColor: _selectedColor,
-      //             colors: widget._colors,
-      //             onColorChange: (value) {
-      //               setState(() {
-      //                 _selectedColor = value;
-      //               });
-      //               widget.setColor(value);
-      //             },
-      //           ),
-      //           actions: [
-      //             TextButton(
-      //               child: Text('Ok'),
-      //               onPressed: () => Navigator.of(context).pop(),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      //   content: Container(
-      //     width: 300,
-      //     child: SfDateRangePicker(
-      //       showActionButtons: true,
-      //       cancelText: 'Anuluj',
-      //       confirmText: 'Potwierdź',
-      //       showNavigationArrow: true,
-      //       enablePastDates: false,
-      //       initialSelectedRange: PickerDateRange(
-      //         DateTime.now(),
-      //         DateTime.now().add(Duration(days: 2)),
-      //       ),
-      //       monthViewSettings:
-      //           DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-      //       selectionMode: DateRangePickerSelectionMode.range,
-      //       onCancel: () => Navigator.of(context).pop(),
-      //       onSubmit: (value) async {
-      //         if (value is PickerDateRange) {
-      //           if (value.endDate == null) {
-      //             final TimeOfDay? timeFrom = await showTimePicker(
-      //               context: context,
-      //               initialTime: TimeOfDay.now(),
-      //               helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
-      //               builder: (BuildContext context, Widget? child) {
-      //                 return MediaQuery(
-      //                   data: MediaQuery.of(context)
-      //                       .copyWith(alwaysUse24HourFormat: true),
-      //                   child: child!,
-      //                 );
-      //               },
-      //             );
-      //
-      //             final TimeOfDay? timeTo = timeFrom != null
-      //                 ? await showTimePicker(
-      //                     context: context,
-      //                     initialTime: timeFrom,
-      //                     builder: (BuildContext context, Widget? child) {
-      //                       return MediaQuery(
-      //                         data: MediaQuery.of(context)
-      //                             .copyWith(alwaysUse24HourFormat: true),
-      //                         child: child!,
-      //                       );
-      //                     },
-      //                   )
-      //                 : null;
-      //
-      //             if (timeFrom != null && timeTo != null) {
-      //               if (timeOfDayIsAfter(
-      //                   context: context, timeFrom: timeFrom, timeTo: timeTo)) {
-      //                 widget.setRange(
-      //                   PickerDateRange(
-      //                     DateTime(
-      //                       value.startDate!.year,
-      //                       value.startDate!.month,
-      //                       value.startDate!.day,
-      //                       timeFrom.hour,
-      //                       timeFrom.minute,
-      //                     ),
-      //                     DateTime(
-      //                       value.startDate!.year,
-      //                       value.startDate!.month,
-      //                       value.startDate!.day,
-      //                       timeTo.hour,
-      //                       timeTo.minute,
-      //                     ),
-      //                   ),
-      //                 );
-      //               }
-      //               Navigator.of(context).pop();
-      //               return;
-      //             }
-      //           }
-      //           widget.setRange(value);
-      //         }
-      //         Navigator.of(context).pop();
-      //       },
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

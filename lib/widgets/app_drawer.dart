@@ -93,7 +93,6 @@ class _AppDrawerState extends State<AppDrawer> {
                           builder: (context) => ChatsScreen(
                             key: ValueKey(
                                 FirebaseAuth.instance.currentUser!.uid),
-                            user: provider.user!,
                           ),
                         ),
                       );
