@@ -89,48 +89,52 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Column(
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        text: widget._calculateRating.toString(),
-                        style: _theme.textTheme.headline4!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: _theme.colorScheme.onSurface),
-                        children: [
-                          TextSpan(
-                            text: '/5',
-                            style: _theme.textTheme.caption,
-                          ),
-                        ],
+          Divider(height: 32.0),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: widget._calculateRating.toString(),
+                          style: _theme.textTheme.headline4!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: _theme.colorScheme.onSurface),
+                          children: [
+                            TextSpan(
+                              text: '/5',
+                              style: _theme.textTheme.caption,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      '$_numberOfRatings oceny i $_numberOfReviews recenzji',
-                      style: _theme.textTheme.caption,
-                    ),
-                  ],
+                      Text(
+                        '$_numberOfRatings oceny i $_numberOfReviews recenzji',
+                        style: _theme.textTheme.caption,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: _numberOfRatingsMap.entries
-                      .map((e) =>
-                          buildRatings(e, _numberOfReviews + _numberOfRatings))
-                      .toList(),
+                VerticalDivider(width: 32.0),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: _numberOfRatingsMap.entries
+                        .map((e) => buildRatings(
+                            e, _numberOfReviews + _numberOfRatings))
+                        .toList(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(height: 10.0),
-          Column(
-            children: _commentList.map((e) => buildCommentPreview(e)).toList(),
-          ),
+          Divider(height: 32.0),
+          ..._commentList.map((e) => buildCommentPreview(e)).toList(),
         ],
       ),
     );
@@ -143,7 +147,7 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
         unratedColor: Colors.amber,
         rating: e.rating.toDouble(),
         itemCount: 5,
-        itemSize: 15,
+        itemSize: 20,
         itemBuilder: (_, index) => Icon(
           index >= e.rating ? Icons.star_outline : Icons.star,
           color: Colors.amber,
