@@ -130,7 +130,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
               ),
               !_userNameEdit
                   ? Text(
-                provider.user!.firstName + ' ' + provider.user!.lastName,
+                      provider.user!.firstName + ' ' + provider.user!.lastName,
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(

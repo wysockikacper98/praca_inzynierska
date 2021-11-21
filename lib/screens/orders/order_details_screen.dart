@@ -62,10 +62,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         : orderDetails.data()!['firmID'];
 
     final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
-    await FirebaseFirestore.instance
-        .collection(collection)
-        .doc(userOrFirmID)
-        .get();
+        await FirebaseFirestore.instance
+            .collection(collection)
+            .doc(userOrFirmID)
+            .get();
 
     if (userType == UserType.Firm) {
       userToShowInDetails = Users.fromJson(dataFromFirebase.data()!);

@@ -489,14 +489,14 @@ End Date: ${range.endDate}
       await addOrderInFirebase(_order).then((value) async {
         if (_order.dateFrom != null && _order.dateTo != null) {
           Meeting _meeting = Meeting(
-            eventName: _order.title,
-            orderId: value.id,
-            from: _order.dateFrom!,
-            to: _order.dateTo!,
-            background: _color == null
-                ? Theme.of(context).colorScheme.primary
-                : _color!,
-            isAllDay: (_order.dateTo!.day - _order.dateFrom!.day) > 0);
+              eventName: _order.title,
+              orderId: value.id,
+              from: _order.dateFrom!,
+              to: _order.dateTo!,
+              background: _color == null
+                  ? Theme.of(context).colorScheme.primary
+                  : _color!,
+              isAllDay: (_order.dateTo!.day - _order.dateFrom!.day) > 0);
 
           await addMeetingToUser(
             meeting: _meeting,

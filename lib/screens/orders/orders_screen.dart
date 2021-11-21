@@ -60,11 +60,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ),
         floatingActionButton: userType == UserType.Firm
             ? FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            Navigator.of(context).pushNamed(CreateOrderScreen.routeName);
-          },
-        )
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CreateOrderScreen.routeName);
+                },
+              )
             : null,
       ),
     );

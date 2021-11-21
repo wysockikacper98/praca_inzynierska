@@ -123,7 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
             (_filterFirmsList == null || _filterFirmsList!.isEmpty)
                 ? Center(child: Text('Brak wyników'))
                 : ListView.builder(
-              shrinkWrap: true,
+                    shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: _filterFirmsList!.length,
                     itemBuilder: (ctx, index) => buildFirmInfo(

@@ -18,7 +18,6 @@ import '../screens/user/user_profile_screen.dart';
 import 'theme/theme_Provider.dart';
 
 class AppDrawer extends StatefulWidget {
-
   @override
   _AppDrawerState createState() => _AppDrawerState();
 }
@@ -256,8 +255,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   style: TextStyle(color: Theme.of(context).primaryColorLight),
                 ),
                 onTap: user.type == UserType.Firm
-                    ? () =>
-                    Navigator.of(context)
+                    ? () => Navigator.of(context)
                         .popAndPushNamed(FirmEditProfileScreen.routeName)
                     : () => Navigator.of(context)
                         .popAndPushNamed(UserEditProfileScreen.routeName),

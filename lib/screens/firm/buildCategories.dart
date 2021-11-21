@@ -61,20 +61,20 @@ class _BuildCategoriesState extends State<BuildCategories> {
             width: double.infinity,
             child: _editCategory
                 ? Wrap(
-              spacing: 5.0,
-              children: buildChips(),
-            )
+                    spacing: 5.0,
+                    children: buildChips(),
+                  )
                 : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Wrap(
-                spacing: 5.0,
-                children: [
-                  SizedBox(width: 16.0),
-                  ...buildChips(),
-                  SizedBox(width: 16.0),
-                ],
-              ),
-            ),
+                    scrollDirection: Axis.horizontal,
+                    child: Wrap(
+                      spacing: 5.0,
+                      children: [
+                        SizedBox(width: 16.0),
+                        ...buildChips(),
+                        SizedBox(width: 16.0),
+                      ],
+                    ),
+                  ),
           ),
         ),
       ],

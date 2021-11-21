@@ -58,9 +58,7 @@ class ChatsScreen extends StatelessWidget {
                 itemCount: chatDocs.length,
                 itemBuilder: (ctx, index) {
                   final String currentChatName =
-                      chatDocs[index]['users'][0] == userId
-                          ? chatDocs[index]['chatName'][1]
-                          : chatDocs[index]['chatName'][0];
+                      getChatName(chatDocs, index, userId);
 
                   return ListTile(
                     title: Text(currentChatName),
@@ -75,7 +73,7 @@ class ChatsScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Message(
-                            chatID: chatDocs[index].reference.id,
+                            chatID: chatDocs[index].id,
                             chatName: currentChatName,
                           ),
                         ),
@@ -87,5 +85,15 @@ class ChatsScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String getChatName(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs,
+    int index,
+    String userId,
+  ) {
+    return chatDocs[index]['users'][0] == userId
+        ? chatDocs[index]['chatName'][1]
+        : chatDocs[index]['chatName'][0];
   }
 }
