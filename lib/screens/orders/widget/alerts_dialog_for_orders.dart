@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 import 'package:praca_inzynierska/models/meeting.dart';
 import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
 import 'package:provider/provider.dart';
@@ -203,14 +202,41 @@ class _BuildAlertDialogForDatePickerState
     extends State<BuildAlertDialogForDatePicker> {
   late Color _selectedColor;
 
+  final DateTime _today = DateTime.now();
+  final DateTime _theDayAfterTomorrow = DateTime.now().add(Duration(days: 2));
+
+  late Future<QuerySnapshot<Map<String, dynamic>>> _future;
+  late PickerDateRange _pickedDate;
+
   @override
   void initState() {
     super.initState();
     _selectedColor = Colors.green;
+
+    _future = FirebaseFirestore.instance
+        .collection('firms')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('meetings')
+        .get();
+    _pickedDate = PickerDateRange(
+      DateTime(_today.year, _today.month, _today.day),
+      DateTime(
+        _theDayAfterTomorrow.year,
+        _theDayAfterTomorrow.month,
+        _theDayAfterTomorrow.day,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final double grayscale = (0.299 * _selectedColor.red) +
+        (0.587 * _selectedColor.green) +
+        (0.114 * _selectedColor.blue);
+    final double _height = MediaQuery.of(context).size.height;
+
+    final _isSelectedColorLight = grayscale > 128;
+
     return Scaffold(
       appBar: AppBar(title: Text('Wybierz okres zamówienia')),
       body: SingleChildScrollView(
@@ -221,8 +247,17 @@ class _BuildAlertDialogForDatePickerState
               child: Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton.icon(
-                  icon: Icon(Icons.edit),
-                  label: Text(' Wybierz kolor zamówienia'),
+                  icon: Icon(
+                    Icons.edit,
+                    color: _isSelectedColorLight ? Colors.black : Colors.white,
+                  ),
+                  label: Text(
+                    ' Wybierz kolor zamówienia',
+                    style: TextStyle(
+                      color:
+                          _isSelectedColorLight ? Colors.black : Colors.white,
+                    ),
+                  ),
                   style: ElevatedButton.styleFrom(primary: _selectedColor),
                   onPressed: () => showDialog(
                     context: context,
@@ -234,32 +269,27 @@ class _BuildAlertDialogForDatePickerState
                         onColorChange: (value) {
                           //   setState(() {
                           _selectedColor = value;
-                          //   });
-                          //   widget.setColor(value);
-                        },
+                                  //   });
+                                  //   widget.setColor(value);
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                    child: Text('Ok'),
+                                    onPressed: () {
+                                      setState(() {});
+                                      Navigator.of(context).pop();
+                                    }),
+                              ],
+                            ),
                       ),
-                      actions: [
-                        TextButton(
-                            child: Text('Ok'),
-                            onPressed: () {
-                              setState(() {});
-                              Navigator.of(context).pop();
-                            }),
-                      ],
-                    ),
-                  ),
                 ),
               ),
             ),
             SizedBox(height: 16),
             // FIXME: Testowy kalenarz
             FutureBuilder(
-              // TODO: zastanowić się czy nie wypadało by ograniczyć ilość zapytań do 2 obecnych miesięcy, sam kalendarz powinien mieć wbudowane wsparcie do tego
-              future: FirebaseFirestore.instance
-                  .collection('firms')
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection('meetings')
-                  .get(),
+              future: _future,
               builder: (
                 BuildContext context,
                 AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
@@ -277,7 +307,8 @@ class _BuildAlertDialogForDatePickerState
                           .toList()),
                       appointmentTimeTextFormat: 'HH:mm',
                       showCurrentTimeIndicator: true,
-                      initialSelectedDate: DateTime.now(),
+                      initialSelectedDate: null,
+                      selectionDecoration: BoxDecoration(),
                       showDatePickerButton: true,
                       monthViewSettings: MonthViewSettings(
                         showAgenda: true,
@@ -285,28 +316,89 @@ class _BuildAlertDialogForDatePickerState
                             MonthAppointmentDisplayMode.indicator,
                       ),
                       headerDateFormat: 'LLLL  yyy',
-                      onTap: (value) {
-                        printColor(
-                            text: value.date.toString(),
-                            color: PrintColor.blue);
-                      },
+                      onTap: _updateSelectedDate,
                       monthCellBuilder: (BuildContext buildContext,
                           MonthCellDetails details) {
-                        if (details.date.day == DateTime.now().day) {
-                          double grayscale = (0.299 * _selectedColor.red) +
-                              (0.587 * _selectedColor.green) +
-                              (0.114 * _selectedColor.blue);
+                        //IMPORTANT: Rysowanie pomiędzy dniami
+                        if (details.date.isAfter(_pickedDate.startDate!) &&
+                            details.date.isBefore(_pickedDate.endDate!)) {
                           return Container(
                             decoration: BoxDecoration(
-                                color: _selectedColor,
-                                border: Border.all(
-                                  color: _selectedColor,
-                                  width: 1,
-                                )),
+                              color: _selectedColor.withAlpha(100),
+                            ),
                             child: Center(
                               child: Text(
                                 details.date.day.toString(),
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (details.date
+                                .isAtSameMomentAs(_pickedDate.startDate!) &&
+                            details.date
+                                .isAtSameMomentAs(_pickedDate.endDate!)) {
+                          // IMPORTANT: selected only one date
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _selectedColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(
+                                  color: _isSelectedColorLight
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (details.date
+                            .isAtSameMomentAs(_pickedDate.startDate!)) {
+                          // IMPORTANT: is start day
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(40),
+                                bottomLeft: Radius.circular(40),
+                              ),
+                              color: _selectedColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(
+                                  color: _isSelectedColorLight
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (details.date
+                            .isAtSameMomentAs(_pickedDate.endDate!)) {
+                          // IMPORTANT: is end day
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(40),
+                                bottomRight: Radius.circular(40),
+                              ),
+                              color: _selectedColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(
+                                  color: _isSelectedColorLight
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
                               ),
                             ),
                           );
@@ -314,9 +406,9 @@ class _BuildAlertDialogForDatePickerState
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border.all(
-                              color: Colors.grey.shade300,
-                              width: 0.5,
-                            )),
+                                  color: Colors.grey.shade300,
+                                  width: 0.5,
+                                )),
                             child: Center(
                               child: Text(
                                 details.date.day.toString(),
@@ -347,7 +439,7 @@ class _BuildAlertDialogForDatePickerState
                   DateTime.now().add(Duration(days: 2)),
                 ),
                 monthViewSettings:
-                    DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+                DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
                 selectionMode: DateRangePickerSelectionMode.range,
                 onCancel: () => Navigator.of(context).pop(),
                 onSubmit: (value) async {
@@ -368,17 +460,17 @@ class _BuildAlertDialogForDatePickerState
 
                       final TimeOfDay? timeTo = timeFrom != null
                           ? await showTimePicker(
-                              context: context,
-                              initialTime: timeFrom,
-                              helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
-                              builder: (BuildContext context, Widget? child) {
-                                return MediaQuery(
-                                  data: MediaQuery.of(context)
-                                      .copyWith(alwaysUse24HourFormat: true),
-                                  child: child!,
-                                );
-                              },
-                            )
+                        context: context,
+                        initialTime: timeFrom,
+                        helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      )
                           : null;
                       if (timeFrom != null && timeTo != null) {
                         if (timeOfDayIsAfter(
@@ -418,6 +510,30 @@ class _BuildAlertDialogForDatePickerState
         ),
       ),
     );
+  }
+
+  void _updateSelectedDate(CalendarTapDetails value) {
+    if (value.date!.isBefore(DateTime.now())) {
+      return;
+    }
+
+    //Postępowanie gdy wybrany 1 dzień
+    if (_pickedDate.startDate!.isAtSameMomentAs(_pickedDate.endDate!)) {
+      if (_pickedDate.startDate!.isBefore(value.date!)) {
+        setState(() {
+          _pickedDate = PickerDateRange(_pickedDate.startDate, value.date);
+        });
+      } else {
+        setState(() {
+          _pickedDate = PickerDateRange(value.date, _pickedDate.endDate);
+        });
+      }
+    } else {
+      // IMPORTANT: Wybrane 2 różne daty
+      setState(() {
+        _pickedDate = PickerDateRange(value.date, value.date);
+      });
+    }
   }
 }
 
