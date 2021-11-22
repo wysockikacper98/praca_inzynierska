@@ -1,17 +1,19 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:praca_inzynierska/models/meeting.dart';
-import 'package:praca_inzynierska/screens/calendar/meeting_data_source.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../../helpers/colorfull_print_messages.dart';
 import '../../../helpers/firebase_firestore.dart';
+import '../../../models/meeting.dart';
 import '../../../models/order.dart';
 import '../../../models/users.dart';
+import '../../calendar/meeting_data_source.dart';
 import '../../firm/firm_profile_screen.dart';
 
 AlertDialog buildAlertDialogForNewMessage({
@@ -78,20 +80,19 @@ AlertDialog buildAlertDialogForPhoneCallAndEmail({
           isPhoneCall
               ? callPhone('tel:$contactData')
               : sendEmail(
-                  Uri(
-                    scheme: 'mailto',
-                    path: contactData,
-                  ).toString(),
-                );
+            Uri(
+              scheme: 'mailto',
+              path: contactData,
+            ).toString(),
+          );
         },
       ),
     ],
   );
 }
 
-AlertDialog buildAlertDialogForCancelingOrder(
-  BuildContext context,
-  String id,
+AlertDialog buildAlertDialogForCancelingOrder(BuildContext context,
+    String id,
 ) {
   return AlertDialog(
     title: Text('Anulować zamówienie?'),
@@ -110,10 +111,9 @@ AlertDialog buildAlertDialogForCancelingOrder(
   );
 }
 
-AlertDialog buildAlertDialogForStartingOrder(
-  BuildContext context,
-  String id,
-  Future<void> Function(BuildContext context, String id) startOrder,
+AlertDialog buildAlertDialogForStartingOrder(BuildContext context,
+    String id,
+    Future<void> Function(BuildContext context, String id) startOrder,
 ) {
   return AlertDialog(
     title: Text('Rozpocznij wykonywanie zamówienia'),
@@ -131,10 +131,9 @@ AlertDialog buildAlertDialogForStartingOrder(
   );
 }
 
-AlertDialog buildAlertDialogForFinishingOrder(
-  BuildContext context,
-  String id,
-  Future<void> Function(BuildContext context, String id) finishOrder,
+AlertDialog buildAlertDialogForFinishingOrder(BuildContext context,
+    String id,
+    Future<void> Function(BuildContext context, String id) finishOrder,
 ) {
   return AlertDialog(
     title: Text('Zakończyć wykonywanie zamówienia?'),
@@ -154,9 +153,8 @@ AlertDialog buildAlertDialogForFinishingOrder(
   );
 }
 
-Future<void> _cancelOrder(
-  BuildContext context,
-  String id,
+Future<void> _cancelOrder(BuildContext context,
+    String id,
 ) async {
   Navigator.of(context).pop();
   await FirebaseFirestore.instance
@@ -198,8 +196,7 @@ class BuildAlertDialogForDatePicker extends StatefulWidget {
       _BuildAlertDialogForDatePickerState();
 }
 
-class _BuildAlertDialogForDatePickerState
-    extends State<BuildAlertDialogForDatePicker> {
+class _BuildAlertDialogForDatePickerState extends State<BuildAlertDialogForDatePicker> {
   late Color _selectedColor;
 
   final DateTime _today = DateTime.now();
@@ -218,6 +215,7 @@ class _BuildAlertDialogForDatePickerState
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('meetings')
         .get();
+
     _pickedDate = PickerDateRange(
       DateTime(_today.year, _today.month, _today.day),
       DateTime(
@@ -233,12 +231,85 @@ class _BuildAlertDialogForDatePickerState
     final double grayscale = (0.299 * _selectedColor.red) +
         (0.587 * _selectedColor.green) +
         (0.114 * _selectedColor.blue);
-    final double _height = MediaQuery.of(context).size.height;
 
     final _isSelectedColorLight = grayscale > 128;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Wybierz okres zamówienia')),
+      appBar: AppBar(
+        title: AutoSizeText(
+          'Wybierz okres zamówienia',
+          maxLines: 1,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () async {
+              printColor(
+                  text:
+                      'Start: ${_pickedDate.startDate} To:${_pickedDate.endDate}',
+                  color: PrintColor.magenta);
+
+              if (_pickedDate.startDate!
+                  .isAtSameMomentAs(_pickedDate.endDate!)) {
+                final TimeOfDay? timeFrom = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                  helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
+                  builder: (BuildContext context, Widget? child) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context)
+                          .copyWith(alwaysUse24HourFormat: true),
+                      child: child!,
+                    );
+                  },
+                );
+
+                final TimeOfDay? timeTo = timeFrom != null
+                    ? await showTimePicker(
+                        context: context,
+                        initialTime: timeFrom,
+                        helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
+                      )
+                    : null;
+                if (timeFrom != null && timeTo != null) {
+                  if (timeOfDayIsAfter(
+                      context: context, timeFrom: timeFrom, timeTo: timeTo)) {
+                    widget.setRange(
+                      PickerDateRange(
+                        DateTime(
+                          _pickedDate.startDate!.year,
+                          _pickedDate.startDate!.month,
+                          _pickedDate.startDate!.day,
+                          timeFrom.hour,
+                          timeFrom.minute,
+                        ),
+                        DateTime(
+                          _pickedDate.endDate!.year,
+                          _pickedDate.endDate!.month,
+                          _pickedDate.endDate!.day,
+                          timeTo.hour,
+                          timeTo.minute,
+                        ),
+                      ),
+                    );
+                  }
+                  Navigator.of(context).pop();
+                  return;
+                }
+              }
+              widget.setRange(_pickedDate);
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -252,7 +323,7 @@ class _BuildAlertDialogForDatePickerState
                     color: _isSelectedColorLight ? Colors.black : Colors.white,
                   ),
                   label: Text(
-                    ' Wybierz kolor zamówienia',
+                    ' Wybierz kolor',
                     style: TextStyle(
                       color:
                           _isSelectedColorLight ? Colors.black : Colors.white,
@@ -267,22 +338,22 @@ class _BuildAlertDialogForDatePickerState
                         selectedColor: _selectedColor,
                         colors: widget._colors,
                         onColorChange: (value) {
-                          //   setState(() {
-                          _selectedColor = value;
-                                  //   });
-                                  //   widget.setColor(value);
-                                },
-                              ),
-                              actions: [
-                                TextButton(
-                                    child: Text('Ok'),
-                                    onPressed: () {
-                                      setState(() {});
-                                      Navigator.of(context).pop();
-                                    }),
-                              ],
-                            ),
+                          setState(() {
+                            _selectedColor = value;
+                          });
+                          widget.setColor(value);
+                        },
                       ),
+                      actions: [
+                        TextButton(
+                            child: Text('Ok'),
+                            onPressed: () {
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -290,10 +361,8 @@ class _BuildAlertDialogForDatePickerState
             // FIXME: Testowy kalenarz
             FutureBuilder(
               future: _future,
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
-              ) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else {
@@ -307,7 +376,7 @@ class _BuildAlertDialogForDatePickerState
                           .toList()),
                       appointmentTimeTextFormat: 'HH:mm',
                       showCurrentTimeIndicator: true,
-                      initialSelectedDate: null,
+                      initialSelectedDate: _today,
                       selectionDecoration: BoxDecoration(),
                       showDatePickerButton: true,
                       monthViewSettings: MonthViewSettings(
@@ -319,8 +388,27 @@ class _BuildAlertDialogForDatePickerState
                       onTap: _updateSelectedDate,
                       monthCellBuilder: (BuildContext buildContext,
                           MonthCellDetails details) {
-                        //IMPORTANT: Rysowanie pomiędzy dniami
-                        if (details.date.isAfter(_pickedDate.startDate!) &&
+                        // Nieaktywne dni
+                        if (details.date.isBefore(
+                            DateTime.now().subtract(Duration(days: 1)))) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 0.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                details.date.day.toString(),
+                                style: TextStyle(
+                                    color: Colors.black.withAlpha(100)),
+                              ),
+                            ),
+                          );
+                        }
+                        //Rysowanie pomiędzy dniami
+                        else if (details.date.isAfter(_pickedDate.startDate!) &&
                             details.date.isBefore(_pickedDate.endDate!)) {
                           return Container(
                             decoration: BoxDecoration(
@@ -336,10 +424,10 @@ class _BuildAlertDialogForDatePickerState
                             ),
                           );
                         } else if (details.date
-                                .isAtSameMomentAs(_pickedDate.startDate!) &&
+                            .isAtSameMomentAs(_pickedDate.startDate!) &&
                             details.date
                                 .isAtSameMomentAs(_pickedDate.endDate!)) {
-                          // IMPORTANT: selected only one date
+                          // Selected only one date
                           return Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -358,7 +446,7 @@ class _BuildAlertDialogForDatePickerState
                           );
                         } else if (details.date
                             .isAtSameMomentAs(_pickedDate.startDate!)) {
-                          // IMPORTANT: is start day
+                          // Is start day
                           return Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
@@ -381,7 +469,7 @@ class _BuildAlertDialogForDatePickerState
                           );
                         } else if (details.date
                             .isAtSameMomentAs(_pickedDate.endDate!)) {
-                          // IMPORTANT: is end day
+                          // Is end day
                           return Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
@@ -405,10 +493,11 @@ class _BuildAlertDialogForDatePickerState
                         } else
                           return Container(
                             decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                  width: 0.5,
-                                )),
+                              border: Border.all(
+                                color: Colors.grey.shade300,
+                                width: 0.5,
+                              ),
+                            ),
                             child: Center(
                               child: Text(
                                 details.date.day.toString(),
@@ -422,90 +511,6 @@ class _BuildAlertDialogForDatePickerState
                 }
               },
             ),
-            SizedBox(height: 16),
-            Container(
-              color: Colors.white,
-              child: SfDateRangePicker(
-                showActionButtons: true,
-                cancelText: 'Anuluj',
-                confirmText: 'Potwierdź',
-                showNavigationArrow: true,
-                enablePastDates: false,
-                rangeSelectionColor: _selectedColor.withOpacity(0.3),
-                startRangeSelectionColor: _selectedColor,
-                endRangeSelectionColor: _selectedColor,
-                initialSelectedRange: PickerDateRange(
-                  DateTime.now(),
-                  DateTime.now().add(Duration(days: 2)),
-                ),
-                monthViewSettings:
-                DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-                selectionMode: DateRangePickerSelectionMode.range,
-                onCancel: () => Navigator.of(context).pop(),
-                onSubmit: (value) async {
-                  if (value is PickerDateRange) {
-                    if (value.endDate == null) {
-                      final TimeOfDay? timeFrom = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                        helpText: 'WYBIERZ GODZINĘ ROZPOCZĘCIA',
-                        builder: (BuildContext context, Widget? child) {
-                          return MediaQuery(
-                            data: MediaQuery.of(context)
-                                .copyWith(alwaysUse24HourFormat: true),
-                            child: child!,
-                          );
-                        },
-                      );
-
-                      final TimeOfDay? timeTo = timeFrom != null
-                          ? await showTimePicker(
-                        context: context,
-                        initialTime: timeFrom,
-                        helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
-                        builder: (BuildContext context, Widget? child) {
-                          return MediaQuery(
-                            data: MediaQuery.of(context)
-                                .copyWith(alwaysUse24HourFormat: true),
-                            child: child!,
-                          );
-                        },
-                      )
-                          : null;
-                      if (timeFrom != null && timeTo != null) {
-                        if (timeOfDayIsAfter(
-                            context: context,
-                            timeFrom: timeFrom,
-                            timeTo: timeTo)) {
-                          widget.setRange(
-                            PickerDateRange(
-                              DateTime(
-                                value.startDate!.year,
-                                value.startDate!.month,
-                                value.startDate!.day,
-                                timeFrom.hour,
-                                timeFrom.minute,
-                              ),
-                              DateTime(
-                                value.startDate!.year,
-                                value.startDate!.month,
-                                value.startDate!.day,
-                                timeTo.hour,
-                                timeTo.minute,
-                              ),
-                            ),
-                          );
-                        }
-                        Navigator.of(context).pop();
-                        return;
-                      }
-                    }
-                    widget.setRange(value);
-                  }
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
           ],
         ),
       ),
@@ -513,7 +518,7 @@ class _BuildAlertDialogForDatePickerState
   }
 
   void _updateSelectedDate(CalendarTapDetails value) {
-    if (value.date!.isBefore(DateTime.now())) {
+    if (value.date!.isBefore(DateTime.now().subtract(Duration(days: 1)))) {
       return;
     }
 
