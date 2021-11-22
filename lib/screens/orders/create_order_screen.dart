@@ -12,7 +12,6 @@ import '../../models/meeting.dart';
 import '../../models/notification.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
-import '../calendar/calendar_screen.dart';
 import 'order_details_screen.dart';
 import 'orders_screen.dart';
 import 'search_users.dart';
@@ -242,41 +241,22 @@ End Date: ${range.endDate}
         children: [
           buildDateRangeText(context, _range),
           SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton.icon(
-                icon: Icon(Icons.preview_outlined),
-                label: Text('Kalendarz'),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(CalendarScreen.routeName),
-              ),
-              ElevatedButton.icon(
-                icon: Icon(Icons.date_range_outlined),
-                label: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
-                onPressed: () {
-                  unfocusedContext(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) => BuildAlertDialogForDatePicker(
-                        _setRange,
-                        _setColor,
-                      ),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                },
-                //     showDialog(
-                //   context: context,
-                //   barrierDismissible: false,
-                //   builder: (_) => BuildAlertDialogForDatePicker(
-                //     _setRange,
-                //     _setColor,
-                //   ),
-                // ),
-              ),
-            ],
+          ElevatedButton.icon(
+            icon: Icon(Icons.date_range_outlined),
+            label: Text(_range != null ? 'Zmień datę' : 'Wybierz datę'),
+            onPressed: () {
+              unfocusedContext(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) => BuildAlertDialogForDatePicker(
+                    _setRange,
+                    _setColor,
+                  ),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
           ),
         ],
       ),
