@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/models/users.dart';
-import 'package:praca_inzynierska/screens/orders/create_order_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/users.dart';
 import '../../widgets/message_buble.dart';
 import '../../widgets/new_message.dart';
+import '../orders/create_order_screen.dart';
 
 class Message extends StatelessWidget {
   final String chatID;
