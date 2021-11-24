@@ -182,6 +182,7 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
           builder: (context) => Message(
             chatID: value.id,
             chatName: chatName.last,
+            addresseeID: firm.id,
           ),
         ),
       );
@@ -196,9 +197,8 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
       MaterialPageRoute(
         builder: (context) => Message(
           chatID: pickedChat.reference.id,
-          chatName: pickedChat['users'][0] == userID
-              ? pickedChat['chatName'][1]
-              : pickedChat['chatName'][0],
+          chatName: pickedChat['chatName'][1],
+          addresseeID: firm.id,
         ),
       ),
     );
@@ -325,6 +325,7 @@ Future<void> createOrOpenChat(
             chatName: loggedUser.type == UserType.Firm
                 ? chatName.first
                 : chatName.last,
+            addresseeID: addressee,
           ),
         ),
       );
@@ -340,6 +341,7 @@ Future<void> createOrOpenChat(
           chatName: loggedUser.type == UserType.Firm
               ? pickedChat['chatName'].first
               : pickedChat['chatName'].last,
+          addresseeID: addressee,
         ),
       ),
     );
@@ -351,6 +353,15 @@ Future<QuerySnapshot<Map<String, dynamic>>> getFirmComments(
   return FirebaseFirestore.instance
       .collection('firms')
       .doc(firmID)
+      .collection('comments')
+      .get();
+}
+
+Future<QuerySnapshot<Map<String, dynamic>>> getUserComments(
+    String userID) async {
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(userID)
       .collection('comments')
       .get();
 }

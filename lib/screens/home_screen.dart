@@ -31,102 +31,127 @@ class HomeScreen extends StatelessWidget {
     Color(0xFFBFB051),
   ];
 
+  DateTime preBackPress = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     print('build -> home_screen');
     initialize(context);
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("FixIT!"),
-      ),
-      drawer: AppDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              'Najczęstsze kategorie',
-              style: Theme.of(context).textTheme.headline6,
+    return WillPopScope(
+      onWillPop: () async {
+        final timeGap = DateTime.now().difference(preBackPress);
+        final cantExit = timeGap >= Duration(seconds: 2);
+        preBackPress = DateTime.now();
+
+        if (cantExit) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text('Press Back button again to Exit'),
+              duration: Duration(seconds: 2),
             ),
-          ),
-          GridView.count(
-            primary: true,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            padding: EdgeInsets.all(20),
-            crossAxisCount: 2,
-            childAspectRatio: 4,
-            shrinkWrap: true,
-            children: [
-              ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Hydraulik'))),
-                style: style(0),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SearchScreen('Hydraulik')),
-                ),
+          );
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("FixIT!"),
+        ),
+        drawer: AppDrawer(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                'Najczęstsze kategorie',
+                style: Theme.of(context).textTheme.headline6,
               ),
-              ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Elektryk'))),
-                style: style(1),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SearchScreen('Elektryk')),
-                ),
-              ),
-              ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Malarz'))),
-                style: style(2),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SearchScreen('Malarz')),
-                ),
-              ),
-              ElevatedButton(
-                child: Center(child: FittedBox(child: Text('Zdrowie i uroda'))),
-                style: style(3),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => SearchScreen('Zdrowie i uroda')),
-                ),
-              ),
-              ElevatedButton(
-                child:
-                    Center(child: FittedBox(child: Text('Usługi finansowe'))),
-                style: style(4),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => SearchScreen('Usługi finansowe')),
-                ),
-              ),
-              ElevatedButton(
-                child: Center(
-                  child: FittedBox(
-                    child: Text('Meble i zabudowa'),
+            ),
+            GridView.count(
+              primary: true,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              padding: EdgeInsets.all(20),
+              crossAxisCount: 2,
+              childAspectRatio: 4,
+              shrinkWrap: true,
+              children: [
+                ElevatedButton(
+                  child: Center(child: FittedBox(child: Text('Hydraulik'))),
+                  style: style(0),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SearchScreen('Hydraulik')),
                   ),
                 ),
-                style: style(5),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SearchScreen('Hydraulik')),
+                ElevatedButton(
+                  child: Center(child: FittedBox(child: Text('Elektryk'))),
+                  style: style(1),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => SearchScreen('Elektryk')),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child:
-                Text('Polecane', style: Theme.of(context).textTheme.headline6),
-          ),
-          Consumer<UserProvider>(
-            builder: (context, userProvider, _) =>
-                createRecommendedFirmList(context),
-          ),
-        ],
+                ElevatedButton(
+                  child: Center(child: FittedBox(child: Text('Malarz'))),
+                  style: style(2),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => SearchScreen('Malarz')),
+                  ),
+                ),
+                ElevatedButton(
+                  child:
+                      Center(child: FittedBox(child: Text('Zdrowie i uroda'))),
+                  style: style(3),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SearchScreen('Zdrowie i uroda')),
+                  ),
+                ),
+                ElevatedButton(
+                  child:
+                      Center(child: FittedBox(child: Text('Usługi finansowe'))),
+                  style: style(4),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SearchScreen('Usługi finansowe')),
+                  ),
+                ),
+                ElevatedButton(
+                  child: Center(
+                    child: FittedBox(
+                      child: Text('Meble i zabudowa'),
+                    ),
+                  ),
+                  style: style(5),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => SearchScreen('Hydraulik')),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text('Polecane',
+                  style: Theme.of(context).textTheme.headline6),
+            ),
+            Consumer<UserProvider>(
+              builder: (context, userProvider, _) =>
+                  createRecommendedFirmList(context),
+            ),
+          ],
+        ),
       ),
     );
   }

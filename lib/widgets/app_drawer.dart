@@ -211,8 +211,15 @@ class AppDrawer extends StatelessWidget {
                           arguments:
                               FirmsAuth(FirebaseAuth.instance.currentUser!.uid),
                         )
-                    : () => Navigator.of(context)
-                        .popAndPushNamed(UserProfileScreen.routeName),
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfileScreen(
+                                FirebaseAuth.instance.currentUser!.uid),
+                          ),
+                        );
+                      },
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,

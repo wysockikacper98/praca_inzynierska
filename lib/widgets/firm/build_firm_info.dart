@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../screens/firm/firm_profile_screen.dart';
+import '../../screens/user/user_profile_screen.dart';
 import '../calculate_rating.dart';
 
 ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
@@ -26,7 +27,6 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     ),
-    //TODO: get only city
     subtitle: Text(firm.data()['address']['city'] ?? ''),
     trailing: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -41,7 +41,11 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
           itemSize: 20.0,
           direction: Axis.horizontal,
         ),
-        Text("$rating (${firm.data()['ratingNumber'].round()})"),
+        ratingNumbers(
+          context,
+          rating,
+          firm.data()['ratingNumber'].round(),
+        ),
       ],
     ),
     // isThreeLine: true,

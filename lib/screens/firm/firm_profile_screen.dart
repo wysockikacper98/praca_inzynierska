@@ -88,11 +88,12 @@ class FirmProfileScreen extends StatelessWidget {
                   if (userType != UserType.Firm)
                     buildContactIcons(context, userID, snapshot),
                   BuildCommentSection(
-                      data.firmID,
-                      calculateRating(
-                        snapshot.data!.data()!['rating'].toDouble(),
-                        snapshot.data!.data()!['ratingNumber'].toDouble(),
-                      )),
+                    data.firmID,
+                    calculateRating(
+                      snapshot.data!.data()!['rating'].toDouble(),
+                      snapshot.data!.data()!['ratingNumber'].toDouble(),
+                    ),
+                  ),
                   SizedBox(height: 50),
                 ],
               ),

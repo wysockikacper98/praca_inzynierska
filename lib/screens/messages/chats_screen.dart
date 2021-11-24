@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../helpers/colorfull_print_messages.dart';
+import '../../models/users.dart';
 import 'messages.dart';
 
 class ChatsScreen extends StatelessWidget {
@@ -17,7 +19,10 @@ class ChatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    printColor(text: 'ChatsScreen', color: PrintColor.black);
+
     final userId = FirebaseAuth.instance.currentUser!.uid;
+    final UserType userType = Provider.of<UserProvider>(context).user!.type;
 
     return Scaffold(
       appBar: AppBar(
@@ -27,17 +32,13 @@ class ChatsScreen extends StatelessWidget {
         stream: FirebaseFirestore.instance
             .collection('chats')
             .where('users', arrayContains: userId)
-            // .orderBy('updatedAt', descending: true)
             .snapshots(),
-        builder: (
-          ctx,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,
-        ) {
+        builder: (ctx,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,) {
           if (chatSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
-            // } else if (chatSnapshot.data.docs != []) {
           } else if (chatSnapshot.data!.docs.length == 0) {
             return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
@@ -48,15 +49,14 @@ class ChatsScreen extends StatelessWidget {
             chatDocs.sort((a, b) =>
                 b['updatedAt'].toDate().compareTo(a['updatedAt'].toDate()));
 
-            //TODO: wyświetlanie tylko tych które posiadają collection('messages')
-            // print('Zobaczymy co tu się takiego dzieje');
-            // print(chatSnapshot.data.docs[0]['chatName']);
-            // print(chatSnapshot.data.docs[0]['chatName'][0]);
             return ListView.builder(
                 itemCount: chatDocs.length,
                 itemBuilder: (ctx, index) {
-                  final String currentChatName =
-                      getChatName(chatDocs, index, userId);
+                  final String currentChatName = getChatName(
+                    chatDocs,
+                    index,
+                    userId,
+                  );
 
                   return ListTile(
                     title: Text(currentChatName),
@@ -77,7 +77,9 @@ class ChatsScreen extends StatelessWidget {
                           builder: (context) => Message(
                             chatID: chatDocs[index].id,
                             chatName: currentChatName,
-                            defaultUserID: chatDocs[index]['users'][0],
+                            addresseeID: userType == UserType.Firm
+                                ? chatDocs[index]['users'][0]
+                                : chatDocs[index]['users'][1],
                           ),
                         ),
                       );

@@ -3,48 +3,76 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/colorfull_print_messages.dart';
 import '../../models/users.dart';
 import '../../widgets/message_buble.dart';
 import '../../widgets/new_message.dart';
 import '../orders/create_order_screen.dart';
+import '../user/user_profile_screen.dart';
 
 class Message extends StatelessWidget {
   final String chatID;
   final String chatName;
-  final String? defaultUserID;
+  final String addresseeID;
 
-  Message({required this.chatID, required this.chatName, this.defaultUserID});
+  Message(
+      {required this.chatID,
+      required this.chatName,
+      required this.addresseeID});
 
   @override
   Widget build(BuildContext context) {
+    printColor(text: 'Message', color: PrintColor.yellow);
+
     final userID = FirebaseAuth.instance.currentUser!.uid;
     final Users user = Provider.of<UserProvider>(context).user!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(this.chatName), actions: [
-        if (user.type == UserType.Firm)
+      appBar: AppBar(
+        title: Text(this.chatName),
+        actions: [
           PopupMenuButton(
             icon: Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => <PopupMenuEntry>[
               PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.post_add),
-                  title: Text('Utwórz zamówienie'),
+                  leading: Icon(Icons.person),
+                  title: Text('Profil użytkownika'),
                   onTap: () {
-                    print('$defaultUserID');
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CreateOrderScreen(defaultUserID),
-                      ),
-                    );
+                    print('$addresseeID');
+                    user.type == UserType.Firm
+                        ? Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserProfileScreen(addresseeID),
+                            ),
+                          )
+                        : Navigator.of(context).pop();
                   },
                 ),
               ),
+              if (user.type == UserType.Firm)
+                PopupMenuItem(
+                  child: ListTile(
+                    leading: Icon(Icons.post_add),
+                    title: Text('Utwórz zamówienie'),
+                    onTap: () {
+                      print('$addresseeID');
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateOrderScreen(addresseeID),
+                        ),
+                      );
+                    },
+                  ),
+                ),
             ],
           ),
-      ]),
+        ],
+      ),
       body: Container(
         child: Column(
           children: [
@@ -58,7 +86,7 @@ class Message extends StatelessWidget {
                     .snapshots(),
                 builder: (ctx,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        messageSnapshot) {
+                    messageSnapshot) {
                   if (messageSnapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());

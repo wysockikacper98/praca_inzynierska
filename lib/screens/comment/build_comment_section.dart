@@ -10,10 +10,13 @@ import '../../helpers/firebase_firestore.dart';
 import '../../models/comment.dart';
 
 class BuildCommentSection extends StatefulWidget {
-  final String _firmID;
+  final String _userID;
+  final bool isFirm;
   final double _calculateRating;
+  final double padding;
 
-  BuildCommentSection(this._firmID, this._calculateRating);
+  BuildCommentSection(this._userID, this._calculateRating,
+      {this.isFirm = true, this.padding = 16.0});
 
   @override
   _BuildCommentSectionState createState() => _BuildCommentSectionState();
@@ -27,7 +30,9 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
   void initState() {
     super.initState();
 
-    _future = getFirmComments(widget._firmID);
+    _future = widget.isFirm
+        ? getFirmComments(widget._userID)
+        : getUserComments(widget._userID);
   }
 
   @override
@@ -86,7 +91,7 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
     });
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(widget.padding),
       child: Column(
         children: [
           Divider(height: 32.0),
