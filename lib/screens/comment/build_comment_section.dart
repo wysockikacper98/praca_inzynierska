@@ -182,7 +182,7 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
         Expanded(
           key: GlobalKey(),
           child: LinearProgressIndicator(
-            value: e.value / allRatings,
+            value: allRatings == 0 ? 0 : e.value / allRatings,
             color: Color(0xFFff5a00),
             backgroundColor: Color(0xFFDDDDDD),
           ),

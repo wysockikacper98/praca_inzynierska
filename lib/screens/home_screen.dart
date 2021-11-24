@@ -40,6 +40,7 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         title: Text("FixIT!"),
       ),
+      drawer: AppDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,7 +128,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: AppDrawer(),
     );
   }
 
