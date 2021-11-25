@@ -7,6 +7,7 @@ import '../../helpers/colorfull_print_messages.dart';
 import '../../models/users.dart';
 import '../../widgets/message_buble.dart';
 import '../../widgets/new_message.dart';
+import '../firm/firm_profile_screen.dart';
 import '../orders/create_order_screen.dart';
 import '../user/user_profile_screen.dart';
 
@@ -48,7 +49,10 @@ class Message extends StatelessWidget {
                                   UserProfileScreen(addresseeID),
                             ),
                           )
-                        : Navigator.of(context).pop();
+                        : Navigator.of(context).pushReplacementNamed(
+                            FirmProfileScreen.routeName,
+                            arguments: FirmsAuth(addresseeID),
+                          );
                   },
                 ),
               ),
@@ -86,7 +90,7 @@ class Message extends StatelessWidget {
                     .snapshots(),
                 builder: (ctx,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                    messageSnapshot) {
+                        messageSnapshot) {
                   if (messageSnapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());

@@ -321,9 +321,6 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
                               builder: (_) => PickLocationScreen(updateAddress),
                             ),
                           );
-                          //
-                          // Navigator.of(context)
-                          //     .pushNamed(PickLocationScreen.routeName);
                         } else if (value ==
                             ph.PermissionStatus.permanentlyDenied) {
                           showDialog(
