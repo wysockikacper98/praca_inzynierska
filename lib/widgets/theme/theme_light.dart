@@ -141,15 +141,6 @@ ChipThemeData chipThemeData() {
   );
 }
 
-// Custom Button Style
-
-ButtonStyle elevatedButtonFilterStyle() {
-  return ElevatedButton.styleFrom(
-    primary: kDeepGreenColor.shade100,
-    onPrimary: Colors.black54,
-    elevation: 5,
-  );
-}
 
 // Widgets Styles
 CardTheme cardTheme() {

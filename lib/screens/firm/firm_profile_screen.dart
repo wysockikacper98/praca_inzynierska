@@ -205,6 +205,7 @@ class FirmProfileScreen extends StatelessWidget {
               firstDayOfWeek: 1,
               minDate: DateTime.utc(date.year, date.month),
               showDatePickerButton: true,
+              showNavigationArrow: true,
               monthViewSettings: MonthViewSettings(
                 showTrailingAndLeadingDates: false,
                 appointmentDisplayMode: MonthAppointmentDisplayMode.none,
@@ -219,7 +220,14 @@ class FirmProfileScreen extends StatelessWidget {
                 return Container(
                   decoration: BoxDecoration(
                     color: _background,
-                    border: Border.all(color: Colors.transparent, width: 0.5),
+                    border: _isDateNow(details.date)
+                        ? Border.all(
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: 2.0,
+                          )
+                        : Border.all(
+                            color: Colors.transparent,
+                          ),
                   ),
                   child: Center(
                     child: Text(
@@ -234,6 +242,14 @@ class FirmProfileScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  bool _isDateNow(DateTime date) {
+    final dateNow = DateTime.now();
+    if (dateNow.day == date.day &&
+        dateNow.month == date.month &&
+        dateNow.year == date.year) return true;
+    return false;
   }
 
   Color getDayColor(BuildContext context, MonthCellDetails currentDay) {
