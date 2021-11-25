@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/orders/order_details_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -74,23 +75,79 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
               ),
               headerDateFormat: 'LLLL  yyy',
-              onLongPress: (CalendarLongPressDetails details) {
-                DateTime date = details.date!;
-                CalendarResource? resource = details.resource;
-                dynamic appointments = details.appointments?.first.eventName;
-                CalendarElement view = details.targetElement;
-                print('''
------------------
-Date: $date
-Appointments: $appointments
-View: $view
-Resource: $resource
-''');
+              onTap: (CalendarTapDetails details) {
+                if (details.targetElement == CalendarElement.appointment) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderDetailsScreen(
+                          orderID: details.appointments!.first.orderId),
+                    ),
+                  );
+                }
+              },
+              scheduleViewMonthHeaderBuilder: (
+                BuildContext buildContext,
+                ScheduleViewMonthHeaderDetails details,
+              ) {
+                final String monthName = _getMonthDate(details.date.month);
+                return Stack(
+                  children: [
+                    Image(
+                        // image: ExactAssetImage(
+                        //     'assets/images/monthImages' + monthName + '.png'),
+                        image:
+                            ExactAssetImage('assets/images/tempPicture3.png'),
+                        fit: BoxFit.cover,
+                        width: details.bounds.width,
+                        height: details.bounds.height),
+                    Positioned(
+                      left: 55,
+                      right: 0,
+                      top: 20,
+                      bottom: 0,
+                      child: Text(
+                        monthName + ' ' + details.date.year.toString(),
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                );
               },
             );
           }
         },
       ),
     );
+  }
+
+  String _getMonthDate(int month) {
+    switch (month) {
+      case 1:
+        return 'Styczeń';
+      case 2:
+        return 'Luty';
+      case 3:
+        return 'Marzec';
+      case 4:
+        return 'Kwiecień';
+      case 5:
+        return 'Maj';
+      case 6:
+        return 'Czerwiec';
+      case 7:
+        return 'Lipiec';
+      case 8:
+        return 'Sierpień';
+      case 9:
+        return 'Wrzesień';
+      case 10:
+        return 'Październik';
+      case 11:
+        return 'Listopad';
+      case 12:
+        return 'Grudzień';
+    }
+    return '';
   }
 }

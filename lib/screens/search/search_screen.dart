@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:praca_inzynierska/helpers/colorfull_print_messages.dart';
 
 import '../../helpers/firebase_firestore.dart';
 import '../../widgets/calculate_rating.dart';
@@ -67,10 +68,13 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> initializeFirms() async {
     getFirmList().then((value) {
       _allFirmList = value.docs;
-      setState(() => _filterFirmsList = _allFirmList);
-
+      if (mounted) {
+        setState(() => _filterFirmsList = _allFirmList);
+      }
       if (widget._defaultCategories != null)
         _applyFilters([widget._defaultCategories!], 0.0, 0);
+      else
+        _sortFirm();
     });
   }
 
@@ -213,21 +217,19 @@ class _SearchScreenState extends State<SearchScreen> {
               ratingMin;
         }).toList();
 
+      // applying min popularity filter
       if (popularityMin != 0)
         _filterFirmsList = _filterFirmsList?.where((element) {
           return element.data()['ratingNumber'] >= popularityMin;
         }).toList();
+
+      _sortFirm();
 
       setState(() {
         _numberOfFilters = tempCounter;
       });
       _shouldUpdate = false;
     }
-    // else {
-    //   setState(() {
-    //     _numberOfFilters = 0;
-    //   });
-    // }
   }
 
   Widget buildSortDropdown(ThemeData theme) {
@@ -263,9 +265,67 @@ class _SearchScreenState extends State<SearchScreen> {
                 ) ??
                 FilterOptions.rating_best_worst;
           });
+          _sortFirm();
         },
       ),
     );
+  }
+
+  //TODO: finish sorting firms
+  void _sortFirm() {
+    printColor(text: '_sortFirm called', color: PrintColor.black);
+    if (_filterFirmsList != null && _filterFirmsList!.length > 0) {
+      printColor(text: '_sortFirm run', color: PrintColor.red);
+
+      switch (_dropdownValue) {
+        case FilterOptions.rating_best_worst:
+          _filterFirmsList!.sort((a, b) {
+            if (calculateRating(a.data()['rating'], a.data()['ratingNumber']) >
+                calculateRating(b.data()['rating'], b.data()['ratingNumber']))
+              return -1;
+            else if (calculateRating(
+                    a.data()['rating'], a.data()['ratingNumber']) <
+                calculateRating(b.data()['rating'], b.data()['ratingNumber']))
+              return 1;
+            else
+              return 0;
+          });
+          break;
+        case FilterOptions.rating_worst_best:
+          _filterFirmsList!.sort((a, b) {
+            if (calculateRating(a.data()['rating'], a.data()['ratingNumber']) >
+                calculateRating(b.data()['rating'], b.data()['ratingNumber']))
+              return 1;
+            else if (calculateRating(
+                    a.data()['rating'], a.data()['ratingNumber']) <
+                calculateRating(b.data()['rating'], b.data()['ratingNumber']))
+              return -1;
+            else
+              return 0;
+          });
+          break;
+        case FilterOptions.popularity_most_least:
+          _filterFirmsList!.sort((a, b) {
+            if (a.data()['ratingNumber'] > b.data()['ratingNumber'])
+              return -1;
+            else if (a.data()['ratingNumber'] < b.data()['ratingNumber'])
+              return 1;
+            else
+              return 0;
+          });
+          break;
+        case FilterOptions.popularity_least_most:
+          _filterFirmsList!.sort((a, b) {
+            if (a.data()['ratingNumber'] > b.data()['ratingNumber'])
+              return 1;
+            else if (a.data()['ratingNumber'] < b.data()['ratingNumber'])
+              return -1;
+            else
+              return 0;
+          });
+          break;
+      }
+    }
   }
 }
 

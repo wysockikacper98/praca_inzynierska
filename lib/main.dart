@@ -14,14 +14,12 @@ import 'screens/emergency_screen.dart';
 import 'screens/firm/firm_edit_profile_screen.dart';
 import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/location_example/maps_demo.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/pick_register_screen.dart';
 import 'screens/login/register_user_screen.dart';
 import 'screens/orders/create_order_screen.dart';
 import 'screens/orders/orders_screen.dart';
 import 'screens/search/search_screen.dart';
-import 'screens/search/search_screenv2.dart';
 import 'screens/settings_screen.dart';
 import 'screens/user/user_edit_profile_screen.dart';
 import 'widgets/theme/theme_Provider.dart';
@@ -99,8 +97,6 @@ class MyApp extends StatelessWidget {
                 OrdersScreen.routeName: (ctx) => OrdersScreen(),
                 CreateOrderScreen.routeName: (ctx) => CreateOrderScreen(),
                 CalendarScreen.routeName: (ctx) => CalendarScreen(),
-                MapsDemo.routeName: (ctx) => MapsDemo(),
-                SearchScreenv2.routeName: (ctx) => SearchScreenv2(),
               },
             );
           }),
