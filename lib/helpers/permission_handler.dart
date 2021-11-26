@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 
 Future<ph.PermissionStatus> locationPermissions() async {
-  return ph.Permission.location.request();
+  return ph.Permission.locationWhenInUse.request();
 }
 
 AlertDialog buildAlertDialogForPermissionsPermanentlyDenied(
