@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 
 import '../../helpers/firebase_firestore.dart';
+import '../../helpers/regex_patterns.dart';
 import '../../models/users.dart';
 
 class RegisterUserScreen extends StatefulWidget {
@@ -79,9 +82,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       TextFormField(
                         key: ValueKey('imie'),
                         decoration: InputDecoration(labelText: 'Imie'),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(RegexPatterns.nameOrSurnamePattern),
+                          ),
+                        ],
                         validator: (value) {
-                          if (value!.isEmpty || value.length < 3) {
-                            return 'Proszę podać przynajmniej 3 znaki.';
+                          if (value!.isEmpty)
+                            return 'Pole imie jest wymagane';
+                          else if (value.length < 3) {
+                            return 'Podane imie jest za krótkie';
                           }
                           return null;
                         },
@@ -92,8 +102,15 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       TextFormField(
                         key: ValueKey('nazwisko'),
                         decoration: InputDecoration(labelText: 'Nazwisko'),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(RegexPatterns.nameOrSurnamePattern),
+                          ),
+                        ],
                         validator: (value) {
-                          if (value!.isEmpty || value.length < 3) {
+                          if (value!.isEmpty) {
+                            return 'Pole jest wymagane';
+                          } else if (value.length < 3) {
                             return 'Proszę podać przynajmniej 3 znaki.';
                           }
                           return null;
@@ -102,12 +119,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                           _userLastName = value!;
                         },
                       ),
+                      // TODO: Dodać osobne pole na numer kierunkowy
                       TextFormField(
                         key: ValueKey('telephone'),
                         decoration: InputDecoration(labelText: 'Nr. Telefonu'),
                         keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          MaskedInputFormatter('000-000-000'),
+                        ],
                         validator: (value) {
-                          value = value!.replaceAll(' ', '');
+                          value = value!.replaceAll(RegExp('[-\s]'), '');
                           if (int.tryParse(value) == null) {
                             return 'Podaj numer telefonu';
                           } else if (value.isEmpty || value.length < 9) {
@@ -127,8 +148,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         textCapitalization: TextCapitalization.none,
                         enableSuggestions: false,
                         validator: (value) {
-                          if (value!.isEmpty || !value.contains('@')) {
-                            return 'Proszę podać poprawy adres email.';
+                          if (value!.isEmpty) {
+                            return 'Adres e-mail jest wymagany';
+                          } else if (!RegExp(RegexPatterns.emailPattern)
+                              .hasMatch(value)) {
+                            return 'Podany adres e-mail jest nie poprawny';
                           }
                           return null;
                         },
@@ -142,7 +166,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         decoration: InputDecoration(labelText: 'Hasło'),
                         obscureText: true,
                         validator: (value) {
-                          if (value!.isEmpty || value.length < 7) {
+                          if (value!.isEmpty) {
+                            return 'Hasło jest wymagane';
+                          } else if (value.length < 7) {
                             return 'Hasło musi mieć przynajmniej 7 znaków.';
                           }
                           return null;
@@ -157,7 +183,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         decoration: InputDecoration(labelText: 'Powtórz hasło'),
                         obscureText: true,
                         validator: (value) {
-                          if (value!.isEmpty || value.length < 7) {
+                          if (value!.isEmpty) {
+                            return 'Hasło jest wymagane';
+                          } else if (value.length < 7) {
                             return 'Hasło musi mieć przynajmniej 7 znaków.';
                           } else if (value != _passwordController.text) {
                             return 'Hasła muszą być takie same!';

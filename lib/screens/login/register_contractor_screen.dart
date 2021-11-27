@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 
 import '../../helpers/firebase_firestore.dart';
+import '../../helpers/regex_patterns.dart';
 import '../../models/address.dart';
 import '../../models/details.dart';
 import '../../models/firm.dart';
@@ -153,6 +156,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration: InputDecoration(
                                       labelText: 'Nazwa firmy lub Wykonawcy'),
                                   textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                          RegexPatterns.nameOrSurnamePattern),
+                                    ),
+                                  ],
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return 'Pole wymagane';
@@ -169,6 +178,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration: InputDecoration(
                                       labelText: 'Imie właściciela'),
                                   textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                          RegexPatterns.nameOrSurnamePattern),
+                                    ),
+                                  ],
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return 'Pole wymagane';
@@ -185,6 +200,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration: InputDecoration(
                                       labelText: 'Nazwisko właściciela'),
                                   textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                          RegexPatterns.nameOrSurnamePattern),
+                                    ),
+                                  ],
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return 'Pole wymagane';
@@ -201,8 +222,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration: InputDecoration(
                                       labelText: 'Nr. Telefonu'),
                                   keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    MaskedInputFormatter('000-000-000'),
+                                  ],
                                   validator: (value) {
-                                    if (int.tryParse(value!) == null) {
+                                    value =
+                                        value!.replaceAll(RegExp('[-\s]'), '');
+                                    if (int.tryParse(value) == null) {
                                       return 'Podaj numer telefonu';
                                     } else if (value.isEmpty) {
                                       return 'Pole wymagane';
@@ -219,10 +245,16 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                   decoration:
                                       InputDecoration(labelText: 'Email'),
                                   keyboardType: TextInputType.emailAddress,
+                                  autocorrect: false,
+                                  textCapitalization: TextCapitalization.none,
+                                  enableSuggestions: false,
                                   validator: (value) {
-                                    if (value!.isEmpty ||
-                                        !value.contains('@')) {
-                                      return 'Proszę podać poprawy adres email.';
+                                    if (value!.isEmpty) {
+                                      return 'Adres e-mail jest wymagany';
+                                    } else if (!RegExp(
+                                            RegexPatterns.emailPattern)
+                                        .hasMatch(value)) {
+                                      return 'Podany adres e-mail jest nie poprawny';
                                     }
                                     return null;
                                   },
@@ -230,38 +262,30 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                     _firm.email = value!;
                                   },
                                 ),
-                                TextFormField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Lokalizacja'),
-                                  textCapitalization: TextCapitalization.words,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Pole wymagane';
-                                    } else if (value.length < 4) {
-                                      return 'Podaj poprawną nazwę miejscowości';
-                                    }
-                                    return null;
-                                  },
-                                  //TODO: onSave?
-                                ),
+                                //IMPORTANT: Czy powinno znajdować sie tu pole z wyborem lokalizacji?
                                 // TextFormField(
-                                //   decoration: InputDecoration(
-                                //       labelText:
-                                //           'Zasięg prowadzonych usług w km od lokalizacji'),
-                                //   keyboardType: TextInputType.number,
+                                //   decoration:
+                                //       InputDecoration(labelText: 'Lokalizacja'),
+                                //   textCapitalization: TextCapitalization.words,
                                 //   validator: (value) {
-                                //     if (int.tryParse(value) == null) {
-                                //       return 'Podaj numer';
+                                //     if (value!.isEmpty) {
+                                //       return 'Pole wymagane';
+                                //     } else if (value.length < 4) {
+                                //       return 'Podaj poprawną nazwę miejscowości';
                                 //     }
                                 //     return null;
-                                //   },
-                                //   onSaved: (value) {
-                                //     _firm.range = value;
                                 //   },
                                 // ),
                                 TextFormField(
                                   decoration: InputDecoration(labelText: 'NIP'),
                                   keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                        RegexPatterns.nipNumberPattern,
+                                      ),
+                                    ),
+                                  ],
                                   validator: (value) {
                                     if (int.tryParse(value!) == null) {
                                       return 'Podaj numer';
@@ -295,7 +319,9 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                                       labelText: 'Powtórz hasło'),
                                   obscureText: true,
                                   validator: (value) {
-                                    if (value!.isEmpty || value.length < 7) {
+                                    if (value!.isEmpty) {
+                                      return 'Hasło jest wymagane';
+                                    } else if (value.length < 7) {
                                       return 'Hasło musi mieć przynajmniej 7 znaków.';
                                     } else if (value !=
                                         _passwordController.text) {
