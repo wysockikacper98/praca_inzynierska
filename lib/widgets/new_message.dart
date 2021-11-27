@@ -23,23 +23,30 @@ class _NewMessageState extends State<NewMessage> {
     final user = FirebaseAuth.instance.currentUser!;
     final Users userData = provider.user!;
 
-    await FirebaseFirestore.instance
-        .collection('chats')
-        .doc(widget.chatsID)
-        .collection('messages')
-        .add({
-      'text': _enterMessage,
-      'createdAt': Timestamp.now(),
-      'creatorID': user.uid,
-      'userName': userData.firstName,
-    }).then((_) => FirebaseFirestore.instance
+    _controller.clear();
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .doc(widget.chatsID)
+          .collection('messages')
+          .add({
+        'text': _enterMessage,
+        'createdAt': Timestamp.now(),
+        'creatorID': user.uid,
+        'userName': userData.firstName,
+      }).then((_) {
+        FirebaseFirestore.instance
             .collection('chats')
             .doc(widget.chatsID)
-            .update({'updatedAt': DateTime.now()}));
-    _controller.clear();
-    setState(() {
-      _enterMessage = '';
-    });
+            .update({'updatedAt': DateTime.now()});
+      });
+      setState(() {
+        _enterMessage = '';
+      });
+    } catch (e) {
+      _controller.text = _enterMessage;
+    }
   }
 
   @override
@@ -54,7 +61,7 @@ class _NewMessageState extends State<NewMessage> {
             child: TextField(
               controller: _controller,
               textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(labelText: 'Send a message...'),
+              decoration: InputDecoration(labelText: 'Wyślij wiadomość...'),
               onChanged: (value) {
                 setState(() {
                   _enterMessage = value;
