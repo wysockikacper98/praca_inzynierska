@@ -344,7 +344,7 @@ End Date: ${range.endDate}
                     if (value.isEmpty) {
                       return 'Pole wymagane';
                     }
-                    if (value.length < 5) {
+                    if (value.length < 2) {
                       return 'Podaj poprawną miejscowość';
                     }
                     return null;

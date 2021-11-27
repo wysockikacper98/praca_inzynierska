@@ -52,31 +52,43 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserProvider>(context, listen: false);
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(labelText: 'Wyślij wiadomość...'),
-              onChanged: (value) {
-                setState(() {
-                  _enterMessage = value;
-                });
-              },
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        padding: EdgeInsets.only(left: 24.0),
+        decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.5),
+            borderRadius: BorderRadius.all(Radius.circular(60.0))),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: 'Wyślij wiadomość...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _enterMessage = value;
+                  });
+                },
+              ),
             ),
-          ),
-          IconButton(
-            color: Theme.of(context).primaryColor,
-            icon: Icon(Icons.send),
-            onPressed: _enterMessage.trim().isEmpty
-                ? null
-                : () => _sendMessage(provider),
-          )
-        ],
+            IconButton(
+              color: Theme.of(context).primaryColor,
+              icon: Icon(Icons.send),
+              onPressed: _enterMessage.trim().isEmpty
+                  ? null
+                  : () => _sendMessage(provider),
+            )
+          ],
+        ),
       ),
     );
   }

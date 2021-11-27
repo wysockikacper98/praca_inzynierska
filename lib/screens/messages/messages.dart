@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../helpers/colorfull_print_messages.dart';
 import '../../models/users.dart';
-import '../../widgets/message_buble.dart';
+import '../../widgets/message_bubble.dart';
 import '../../widgets/new_message.dart';
 import '../firm/firm_profile_screen.dart';
 import '../orders/create_order_screen.dart';
