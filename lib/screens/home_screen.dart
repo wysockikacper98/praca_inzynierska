@@ -17,12 +17,12 @@ class HomeScreen extends StatelessWidget {
 
   style(int number) {
     return ElevatedButton.styleFrom(
-      primary: color[number],
+      primary: _color[number],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
     );
   }
 
-  final color = [
+  static const _color = [
     Color(0xFFCF6B59),
     Color(0xFF196F64),
     Color(0xFF8E4169),
@@ -30,6 +30,15 @@ class HomeScreen extends StatelessWidget {
     Color(0xFF2F4496),
     Color(0xFFBFB051),
   ];
+
+  static const Map<int, String> _theMostCommonCategories = const {
+    0: 'Hydraulik',
+    1: 'Elektryk',
+    2: 'Malarz',
+    3: 'Zdrowie i uroda',
+    4: 'Usługi finansowe',
+    5: 'Meble i zabudowa',
+  };
 
   DateTime preBackPress = DateTime.now();
 
@@ -80,66 +89,10 @@ class HomeScreen extends StatelessWidget {
               crossAxisCount: 2,
               childAspectRatio: 4,
               shrinkWrap: true,
-              children: [
-                ElevatedButton(
-                  child: Center(child: FittedBox(child: Text('Hydraulik'))),
-                  style: style(0),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => SearchScreen('Hydraulik')),
-                  ),
-                ),
-                ElevatedButton(
-                  child: Center(child: FittedBox(child: Text('Elektryk'))),
-                  style: style(1),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => SearchScreen('Elektryk')),
-                  ),
-                ),
-                ElevatedButton(
-                  child: Center(child: FittedBox(child: Text('Malarz'))),
-                  style: style(2),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => SearchScreen('Malarz')),
-                  ),
-                ),
-                ElevatedButton(
-                  child:
-                      Center(child: FittedBox(child: Text('Zdrowie i uroda'))),
-                  style: style(3),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => SearchScreen('Zdrowie i uroda')),
-                  ),
-                ),
-                ElevatedButton(
-                  child:
-                      Center(child: FittedBox(child: Text('Usługi finansowe'))),
-                  style: style(4),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => SearchScreen('Usługi finansowe')),
-                  ),
-                ),
-                ElevatedButton(
-                  child: Center(
-                    child: FittedBox(
-                      child: Text('Meble i zabudowa'),
-                    ),
-                  ),
-                  style: style(5),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => SearchScreen('Hydraulik')),
-                  ),
-                ),
-              ],
+              children: _theMostCommonCategories.entries
+                  .map((e) =>
+                      buildFastSearchWithFilterButton(context, e.value, e.key))
+                  .toList(),
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),
@@ -152,6 +105,18 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  ElevatedButton buildFastSearchWithFilterButton(
+      BuildContext context, String categoryName, int colorIndex) {
+    return ElevatedButton(
+      child: Center(child: FittedBox(child: Text(categoryName))),
+      style: style(colorIndex),
+      onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => SearchScreen(categoryName)),
       ),
     );
   }
