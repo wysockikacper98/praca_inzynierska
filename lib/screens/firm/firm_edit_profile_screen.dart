@@ -22,7 +22,7 @@ import '../location/pick_location_screen.dart';
 import 'buildCategories.dart';
 
 class FirmEditProfileScreen extends StatefulWidget {
-  static const routeName = '/firm-edit-profile-v2';
+  static const routeName = '/firm-edit-profile';
 
   @override
   State<FirmEditProfileScreen> createState() => _FirmEditProfileScreenState();

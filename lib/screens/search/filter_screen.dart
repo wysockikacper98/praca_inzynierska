@@ -283,14 +283,4 @@ class _FilterScreenState extends State<FilterScreen> {
     });
     return list;
   }
-
-  Text buildTODOText(BuildContext context, String text) {
-    return Text(
-      text,
-      style: Theme.of(context)
-          .textTheme
-          .headline5!
-          .copyWith(color: Theme.of(context).errorColor),
-    );
-  }
 }

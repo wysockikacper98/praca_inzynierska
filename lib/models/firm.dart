@@ -109,7 +109,7 @@ class Firm {
       'lastName': this.lastName,
       'telephone': this.telephone,
       'email': this.email,
-      'address': this.address,
+      'address': this.address?.toJson(),
       'range': this.range,
       'nip': this.nip,
       'avatar': this.avatar,

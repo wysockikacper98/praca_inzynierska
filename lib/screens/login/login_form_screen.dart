@@ -12,6 +12,8 @@ class LoginFormScreen extends StatefulWidget {
 }
 
 class _LoginFormScreenState extends State<LoginFormScreen> {
+  late final Future<void> _future;
+
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
 
@@ -48,37 +50,50 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _future = getCategories(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     print('build -> login_form');
     final double _windowWith = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                top: -160,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(
-                    'assets/svg/welcome_cats.svg',
-                    width: _windowWith * 0.8,
+      body: FutureBuilder(
+          future: _future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            else
+              return Center(
+                child: SingleChildScrollView(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        top: -160,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: SvgPicture.asset(
+                            'assets/svg/welcome_cats.svg',
+                            width: _windowWith * 0.8,
+                          ),
+                        ),
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: buildLoginForm(context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: buildLoginForm(context),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+              );
+          }),
     );
   }
 

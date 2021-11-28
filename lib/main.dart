@@ -16,6 +16,7 @@ import 'screens/firm/firm_profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/login/pick_register_screen.dart';
+import 'screens/login/register_contractor_screen.dart';
 import 'screens/login/register_user_screen.dart';
 import 'screens/orders/create_order_screen.dart';
 import 'screens/orders/orders_screen.dart';
@@ -86,6 +87,8 @@ class MyApp extends StatelessWidget {
                 LoginScreen.routeName: (ctx) => LoginScreen(),
                 PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
                 RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
+                RegisterContractorScreen.routeName: (ctx) =>
+                    RegisterContractorScreen(),
                 FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
                 EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
                 UserEditProfileScreen.routeName: (ctx) =>

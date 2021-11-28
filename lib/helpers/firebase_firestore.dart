@@ -79,9 +79,6 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
     void Function(bool value) setLoading) async {
   late UserCredential authResult;
   final _auth = FirebaseAuth.instance;
-  // print("Test Zapisu Firmy: ${firm.toJson()}");
-  // print("Test Zapisu szczegółów: ${firm.details.toJson()}");
-
   try {
     authResult = await _auth.createUserWithEmailAndPassword(
         email: firm.email, password: password);
@@ -102,7 +99,13 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
     setLoading(false);
     return false;
   } catch (error) {
-    print(error);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error.toString()),
+        duration: Duration(seconds: 3),
+        backgroundColor: Theme.of(context).errorColor,
+      ),
+    );
     authResult.user!.delete();
     setLoading(false);
     return false;
