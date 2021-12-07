@@ -14,18 +14,12 @@ class OrderActiveScreen extends StatelessWidget {
 
     return StreamBuilder(
       stream: _stream,
-      builder:
-          (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+      builder: (
+        ctx,
+        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+      ) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Column(
-              children: [
-                Text('Still waiting'),
-                SizedBox(height: 100),
-                CircularProgressIndicator(),
-              ],
-            ),
-          );
+          return Center(child: CircularProgressIndicator());
         }
         if (snapshot.data != null) {
           return SingleChildScrollView(
@@ -40,7 +34,7 @@ class OrderActiveScreen extends StatelessWidget {
             ),
           );
         } else {
-          return Center(child: Text('No data ¯\\_(ツ)_/¯'));
+          return Center(child: Text('Brak zamówień'));
         }
       },
     );

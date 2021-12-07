@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/colorful_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../models/meeting.dart';
 import '../../models/users.dart';
@@ -53,6 +54,15 @@ class FirmProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Profil Wykonawcy"),
         centerTitle: true,
+        actions: [
+          if (data.firmID == userID)
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => Navigator.of(context).pushNamed(
+                FirmEditProfileScreen.routeName,
+              ),
+            ),
+        ],
       ),
       body: FutureBuilder(
         future: getFirmData(data.firmID),

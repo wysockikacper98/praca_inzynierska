@@ -14,7 +14,7 @@ import '../models/order.dart';
 import '../models/useful_data.dart';
 import '../models/users.dart';
 import '../screens/messages/messages.dart';
-import 'colorfull_print_messages.dart';
+import 'colorful_print_messages.dart';
 
 Future<void> loginUser(
   BuildContext context,
@@ -212,7 +212,6 @@ Future<void> getUserInfoFromFirebase(
   BuildContext context,
   String userID,
 ) async {
-  // await Future.delayed(Duration(seconds: 2));
   final provider = Provider.of<UserProvider>(context, listen: false);
   var data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();

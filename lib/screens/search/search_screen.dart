@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/colorful_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/firm/build_firm_info.dart';

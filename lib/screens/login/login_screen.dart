@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/colorful_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../helpers/storage_manager.dart';
 import '../../models/users.dart';
@@ -20,12 +20,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _futureInitialize = false;
   late Future<void> _future;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _future = getDataBeforeLogIn();
-  // }
 
   @override
   Widget build(BuildContext context) {

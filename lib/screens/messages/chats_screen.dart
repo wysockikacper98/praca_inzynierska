@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/colorful_print_messages.dart';
 import '../../models/users.dart';
 import 'messages.dart';
 

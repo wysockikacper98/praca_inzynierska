@@ -15,8 +15,4 @@ class StorageManager {
     return prefs.getString(key);
   }
 
-  static Future<bool> deleteData(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.remove(key);
-  }
 }
