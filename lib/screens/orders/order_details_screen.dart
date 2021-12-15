@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:praca_inzynierska/screens/calendar/change_order_date.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-import '../../helpers/colorfull_print_messages.dart';
+import '../../helpers/colorful_print_messages.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
@@ -153,6 +153,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       bold: snapshot.data!.data()!['title'],
                     ),
                     _buildDescription(context, snapshot),
+                    _buildDateTitleAndButton(context, snapshot),
                     _buildDatePreview(snapshot),
                     SizedBox(height: 16),
                     _buildContactButtons(
@@ -179,6 +180,47 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             return Center(child: CircularProgressIndicator());
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildDateTitleAndButton(
+    BuildContext context,
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Data wykonania usługi:',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          if (snapshot.data!.data()!['status'] == 'PENDING')
+            ElevatedButton.icon(
+              icon: Icon(Icons.date_range_outlined),
+              label: Text('Zmień datę'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) => ChangeOrderDate(
+                      PickerDateRange(
+                        snapshot.data?.data()?['dateFrom'].toDate(),
+                        snapshot.data?.data()?['dateTo'].toDate(),
+                      ),
+                      snapshot.data!.id,
+                      refreshWidget,
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }
@@ -214,6 +256,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         snapshot.data!.data()?['dateFrom'].toDate(),
         snapshot.data!.data()?['dateTo'].toDate());
     if (_range.endDate == null) return Text('Nie wybrano daty zamówienia.');
+    //dwudniowe wyświetlanie daty
     if (_range.startDate!.year != _range.endDate!.year ||
         _range.startDate!.month != _range.endDate!.month ||
         _range.startDate!.day != _range.endDate!.day) {
@@ -226,6 +269,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         ],
       );
     } else {
+      //jednodniowe wyświetlanie daty
       return Text(
         DateFormat.Hm('pl_PL').format(_range.startDate!) +
             ' - ' +
@@ -506,6 +550,7 @@ ListTile _createUserToShowInDetails(
   UserProvider provider,
   Users user,
 ) {
+  final double _rating = calculateRating(user.rating!, user.ratingNumber!);
   return ListTile(
     leading: CircleAvatar(
       radius: 30,
@@ -520,7 +565,7 @@ ListTile _createUserToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: user.rating!,
+          rating: _rating,
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -531,11 +576,11 @@ ListTile _createUserToShowInDetails(
         ),
         RichText(
           text: TextSpan(
-            text: user.rating.toString(),
+            text: _rating.toString(),
             style: Theme.of(context).textTheme.headline6,
             children: [
               TextSpan(
-                text: ' (${user.ratingNumber})',
+                text: ' (${user.ratingNumber!.round()})',
                 style: Theme.of(context)
                     .textTheme
                     .headline6!
@@ -554,6 +599,7 @@ ListTile _createFirmToShowInDetails(
   UserProvider provider,
   Firm firm,
 ) {
+  final double _rating = calculateRating(firm.rating!, firm.ratingNumber!);
   return ListTile(
     leading: CircleAvatar(
       radius: 30,
@@ -568,7 +614,7 @@ ListTile _createFirmToShowInDetails(
     trailing: Column(
       children: [
         RatingBarIndicator(
-          rating: calculateRating(firm.rating!, firm.ratingNumber!),
+          rating: _rating,
           itemBuilder: (context, index) => Icon(
             Icons.star,
             color: Colors.amber,
@@ -579,11 +625,11 @@ ListTile _createFirmToShowInDetails(
         ),
         RichText(
           text: TextSpan(
-            text: calculateRating(firm.rating!, firm.ratingNumber!).toString(),
+            text: _rating.toString(),
             style: Theme.of(context).textTheme.headline6,
             children: [
               TextSpan(
-                  text: ' (${firm.ratingNumber})',
+                  text: ' (${firm.ratingNumber!.round()})',
                   style: Theme.of(context)
                       .textTheme
                       .headline6!

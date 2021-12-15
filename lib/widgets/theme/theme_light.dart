@@ -141,7 +141,6 @@ ChipThemeData chipThemeData() {
   );
 }
 
-
 // Widgets Styles
 CardTheme cardTheme() {
   return CardTheme(

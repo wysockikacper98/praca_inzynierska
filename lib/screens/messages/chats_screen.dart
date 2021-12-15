@@ -33,8 +33,10 @@ class ChatsScreen extends StatelessWidget {
             .collection('chats')
             .where('users', arrayContains: userId)
             .snapshots(),
-        builder: (ctx,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,) {
+        builder: (
+          ctx,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,
+        ) {
           if (chatSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),

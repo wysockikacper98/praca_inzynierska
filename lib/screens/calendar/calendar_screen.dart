@@ -38,8 +38,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Kalendarz')),
       floatingActionButton: FloatingActionButton(
-        child:
-            Icon(_isSchedule ? Icons.schedule_outlined : Icons.today_outlined),
+        child: Icon(_isSchedule ? Icons.today : Icons.calendar_view_day),
         onPressed: () => setState(() {
           _isSchedule = !_isSchedule;
           _controller.view =
@@ -93,14 +92,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 final String monthName = _getMonthDate(details.date.month);
                 return Stack(
                   children: [
+                    //TODO: dodać zdjęcia w wioku podglądu kalendarza
                     Image(
-                        // image: ExactAssetImage(
-                        //     'assets/images/monthImages' + monthName + '.png'),
-                        image:
-                            ExactAssetImage('assets/images/tempPicture3.png'),
-                        fit: BoxFit.cover,
-                        width: details.bounds.width,
-                        height: details.bounds.height),
+                      // image: ExactAssetImage(
+                      //     'assets/images/monthImages' + monthName + '.png'),
+                      image: ExactAssetImage('assets/images/tempPicture3.png'),
+                      fit: BoxFit.cover,
+                      width: details.bounds.width,
+                      height: details.bounds.height,
+                    ),
                     Positioned(
                       left: 55,
                       right: 0,

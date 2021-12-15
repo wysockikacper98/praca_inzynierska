@@ -47,8 +47,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           type: StepperType.vertical,
           physics: ScrollPhysics(),
           currentStep: _currentStep,
-          controlsBuilder: (BuildContext context,
-              {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) {
+          controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: _isLoading
@@ -59,12 +58,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                           child: _currentStep == 1
                               ? Text('Zarejestruj')
                               : Text('Dalej'),
-                          onPressed: onStepContinue,
+                          onPressed: details.onStepContinue,
                         ),
                         SizedBox(width: 16),
                         TextButton(
                           child: const Text('Anuluj'),
-                          onPressed: onStepCancel,
+                          onPressed: details.onStepCancel,
                         ),
                       ],
                     ),

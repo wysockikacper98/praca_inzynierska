@@ -59,9 +59,10 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     category: [],
     type: UserType.Firm,
     details: Details(
-        pictures: List.empty(),
-        prices: "Brak informacji",
-        description: "Dodaj opis firmy"),
+      pictures: List.empty(),
+      prices: "Brak informacji",
+      description: "Dodaj opis firmy",
+    ),
   );
 
   late String _userPassword;
@@ -82,8 +83,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
           type: StepperType.vertical,
           physics: ScrollPhysics(),
           currentStep: _currentStep,
-          controlsBuilder: (BuildContext context,
-              {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) {
+          controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: _isLoading
@@ -94,12 +94,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                           child: _currentStep == 4
                               ? Text('Zarejestruj')
                               : Text('Dalej'),
-                          onPressed:
-                              _categoriesSelected > 0 ? onStepContinue : null,
+                          onPressed: _categoriesSelected > 0
+                              ? details.onStepContinue
+                              : null,
                         ),
                         TextButton(
                           child: const Text('Anuluj'),
-                          onPressed: onStepCancel,
+                          onPressed: details.onStepCancel,
                         ),
                       ],
                     ),

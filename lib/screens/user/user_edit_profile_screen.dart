@@ -217,7 +217,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           });
                         }
                       : () {
-                    _phoneController.text = provider.user!.telephone!;
+                          _phoneController.text = provider.user!.telephone!;
                           setState(() {
                             _userPhoneEdit = !_userPhoneEdit;
                           });
