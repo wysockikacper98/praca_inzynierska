@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const MaterialColor kOrangeColor = const MaterialColor(
   0xFFE64A19,
@@ -31,6 +32,7 @@ const MaterialColor kGreenColor = const MaterialColor(
     900: const Color(0xFF001a0f),
   },
 );
+
 const MaterialColor kDeepGreenColor = const MaterialColor(
   0xFF196F64,
   const <int, Color>{
@@ -50,6 +52,88 @@ const MaterialColor kDeepGreenColor = const MaterialColor(
 const Color primaryColorLight = Color(0xFFFFF3E2);
 const Color primaryColor = Color(0xFFFBAD59);
 
+// New colors
+
+const MaterialColor pastelDeepGreenColor = const MaterialColor(
+  0xFF5BAB9E,
+  const <int, Color>{
+    50: const Color(0xFFddeeeb),
+    100: const Color(0xFFbcdcd7),
+    200: const Color(0xFFabd4cd),
+    300: const Color(0xFF89c2b9),
+    400: const Color(0xFF68b1a5),
+    500: const Color(0xFF5BAB9E),
+    600: const Color(0xFF45877c),
+    700: const Color(0xFF34655d),
+    800: const Color(0xFF23433e),
+    900: const Color(0xFF11221f),
+  },
+);
+
+const MaterialColor pastelLightBlueColor = const MaterialColor(
+  0xFF91C1CB,
+  const <int, Color>{
+    50: const Color(0xFFdcecef),
+    100: const Color(0xFFcbe2e7),
+    200: const Color(0xFFbad8de),
+    300: const Color(0xFFa8cfd6),
+    400: const Color(0xFF97c5ce),
+    500: const Color(0xFF91C1CB),
+    600: const Color(0xFF74b1be),
+    700: const Color(0xFF529ead),
+    800: const Color(0xFF417e8b),
+    900: const Color(0xFF315f68),
+  },
+);
+
+const MaterialColor pastelBlueColor = const MaterialColor(
+  0xFF3B557A,
+  const <int, Color>{
+    50: const Color(0xFFcbd7e6),
+    100: const Color(0xFFa9bcd6),
+    200: const Color(0xFF87a1c5),
+    300: const Color(0xFF6486b4),
+    400: const Color(0xFF4b6c9b),
+    500: const Color(0xFF3B557A),
+    600: const Color(0xFF324867),
+    700: const Color(0xFF293c56),
+    800: const Color(0xFF213045),
+    900: const Color(0xFF192434),
+  },
+);
+
+const MaterialColor pastelOrangeColor = const MaterialColor(
+  0xFFFFBC92,
+  const <int, Color>{
+    50: const Color(0xFFffffff),
+    100: const Color(0xFFffefe6),
+    200: const Color(0xFFffe0cc),
+    300: const Color(0xFFffd0b3),
+    400: const Color(0xFFffc099),
+    500: const Color(0xFFFFBC92),
+    600: const Color(0xFFffa166),
+    700: const Color(0xFFff8133),
+    800: const Color(0xFFe65800),
+    900: const Color(0xFF993b00),
+  },
+);
+
+const MaterialColor pastelStrongOrangeColor = const MaterialColor(
+  0xFFF8B445,
+  const <int, Color>{
+    50: const Color(0xFFfdebce),
+    100: const Color(0xFFfce1b5),
+    200: const Color(0xFFfbd79d),
+    300: const Color(0xFFfbcd84),
+    400: const Color(0xFFfac36b),
+    500: const Color(0xFFF8B445),
+    600: const Color(0xFFf7a522),
+    700: const Color(0xFFf69b09),
+    800: const Color(0xFFdd8c08),
+    900: const Color(0xFFac6d06),
+  },
+);
+
 ThemeData themeLight() {
   return ThemeData(
     brightness: Brightness.light,
@@ -63,17 +147,18 @@ ThemeData themeLight() {
     chipTheme: chipThemeData(),
     appBarTheme: appBarTheme(),
 
-    scaffoldBackgroundColor: primaryColorLight,
+    scaffoldBackgroundColor: pastelDeepGreenColor.shade200,
     // textTheme: TextTheme(subtitle1: TextStyle(color: Color(0xFF222222))),
     cardTheme: cardTheme(),
     //Buttons Theme
     elevatedButtonTheme: elevatedButtonTheme(),
     textButtonTheme: textButtonTheme(),
     colorScheme: ColorScheme.fromSwatch(
-      primarySwatch: kDeepGreenColor,
+      primarySwatch: pastelOrangeColor,
     ).copyWith(
-      secondary: kOrangeColor,
-      secondaryVariant: Colors.lightBlue,
+      surface: pastelLightBlueColor,
+      secondary: pastelStrongOrangeColor,
+      secondaryVariant: pastelOrangeColor,
     ),
   );
 }
@@ -109,7 +194,7 @@ TabBarTheme tabBarTheme() {
 TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(
     style: TextButton.styleFrom(
-      // primary: Colors.black,
+      primary: pastelBlueColor,
       shape: StadiumBorder(),
     ),
   );
@@ -117,7 +202,10 @@ TextButtonThemeData textButtonTheme() {
 
 ElevatedButtonThemeData elevatedButtonTheme() {
   return ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+    style: ElevatedButton.styleFrom(
+      shape: StadiumBorder(),
+      onPrimary: pastelBlueColor,
+    ),
   );
 }
 
@@ -127,7 +215,7 @@ ChipThemeData chipThemeData() {
     backgroundColor: Colors.grey,
     disabledColor: Colors.black38,
     checkmarkColor: Colors.white.withOpacity(0.8),
-    selectedColor: kOrangeColor.shade400,
+    selectedColor: pastelBlueColor,
     secondarySelectedColor: kOrangeColor.shade300,
     padding: EdgeInsets.all(5.0),
     labelStyle: TextStyle(
@@ -146,19 +234,24 @@ CardTheme cardTheme() {
   return CardTheme(
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20))),
-    color: Color(0xFFFEC674),
+    color: pastelDeepGreenColor,
+    elevation: 0.0,
   );
 }
 
 AppBarTheme appBarTheme() {
   return AppBarTheme(
-    titleTextStyle: TextStyle(
-      color: primaryColorLight,
+    titleTextStyle: GoogleFonts.lato(
       fontSize: 30,
-      fontFamily: 'Dancing Script',
-      fontWeight: FontWeight.w700,
+      color: pastelBlueColor,
     ),
-    backgroundColor: primaryColor,
+    // TextStyle(
+    //   color: primaryColorLight,
+    //   fontSize: 30,
+    //   fontFamily: 'Dancing Script',
+    //   fontWeight: FontWeight.w700,
+    // ),
+    backgroundColor: pastelDeepGreenColor.shade200,
     centerTitle: true,
   );
 }

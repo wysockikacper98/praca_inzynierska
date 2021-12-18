@@ -66,7 +66,6 @@ class HomeScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           title: Text("FixIT!"),
         ),
         drawer: AppDrawer(),
