@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/firebase_firestore.dart';
@@ -17,7 +18,11 @@ class HomeScreen extends StatelessWidget {
   style(int number) {
     return ElevatedButton.styleFrom(
       primary: _color[number],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
     );
   }
 
@@ -76,7 +81,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Text(
                 'Najczęstsze kategorie',
-                style: Theme.of(context).textTheme.headline6,
+                style: textStyleForHeadline(),
               ),
             ),
             GridView.count(
@@ -85,7 +90,7 @@ class HomeScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               padding: EdgeInsets.all(20),
               crossAxisCount: 2,
-              childAspectRatio: 4,
+              childAspectRatio: 3,
               shrinkWrap: true,
               children: _theMostCommonCategories.entries
                   .map((e) =>
@@ -94,8 +99,10 @@ class HomeScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Text('Polecane',
-                  style: Theme.of(context).textTheme.headline6),
+              child: Text(
+                'Polecane',
+                style: textStyleForHeadline(),
+              ),
             ),
             Consumer<UserProvider>(
               builder: (context, userProvider, _) =>
@@ -107,14 +114,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  ElevatedButton buildFastSearchWithFilterButton(
+  Widget buildFastSearchWithFilterButton(
       BuildContext context, String categoryName, int colorIndex) {
     return ElevatedButton(
-      child: Center(child: FittedBox(child: Text(categoryName))),
+      child: FittedBox(
+        child: Text(
+          categoryName,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       style: style(colorIndex),
       onPressed: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => SearchScreen(categoryName)),
+        MaterialPageRoute(
+          builder: (_) => SearchScreen(categoryName),
+        ),
       ),
     );
   }

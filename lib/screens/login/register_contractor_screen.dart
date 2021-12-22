@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
@@ -78,6 +79,13 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFabd4cd),
+      appBar: AppBar(
+        title: AutoSizeText('Rejestracja wykonawcy', maxLines: 1),
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
+        backgroundColor: const Color(0xFFabd4cd),
+      ),
       body: SafeArea(
         child: Stepper(
           type: StepperType.vertical,
@@ -89,21 +97,21 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
               child: _isLoading
                   ? Center(child: CircularProgressIndicator())
                   : Row(
-                      children: [
-                        ElevatedButton(
-                          child: _currentStep == 4
-                              ? Text('Zarejestruj')
-                              : Text('Dalej'),
-                          onPressed: _categoriesSelected > 0
-                              ? details.onStepContinue
-                              : null,
-                        ),
-                        TextButton(
-                          child: const Text('Anuluj'),
-                          onPressed: details.onStepCancel,
-                        ),
-                      ],
-                    ),
+                children: [
+                  ElevatedButton(
+                    child: _currentStep == 4
+                        ? Text('Zarejestruj')
+                        : Text('Dalej'),
+                    onPressed: _categoriesSelected > 0
+                        ? details.onStepContinue
+                        : null,
+                  ),
+                  TextButton(
+                    child: const Text('Anuluj'),
+                    onPressed: details.onStepCancel,
+                  ),
+                ],
+              ),
             );
           },
           onStepTapped: tapped,
@@ -123,8 +131,8 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
               state: _currentStep == 1
                   ? StepState.editing
                   : _currentStep > 1
-                      ? StepState.complete
-                      : StepState.disabled,
+                  ? StepState.complete
+                  : StepState.disabled,
               content: Form(
                 key: _formFirmInfoKey,
                 child: Column(
@@ -182,15 +190,15 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
               state: _currentStep == 2
                   ? StepState.editing
                   : _currentStep > 2
-                      ? StepState.complete
-                      : StepState.disabled,
+                  ? StepState.complete
+                  : StepState.disabled,
               content: Form(
                 key: _formOwnerInfoKey,
                 child: Column(
                   children: [
                     TextFormField(
                       decoration:
-                          InputDecoration(labelText: 'Imie właściciela'),
+                      InputDecoration(labelText: 'Imie właściciela'),
                       textCapitalization: TextCapitalization.words,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
@@ -211,7 +219,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                     ),
                     TextFormField(
                       decoration:
-                          InputDecoration(labelText: 'Nazwisko właściciela'),
+                      InputDecoration(labelText: 'Nazwisko właściciela'),
                       textCapitalization: TextCapitalization.words,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
@@ -261,8 +269,8 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
               state: _currentStep == 3
                   ? StepState.editing
                   : _currentStep > 3
-                      ? StepState.complete
-                      : StepState.disabled,
+                  ? StepState.complete
+                  : StepState.disabled,
               content: Form(
                 key: _formLoginInfoKey,
                 child: Column(
@@ -345,7 +353,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         break;
       case 2:
         final bool _isOwnerInfoValid =
-            _formOwnerInfoKey.currentState!.validate();
+        _formOwnerInfoKey.currentState!.validate();
         FocusScope.of(context).unfocus();
 
         if (_isOwnerInfoValid) {
@@ -355,7 +363,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
         break;
       case 3:
         final bool _isLoginInfoValid =
-            _formLoginInfoKey.currentState!.validate();
+        _formLoginInfoKey.currentState!.validate();
         FocusScope.of(context).unfocus();
 
         if (_isLoginInfoValid) {

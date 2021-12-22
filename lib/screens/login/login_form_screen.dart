@@ -60,9 +60,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     final double _windowWith = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFabd4cd),
       appBar: AppBar(
         title: Text('Zaloguj'),
         elevation: 0.0,
+        backgroundColor: const Color(0xFFabd4cd),
       ),
       body: FutureBuilder(
           future: _future,

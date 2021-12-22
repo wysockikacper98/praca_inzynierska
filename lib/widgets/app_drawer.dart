@@ -196,14 +196,8 @@ class AppDrawer extends StatelessWidget {
             children: [
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.person,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                title: Text(
-                  'Podgląd profilu',
-                  style: TextStyle(color: Theme.of(context).primaryColorLight),
-                ),
+                leading: Icon(Icons.person),
+                title: Text('Podgląd profilu'),
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context).popAndPushNamed(
                           FirmProfileScreen.routeName,
@@ -222,14 +216,8 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.manage_accounts,
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                title: Text(
-                  'Edycja profilu',
-                  style: TextStyle(color: Theme.of(context).primaryColorLight),
-                ),
+                leading: Icon(Icons.manage_accounts),
+                title: Text('Edycja profilu'),
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context)
                         .popAndPushNamed(FirmEditProfileScreen.routeName)

@@ -30,6 +30,7 @@ class PickRegisterScreen extends StatelessWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Spacer(flex: 1),
                 Text(
                   "Zarejestruj jako:",
                   style: TextStyle(fontSize: 24.0),
@@ -94,6 +95,7 @@ class PickRegisterScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                Spacer(flex: 3),
               ],
             ),
           ],

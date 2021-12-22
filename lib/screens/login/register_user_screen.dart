@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
@@ -42,6 +43,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     print('build -> pick_register_screen');
 
     return Scaffold(
+      backgroundColor: const Color(0xFFabd4cd),
+      appBar: AppBar(
+        title: AutoSizeText('Rejestracja użytkownika', maxLines: 1),
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
+        backgroundColor: const Color(0xFFabd4cd),
+      ),
       body: SafeArea(
         child: Stepper(
           type: StepperType.vertical,
@@ -53,20 +61,20 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               child: _isLoading
                   ? Center(child: CircularProgressIndicator())
                   : Row(
-                      children: [
-                        ElevatedButton(
-                          child: _currentStep == 1
-                              ? Text('Zarejestruj')
-                              : Text('Dalej'),
-                          onPressed: details.onStepContinue,
-                        ),
-                        SizedBox(width: 16),
-                        TextButton(
-                          child: const Text('Anuluj'),
-                          onPressed: details.onStepCancel,
-                        ),
-                      ],
-                    ),
+                children: [
+                  ElevatedButton(
+                    child: _currentStep == 1
+                        ? Text('Zarejestruj')
+                        : Text('Dalej'),
+                    onPressed: details.onStepContinue,
+                  ),
+                  SizedBox(width: 16),
+                  TextButton(
+                    child: const Text('Anuluj'),
+                    onPressed: details.onStepCancel,
+                  ),
+                ],
+              ),
             );
           },
           onStepTapped: tapped,

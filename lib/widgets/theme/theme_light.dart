@@ -101,6 +101,21 @@ const MaterialColor pastelBlueColor = const MaterialColor(
     900: const Color(0xFF192434),
   },
 );
+const MaterialColor pastelStrongBlueColor = const MaterialColor(
+  0xFF2F4496,
+  const <int, Color>{
+    50: const Color(0xFFb1bce7),
+    100: const Color(0xFF8b9bda),
+    200: const Color(0xFF6479ce),
+    300: const Color(0xFF3d58c2),
+    400: const Color(0xFF374fae),
+    500: const Color(0xFF2F4496),
+    600: const Color(0xFF2b3d88),
+    700: const Color(0xFF253574),
+    800: const Color(0xFF1f2c61),
+    900: const Color(0xFF18234e),
+  },
+);
 
 const MaterialColor pastelOrangeColor = const MaterialColor(
   0xFFFFBC92,
@@ -137,8 +152,8 @@ const MaterialColor pastelStrongOrangeColor = const MaterialColor(
 ThemeData themeLight() {
   return ThemeData(
     brightness: Brightness.light,
-    primaryColorLight: primaryColorLight,
-    primaryColor: primaryColor,
+    primaryColorLight: pastelOrangeColor.shade100,
+    primaryColor: pastelOrangeColor,
     primaryColorDark: Color(0xFF222222),
     toggleableActiveColor: kGreenColor,
     tabBarTheme: tabBarTheme(),
@@ -147,14 +162,16 @@ ThemeData themeLight() {
     chipTheme: chipThemeData(),
     appBarTheme: appBarTheme(),
 
-    scaffoldBackgroundColor: pastelDeepGreenColor.shade200,
+    scaffoldBackgroundColor: pastelOrangeColor.shade100,
     // textTheme: TextTheme(subtitle1: TextStyle(color: Color(0xFF222222))),
-    cardTheme: cardTheme(),
+    // cardTheme: cardTheme(),
     //Buttons Theme
     elevatedButtonTheme: elevatedButtonTheme(),
     textButtonTheme: textButtonTheme(),
     colorScheme: ColorScheme.fromSwatch(
       primarySwatch: pastelOrangeColor,
+      primaryColorDark: pastelBlueColor,
+      accentColor: pastelStrongOrangeColor,
     ).copyWith(
       surface: pastelLightBlueColor,
       secondary: pastelStrongOrangeColor,
@@ -167,6 +184,14 @@ ThemeData themeLight() {
 
 TextStyle textFormStyle() {
   return TextStyle(color: Colors.white);
+}
+
+TextStyle textStyleForHeadline() {
+  return GoogleFonts.lato(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: pastelBlueColor,
+  );
 }
 
 TextStyle textDrawerStyle() {
@@ -251,8 +276,10 @@ AppBarTheme appBarTheme() {
     //   fontFamily: 'Dancing Script',
     //   fontWeight: FontWeight.w700,
     // ),
-    backgroundColor: pastelDeepGreenColor.shade200,
+    iconTheme: IconThemeData(size: 30, color: pastelBlueColor),
+    backgroundColor: pastelOrangeColor.shade400,
     centerTitle: true,
+    elevation: 0.0,
   );
 }
 
