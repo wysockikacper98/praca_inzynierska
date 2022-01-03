@@ -318,7 +318,7 @@ End Date: ${range.endDate}
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: _width * 0.25,
+                width: _width * 0.3,
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: "Kod pocztowy"),
@@ -339,7 +339,7 @@ End Date: ${range.endDate}
               ),
               SizedBox(width: _width * 0.05),
               Container(
-                width: _width * 0.5,
+                width: _width * 0.45,
                 child: TextFormField(
                   decoration: InputDecoration(labelText: "Miejscowość"),
                   textCapitalization: TextCapitalization.words,
@@ -403,12 +403,21 @@ End Date: ${range.endDate}
     Stream<QuerySnapshot<Map<String, dynamic>>>? users,
   ) {
     return ElevatedButton.icon(
-      icon: Icon(Icons.person_search),
-      label: _user != null
-          ? Text("Zmień użytkownika")
-          : Text("Wybierz użytkownika"),
+      icon: Icon(
+        Icons.person_search,
+        color: Colors.black,
+      ),
+      label: Text(
+        _user != null ? "Zmień użytkownika" : "Wybierz użytkownika",
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        primary: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
       ),
       onPressed: () {
         showSearch(

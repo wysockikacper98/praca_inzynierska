@@ -79,12 +79,12 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFabd4cd),
+      // backgroundColor: const Color(0xFFabd4cd),
       appBar: AppBar(
         title: AutoSizeText('Rejestracja wykonawcy', maxLines: 1),
         automaticallyImplyLeading: false,
         elevation: 0.0,
-        backgroundColor: const Color(0xFFabd4cd),
+        backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         child: Stepper(

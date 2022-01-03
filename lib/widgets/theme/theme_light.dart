@@ -176,6 +176,7 @@ ThemeData themeLight() {
       surface: pastelLightBlueColor,
       secondary: pastelStrongOrangeColor,
       secondaryVariant: pastelOrangeColor,
+      primaryVariant: pastelDeepGreenColor,
     ),
   );
 }
@@ -283,16 +284,3 @@ AppBarTheme appBarTheme() {
   );
 }
 
-//Colors Styles
-
-LinearGradient defaultLinearGradient() {
-  return LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    // transform: GradientTransform,
-    colors: [
-      primaryColor,
-      primaryColorLight,
-    ],
-  );
-}

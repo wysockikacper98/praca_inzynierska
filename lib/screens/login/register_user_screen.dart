@@ -43,12 +43,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     print('build -> pick_register_screen');
 
     return Scaffold(
-      backgroundColor: const Color(0xFFabd4cd),
+      // backgroundColor: const Color(0xFFabd4cd),
       appBar: AppBar(
         title: AutoSizeText('Rejestracja użytkownika', maxLines: 1),
         automaticallyImplyLeading: false,
         elevation: 0.0,
-        backgroundColor: const Color(0xFFabd4cd),
+        backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         child: Stepper(

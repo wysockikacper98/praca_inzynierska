@@ -88,9 +88,9 @@ class HomeScreen extends StatelessWidget {
               primary: true,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(16),
               crossAxisCount: 2,
-              childAspectRatio: 3,
+              childAspectRatio: 3.5,
               shrinkWrap: true,
               children: _theMostCommonCategories.entries
                   .map((e) =>

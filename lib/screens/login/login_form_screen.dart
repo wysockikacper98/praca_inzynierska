@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
 import '../../helpers/regex_patterns.dart';
@@ -60,11 +62,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     final double _windowWith = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFabd4cd),
+      // backgroundColor: const Color(0xFFabd4cd),
       appBar: AppBar(
         title: Text('Zaloguj'),
         elevation: 0.0,
-        backgroundColor: const Color(0xFFabd4cd),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: FutureBuilder(
           future: _future,
@@ -84,7 +86,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                           alignment: Alignment.center,
                           child: SvgPicture.asset(
                             'assets/svg/fix_it_logo.svg',
-                            width: _windowWith * 0.8,
+                            width: _windowWith * 0.30,
                           ),
                         ),
                       ),
@@ -101,6 +103,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   }
 
   Form buildLoginForm(BuildContext context) {
+    final Color _textFormFieldColor =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode
+            ? const Color(0xFF353535)
+            : const Color(0xFFF6F8F7);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -108,7 +115,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
           Container(
             padding: EdgeInsets.only(left: 24.0),
             decoration: BoxDecoration(
-              color: Color(0xFFF6F8F7),
+              color: _textFormFieldColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(40.0),
               ),
@@ -140,7 +147,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               left: 24.0,
             ),
             decoration: BoxDecoration(
-              color: Color(0xFFF6F8F7),
+              color: _textFormFieldColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(40.0),
               ),
