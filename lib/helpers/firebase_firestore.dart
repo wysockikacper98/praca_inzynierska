@@ -176,7 +176,8 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
     chats.add({
       'chatName': chatName,
       'updatedAt': DateTime.now(),
-      'users': [userID, firm.id]
+      'users': [userID, firm.id],
+      'latestMessage': '',
     }).then((value) {
       print('Added chat with id:${value.id}');
       Navigator.push(

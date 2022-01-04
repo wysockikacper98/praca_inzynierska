@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_light.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/firebase_firestore.dart';
@@ -8,6 +7,9 @@ import '../models/users.dart';
 import '../service/local_notification_service.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/firm/firm_list.dart';
+import '../widgets/theme/theme_Provider.dart';
+import '../widgets/theme/theme_dark.dart';
+import '../widgets/theme/theme_light.dart';
 import 'orders/order_details_screen.dart';
 import 'search/search_screen.dart';
 
@@ -50,6 +52,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     print('build -> home_screen');
     initialize(context);
+    final bool isDarkTheme =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+
     return WillPopScope(
       onWillPop: () async {
         final timeGap = DateTime.now().difference(preBackPress);
@@ -81,7 +86,9 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Text(
                 'Najczęstsze kategorie',
-                style: textStyleForHeadline(),
+                style: isDarkTheme
+                    ? textStyleForHeadlineDark()
+                    : textStyleForHeadline(),
               ),
             ),
             GridView.count(
@@ -101,7 +108,9 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Text(
                 'Polecane',
-                style: textStyleForHeadline(),
+                style: isDarkTheme
+                    ? textStyleForHeadlineDark()
+                    : textStyleForHeadline(),
               ),
             ),
             Consumer<UserProvider>(

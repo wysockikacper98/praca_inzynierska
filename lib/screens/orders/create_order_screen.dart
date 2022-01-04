@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/screens/calendar/pick_order_date.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -14,6 +13,7 @@ import '../../models/meeting.dart';
 import '../../models/notification.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
+import '../calendar/pick_order_date.dart';
 import 'order_details_screen.dart';
 import 'orders_screen.dart';
 import 'search_users.dart';

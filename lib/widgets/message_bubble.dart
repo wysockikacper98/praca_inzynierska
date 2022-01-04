@@ -10,8 +10,9 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color? _messageBubbleColor =
-        isMe ? Colors.grey[300] : Theme.of(context).colorScheme.secondary;
+    Color? _messageBubbleColor = isMe
+        ? Colors.grey[300]
+        : Theme.of(context).colorScheme.secondary.withAlpha(200);
     double _maxBubbleWidth = MediaQuery.of(context).size.width * 2 / 3;
 
     return Row(

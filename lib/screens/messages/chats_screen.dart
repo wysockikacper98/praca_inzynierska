@@ -44,12 +44,14 @@ class ChatsScreen extends StatelessWidget {
           } else if (chatSnapshot.data!.docs.length == 0) {
             return Center(child: Text('Brak wiadomości tekstowych'));
           } else {
-            print(chatSnapshot.data!.docs.length.toString());
             final List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs =
                 chatSnapshot.data!.docs;
 
             chatDocs.sort((a, b) =>
                 b['updatedAt'].toDate().compareTo(a['updatedAt'].toDate()));
+
+            final _durationToday = const Duration(days: 1);
+            final _durationCurrentWeek = const Duration(days: 7);
 
             return ListView.builder(
                 itemCount: chatDocs.length,
@@ -60,13 +62,26 @@ class ChatsScreen extends StatelessWidget {
                     userId,
                   );
 
+                  final DateTime lastMessageDate =
+                      chatDocs[index]['updatedAt'].toDate();
+
+                  final Duration lastMessageSendDuration =
+                      DateTime.now().difference(lastMessageDate);
+
+                  final String timeToDisplay = lastMessageSendDuration <
+                          _durationToday
+                      ? DateFormat.Hm('pl_PL').format(lastMessageDate)
+                      : lastMessageSendDuration < _durationCurrentWeek
+                          ? DateFormat.E('pl_PL')
+                              .add_Hm()
+                              .format(lastMessageDate)
+                          : DateFormat.yMMMd('pl_PL').format(lastMessageDate);
+
                   return ListTile(
                     title: Text(currentChatName),
-                    trailing: Text(
-                      DateFormat.yMd('pl_PL')
-                          .add_Hm()
-                          .format(chatDocs[index]['updatedAt'].toDate()),
-                    ),
+                    subtitle: Text(
+                        chatDocs[index]['latestMessage']?.toString() ?? ''),
+                    trailing: Text(timeToDisplay),
                     onTap: () {
                       printColor(
                         text: chatDocs[index].id,

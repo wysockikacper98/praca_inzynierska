@@ -22,10 +22,12 @@ class AppDrawer extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final TextTheme textTheme = theme.textTheme;
     final provider = Provider.of<UserProvider>(context, listen: false);
+    final bool isDarkTheme =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Drawer(
       child: Container(
-        color: theme.primaryColorLight,
+        color: isDarkTheme ? const Color(0xFF2A2A2A) : theme.primaryColorLight,
         child: Column(
           children: [
             Expanded(
@@ -38,8 +40,12 @@ class AppDrawer extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Consumer<UserProvider>(
-                          builder: (ctx, prov, _) =>
-                              buildHeader(ctx, textTheme, prov.user!),
+                          builder: (ctx, prov, _) => buildHeader(
+                            ctx,
+                            textTheme,
+                            prov.user!,
+                            isDarkTheme,
+                          ),
                         ),
                       ),
                     ),
@@ -150,8 +156,8 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildHeader(BuildContext context, TextTheme textTheme, Users user) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+  Widget buildHeader(
+      BuildContext context, TextTheme textTheme, Users user, bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -167,14 +173,16 @@ class AppDrawer extends StatelessWidget {
             IconButton(
               iconSize: 30,
               icon: Icon(
-                themeProvider.isDarkMode
+                isDarkMode
                     ? Icons.light_mode_sharp
                     : Icons.nightlight_round_sharp,
-                color: Theme.of(context).primaryColorLight,
+                color: isDarkMode
+                    ? const Color(0xFF1F1F1F)
+                    : Theme.of(context).primaryColorLight,
               ),
               onPressed: () =>
                   Provider.of<ThemeProvider>(context, listen: false)
-                      .toggleTheme(!themeProvider.isDarkMode),
+                      .toggleTheme(!isDarkMode),
             ),
           ],
         ),

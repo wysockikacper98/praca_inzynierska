@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:praca_inzynierska/screens/calendar/change_order_date.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -13,6 +12,7 @@ import '../../models/order.dart';
 import '../../models/users.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/comment/comment_widgets.dart';
+import '../calendar/change_order_date.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 import 'widget/widgets_for_order_screens.dart';
 

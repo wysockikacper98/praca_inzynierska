@@ -3,7 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/firm/firm_edit_profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +16,7 @@ import '../../widgets/firm/build_firm_info.dart';
 import '../calendar/meeting_data_source.dart';
 import '../comment/build_comment_section.dart';
 import '../full_screen_image.dart';
+import 'firm_edit_profile_screen.dart';
 
 class FirmsAuth {
   final String firmID;

@@ -48,7 +48,7 @@ const MaterialColor greenColor = const MaterialColor(
     900: const Color(0xFF003326),
   },
 );
-
+// Important
 ThemeData themeDark() {
   return ThemeData(
     brightness: Brightness.dark,
@@ -117,8 +117,16 @@ AppBarTheme appBarTheme() {
       color: Colors.white,
     ),
     iconTheme: IconThemeData(size: 30, color: Colors.white),
-    backgroundColor: Color(0xFF1F1F1F),
+    backgroundColor: const Color(0xFF1F1F1F),
     centerTitle: true,
     elevation: 0.0,
+  );
+}
+
+TextStyle textStyleForHeadlineDark() {
+  return GoogleFonts.lato(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
   );
 }

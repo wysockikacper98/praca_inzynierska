@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
 import '../../helpers/regex_patterns.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import 'pick_register_screen.dart';
 
 class LoginFormScreen extends StatefulWidget {

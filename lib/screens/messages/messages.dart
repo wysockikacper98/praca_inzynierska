@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,9 @@ class Message extends StatelessWidget {
   final String chatName;
   final String addresseeID;
 
-  Message(
-      {required this.chatID,
-      required this.chatName,
-      required this.addresseeID});
+  Message({required this.chatID,
+    required this.chatName,
+    required this.addresseeID});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,12 @@ class Message extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.chatName),
+        title: AutoSizeText(
+          this.chatName,
+          maxLines: 1,
+          minFontSize: 20,
+          maxFontSize: 30,
+        ),
         actions: [
           PopupMenuButton(
             icon: Icon(Icons.more_vert),
@@ -43,16 +48,16 @@ class Message extends StatelessWidget {
                     print('$addresseeID');
                     user.type == UserType.Firm
                         ? Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  UserProfileScreen(addresseeID),
-                            ),
-                          )
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            UserProfileScreen(addresseeID),
+                      ),
+                    )
                         : Navigator.of(context).pushReplacementNamed(
-                            FirmProfileScreen.routeName,
-                            arguments: FirmsAuth(addresseeID),
-                          );
+                      FirmProfileScreen.routeName,
+                      arguments: FirmsAuth(addresseeID),
+                    );
                   },
                 ),
               ),
@@ -90,7 +95,7 @@ class Message extends StatelessWidget {
                     .snapshots(),
                 builder: (ctx,
                     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                        messageSnapshot) {
+                    messageSnapshot) {
                   if (messageSnapshot.connectionState ==
                       ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());

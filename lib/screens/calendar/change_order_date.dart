@@ -2,12 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/screens/orders/widget/alerts_dialog_for_orders.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/colorful_print_messages.dart';
 import '../../models/meeting.dart';
+import '../orders/widget/alerts_dialog_for_orders.dart';
 import 'meeting_data_source.dart';
 
 class ChangeOrderDate extends StatefulWidget {
