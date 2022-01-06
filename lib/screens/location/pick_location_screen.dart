@@ -84,9 +84,6 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
                   onPressed: (address == null || address!.zipCode == '')
                       ? null
                       : () {
-                          // Provider.of<FirmProvider>(context, listen: false)
-                          //     .updateAddress(address!);
-                          // updateUserAddress(address!);
                           widget._updateAddress(address!);
                           Navigator.of(context).pop();
                         },

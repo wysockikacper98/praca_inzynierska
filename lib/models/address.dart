@@ -53,4 +53,11 @@ administrativeArea: $administrativeArea
       'administrativeArea': this.administrativeArea,
     };
   }
+
+  String toStringEnvelopeFormat() {
+    return '''
+$streetAndHouseNumber
+$zipCode $city
+    ''';
+  }
 }

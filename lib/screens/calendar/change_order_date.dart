@@ -2,11 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/colorful_print_messages.dart';
 import '../../models/meeting.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import '../orders/widget/alerts_dialog_for_orders.dart';
 import 'meeting_data_source.dart';
 
@@ -25,6 +27,7 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
   late Future<QuerySnapshot<Map<String, dynamic>>> _future;
   late PickerDateRange _pickedDate;
   late Color _selectedColor;
+  late final bool _isDarkMode;
 
   final String currentFirm = FirebaseAuth.instance.currentUser!.uid;
 
@@ -44,13 +47,13 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double grayscale = (0.299 * _selectedColor.red) +
-        (0.587 * _selectedColor.green) +
-        (0.114 * _selectedColor.blue);
-
-    final _isSelectedColorLight = grayscale > 128;
-
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
@@ -104,7 +107,9 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                           return Container(
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.grey.shade300,
+                                color: _isDarkMode
+                                    ? Colors.white30
+                                    : Colors.grey.shade300,
                                 width: 0.5,
                               ),
                             ),
@@ -112,7 +117,9 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                               child: Text(
                                 details.date.day.toString(),
                                 style: TextStyle(
-                                    color: Colors.black.withAlpha(100)),
+                                    color: _isDarkMode
+                                        ? Colors.white.withAlpha(100)
+                                        : Colors.black.withAlpha(100)),
                               ),
                             ),
                           );
@@ -128,7 +135,8 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                               child: Text(
                                 details.date.day.toString(),
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color:
+                                      _isDarkMode ? Colors.white : Colors.black,
                                 ),
                               ),
                             ),
@@ -147,9 +155,7 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                               child: Text(
                                 details.date.day.toString(),
                                 style: TextStyle(
-                                  color: _isSelectedColorLight
-                                      ? Colors.black
-                                      : Colors.white,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -170,9 +176,7 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                               child: Text(
                                 details.date.day.toString(),
                                 style: TextStyle(
-                                  color: _isSelectedColorLight
-                                      ? Colors.black
-                                      : Colors.white,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -193,9 +197,7 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                               child: Text(
                                 details.date.day.toString(),
                                 style: TextStyle(
-                                  color: _isSelectedColorLight
-                                      ? Colors.black
-                                      : Colors.white,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -211,7 +213,10 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
                             child: Center(
                               child: Text(
                                 details.date.day.toString(),
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                    color: _isDarkMode
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                             ),
                           );

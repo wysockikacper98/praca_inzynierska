@@ -90,6 +90,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ScheduleViewMonthHeaderDetails details,
               ) {
                 final String monthName = _getMonthDate(details.date.month);
+                return Text(
+                  monthName + ' ' + details.date.year.toString(),
+                  style: TextStyle(fontSize: 18),
+                );
                 return Stack(
                   children: [
                     //TODO: dodać zdjęcia w wioku podglądu kalendarza

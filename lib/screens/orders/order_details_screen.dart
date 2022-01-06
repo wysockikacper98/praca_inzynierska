@@ -5,13 +5,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../helpers/colorful_print_messages.dart';
+import '../../models/address.dart';
 import '../../models/firm.dart';
 import '../../models/order.dart';
 import '../../models/users.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/comment/comment_widgets.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import '../calendar/change_order_date.dart';
 import 'widget/alerts_dialog_for_orders.dart';
 import 'widget/widgets_for_order_screens.dart';
@@ -104,6 +107,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Widget build(BuildContext context) {
     print('build -> order_details_screen');
     final provider = Provider.of<UserProvider>(context, listen: false);
+    final bool _isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(title: Text('Szczegóły zamówienia')),
@@ -153,6 +157,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       bold: snapshot.data!.data()!['title'],
                     ),
                     _buildDescription(context, snapshot),
+                    _buildLocation(context, snapshot),
                     _buildDateTitleAndButton(context, snapshot),
                     _buildDatePreview(snapshot),
                     SizedBox(height: 16),
@@ -168,10 +173,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       contactEmail: _userType == UserType.Firm
                           ? userToShowInDetails.email
                           : firmToShowInDetails.email,
+                      isDarkMode: _isDarkMode,
                     ),
                     SizedBox(height: 16),
                     _buildButtonsDependingOnStatus(
-                        context, snapshot, _userType, idList),
+                      context,
+                      snapshot,
+                      _userType,
+                      idList,
+                    ),
+                    SizedBox(height: 100),
                   ],
                 ),
               );
@@ -466,6 +477,53 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Status.values
         .firstWhere((e) => e.toString().split('.').last == status);
   }
+
+  Widget _buildLocation(BuildContext context,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+    final Address address = Address.fromJson(snapshot.data!.data()!['address']);
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Lokalizacja:',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(Icons.directions_outlined),
+                  onPressed: () async {
+                    String query = Uri.encodeComponent(
+                        address.streetAndHouseNumber + ', ' + address.city);
+                    String googleUrl =
+                        "https://www.google.com/maps/search/?api=1&query=$query";
+
+                    if (await canLaunch(googleUrl)) {
+                      await launch(googleUrl);
+                    }
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              address.toStringEnvelopeFormat(),
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 Widget _buildContactButtons({
@@ -476,6 +534,7 @@ Widget _buildContactButtons({
   required List<String> listID,
   required String contactEmail,
   required String contactPhoneNumber,
+  required bool isDarkMode,
 }) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -483,7 +542,9 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.question_answer_outlined),
         iconSize: 80,
-        color: Theme.of(context).primaryColor,
+        color: isDarkMode
+            ? const Color(0xFFBF5AF2)
+            : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,
@@ -505,7 +566,9 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.phone),
         iconSize: 80,
-        color: Theme.of(context).primaryColor,
+        color: isDarkMode
+            ? const Color(0xFFBF5AF2)
+            : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,
@@ -525,7 +588,9 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.email_outlined),
         iconSize: 80,
-        color: Theme.of(context).primaryColor,
+        color: isDarkMode
+            ? const Color(0xFFBF5AF2)
+            : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,
