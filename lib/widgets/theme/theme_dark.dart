@@ -112,7 +112,7 @@ ChipThemeData chipThemeData() {
 
 AppBarTheme appBarTheme() {
   return AppBarTheme(
-    titleTextStyle: GoogleFonts.lato(
+    titleTextStyle: GoogleFonts.kalam(
       fontSize: 30,
       color: Colors.white,
     ),

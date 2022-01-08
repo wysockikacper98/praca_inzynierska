@@ -16,8 +16,9 @@ import '../../widgets/calculate_rating.dart';
 import '../../widgets/comment/comment_widgets.dart';
 import '../../widgets/theme/theme_Provider.dart';
 import '../calendar/change_order_date.dart';
+import '../firm/firm_profile_screen.dart';
+import '../user/user_profile_screen.dart';
 import 'widget/alerts_dialog_for_orders.dart';
-import 'widget/widgets_for_order_screens.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   static const String routeName = '/order-details';
@@ -134,28 +135,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             context,
                             provider,
                             userToShowInDetails,
+                            idList.first,
                           )
                         : _createFirmToShowInDetails(
                             context,
                             provider,
                             firmToShowInDetails,
+                            idList.last,
                           ),
-                    _buildTextNormalThenBold(
-                      context: context,
-                      normal: 'Rodzaj usługi: ',
-                      bold: snapshot.data!.data()!['category'],
-                    ),
-                    _buildTextNormalThenBold(
-                      context: context,
-                      normal: 'Status usługi: ',
-                      bold: translateStatusEnumStringToString(
-                          snapshot.data!.data()!['status']),
-                    ),
-                    _buildTextNormalThenBold(
-                      context: context,
-                      normal: 'Tytuł: ',
-                      bold: snapshot.data!.data()!['title'],
-                    ),
+                    SizedBox(height: 16),
+                    _buildCategoriesPreview(snapshot.data!.data()!['category']),
+                    _buildTitle(snapshot.data!.data()!['title']),
                     _buildDescription(context, snapshot),
                     if (_userType == UserType.Firm)
                       _buildLocation(context, snapshot),
@@ -528,6 +518,57 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ),
     );
   }
+
+  Widget _buildCategoriesPreview(String category) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Rodzaj usługi:',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            InputChip(
+              showCheckmark: false,
+              selected: true,
+              label: Text(category),
+              onSelected: (_) {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Tytuł:',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(title, style: TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 Widget _buildContactButtons({
@@ -612,6 +653,7 @@ ListTile _createUserToShowInDetails(
   BuildContext context,
   UserProvider provider,
   Users user,
+  String userID,
 ) {
   final double _rating = calculateRating(user.rating!, user.ratingNumber!);
   return ListTile(
@@ -654,6 +696,14 @@ ListTile _createUserToShowInDetails(
         ),
       ],
     ),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfileScreen(userID),
+        ),
+      );
+    },
   );
 }
 
@@ -661,6 +711,7 @@ ListTile _createFirmToShowInDetails(
   BuildContext context,
   UserProvider provider,
   Firm firm,
+  String firmID,
 ) {
   final double _rating = calculateRating(firm.rating!, firm.ratingNumber!);
   return ListTile(
@@ -702,6 +753,12 @@ ListTile _createFirmToShowInDetails(
         ),
       ],
     ),
+    onTap: () {
+      Navigator.of(context).pushNamed(
+        FirmProfileScreen.routeName,
+        arguments: FirmsAuth(firmID),
+      );
+    },
   );
 }
 

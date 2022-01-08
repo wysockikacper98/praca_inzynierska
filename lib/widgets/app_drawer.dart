@@ -12,7 +12,6 @@ import '../screens/firm/firm_profile_screen.dart';
 import '../screens/messages/chats_screen.dart';
 import '../screens/orders/orders_screen.dart';
 import '../screens/search/search_screen.dart';
-import '../screens/settings_screen.dart';
 import '../screens/user/user_edit_profile_screen.dart';
 import '../screens/user/user_profile_screen.dart';
 import 'theme/theme_Provider.dart';
@@ -114,14 +113,15 @@ class AppDrawer extends StatelessWidget {
                     height: 1,
                     thickness: 1,
                   ),
-                  ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Ustawienia'),
-                    onTap: () {
-                      Navigator.of(context)
-                          .popAndPushNamed(SettingsScreen.routeName);
-                    },
-                  ),
+                  //TODO: Usunąć albo dodać nowe funkcjonalności w aplikacji
+                  // ListTile(
+                  //   leading: Icon(Icons.settings),
+                  //   title: Text('Ustawienia'),
+                  //   onTap: () {
+                  //     Navigator.of(context)
+                  //         .popAndPushNamed(SettingsScreen.routeName);
+                  //   },
+                  // ),
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text('Wyloguj'),
