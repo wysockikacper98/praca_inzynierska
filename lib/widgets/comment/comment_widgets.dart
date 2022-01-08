@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
@@ -30,6 +31,7 @@ class _BuildAlertDialogAddCommentState
   @override
   Widget build(BuildContext context) {
     final userType = Provider.of<UserProvider>(context).user!.type;
+    final bool _isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -37,7 +39,7 @@ class _BuildAlertDialogAddCommentState
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          color: Colors.white,
+          color: _isDarkMode ? const Color(0xFF2A2A2A) : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -82,7 +84,12 @@ class _BuildAlertDialogAddCommentState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      child: Text('Anuluj'),
+                      child: Text(
+                        'Anuluj',
+                        style: TextStyle(
+                          color: _isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                     TextButton(

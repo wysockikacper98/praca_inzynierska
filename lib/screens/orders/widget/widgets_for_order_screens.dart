@@ -8,6 +8,7 @@ import '../order_details_screen.dart';
 Padding buildOrderListTile(
   BuildContext context,
   QueryDocumentSnapshot<Map<String, dynamic>> data,
+  bool _isDarkMode,
 ) {
   final provider = Provider.of<UserProvider>(context, listen: false);
   final ThemeData themeData = Theme.of(context);
@@ -24,7 +25,8 @@ Padding buildOrderListTile(
       trailing: Text(
         translateStatusEnumStringToString(data.data()['status']),
         style: themeData.textTheme.subtitle2!.copyWith(
-          color: themeData.colorScheme.secondaryVariant,
+          color:
+              _isDarkMode ? const Color(0xFF00B589) : const Color(0xFF3B557A),
         ),
       ),
       subtitle: Text(

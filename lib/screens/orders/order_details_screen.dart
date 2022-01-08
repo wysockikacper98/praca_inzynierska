@@ -45,11 +45,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   void initState() {
     super.initState();
     _userType = Provider.of<UserProvider>(context, listen: false).user!.type;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     _future = _getOrderDetails(_userType);
   }
 
@@ -144,6 +139,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             idList.last,
                           ),
                     SizedBox(height: 16),
+                    _buildOrderStatus(
+                        snapshot.data!.data()!['status'], _isDarkMode),
                     _buildCategoriesPreview(snapshot.data!.data()!['category']),
                     _buildTitle(snapshot.data!.data()!['title']),
                     _buildDescription(context, snapshot),
@@ -311,34 +308,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Padding _buildTextNormalThenBold({
-    required BuildContext context,
-    required String normal,
-    required String bold,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        width: double.infinity,
-        child: RichText(
-          text: TextSpan(
-            text: normal,
-            style: Theme.of(context).textTheme.subtitle1,
-            children: [
-              TextSpan(
-                text: bold,
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -566,6 +535,103 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text(title, style: TextStyle(fontSize: 16)),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildOrderStatus(String stringStatus, bool isDarkMode) {
+    final Status status = stringToStatus(stringStatus);
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        height: 5,
+                        color: status == Status.PENDING
+                            ? const Color(0xFF8C8C8C)
+                            : isDarkMode
+                                ? const Color(0xFF00B589)
+                                : const Color(0xFFf2a48c),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        height: 5,
+                        color: status != Status.COMPLETED
+                            ? const Color(0xFF8C8C8C)
+                            : isDarkMode
+                                ? const Color(0xFF00B589)
+                                : const Color(0xFFf2a48c),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isDarkMode
+                        ? const Color(0xFF00B589)
+                        : const Color(0xFFf2a48c),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: status == Status.PENDING
+                        ? const Color(0xFF8C8C8C)
+                        : isDarkMode
+                            ? const Color(0xFF00B589)
+                            : const Color(0xFFf2a48c),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: status != Status.COMPLETED
+                        ? const Color(0xFF8C8C8C)
+                        : isDarkMode
+                            ? const Color(0xFF00B589)
+                            : const Color(0xFFf2a48c),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Oczekuje'),
+              Text('W trakcie'),
+              Text('Ukończone'),
+            ],
+          ),
+        ],
       ),
     );
   }
