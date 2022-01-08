@@ -107,7 +107,7 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
       .doc(userID)
       .update({'avatar': url});
 
-  //update zdjecia w wiadomościach
+  //start - update zdjecia w wiadomościach
   final QuerySnapshot<Map<String, dynamic>> chats = await FirebaseFirestore
       .instance
       .collection('chats')
@@ -115,15 +115,26 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
       .get();
 
   chats.docs.forEach((element) {
-    printColor(
-      text: 'Updating user avatar in chat: ${element.id}',
-      color: PrintColor.magenta,
-    );
     FirebaseFirestore.instance
         .collection('chats')
         .doc(element.id)
         .update({'userAvatar': url});
   });
+  //end
+
+  //start - update zdjęcia użytkownika w zamówieniach
+  final QuerySnapshot<Map<String, dynamic>> orders = await FirebaseFirestore
+      .instance
+      .collection('orders')
+      .where('userID', isEqualTo: userID)
+      .get();
+  orders.docs.forEach((element) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(element.id)
+        .update({'userAvatar': url});
+  });
+  //end
 
   final data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();
@@ -144,16 +155,13 @@ Future<void> _pickedImageFirm(
       .collection('firms')
       .doc(userID)
       .update({'avatar': url});
-  printColor(text: 'Siema $userID', color: PrintColor.red);
-  //update zdjecia firmy w wiadomościach
+  //start - update zdjecia firmy w wiadomościach
   final QuerySnapshot<Map<String, dynamic>> chats = await FirebaseFirestore
       .instance
       .collection('chats')
       .where('users', arrayContains: userID)
       .get();
 
-  printColor(
-      text: 'Ilość udate avatarów: ${chats.size}', color: PrintColor.yellow);
   chats.docs.forEach((element) {
     printColor(
       text: 'Updating firm avatar in chat: ${element.id}',
@@ -164,6 +172,22 @@ Future<void> _pickedImageFirm(
         .doc(element.id)
         .update({'firmAvatar': url});
   });
+  // end
+
+  //start - update zdjecia firmy w zamówieniach
+  final QuerySnapshot<Map<String, dynamic>> orders = await FirebaseFirestore
+      .instance
+      .collection('orders')
+      .where('firmID', isEqualTo: userID)
+      .get();
+
+  orders.docs.forEach((element) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(element.id)
+        .update({'firmAvatar': url});
+  });
+  //end
 
   final data =
       await FirebaseFirestore.instance.collection('firms').doc(userID).get();
