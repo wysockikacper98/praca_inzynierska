@@ -60,9 +60,8 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   Widget build(BuildContext context) {
     print('build -> login_form');
     final double _windowWith = MediaQuery.of(context).size.width;
-
+    final double _logoWidth = _windowWith * 0.30;
     return Scaffold(
-      // backgroundColor: const Color(0xFFabd4cd),
       appBar: AppBar(
         title: Text('Zaloguj'),
         elevation: 0.0,
@@ -76,25 +75,28 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
             else
               return Center(
                 child: SingleChildScrollView(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Positioned(
-                        top: -160,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            'assets/svg/fix_it_logo.svg',
-                            width: _windowWith * 0.30,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: _logoWidth * 1.3),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          top: -_logoWidth * 1.3,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SvgPicture.asset(
+                              'assets/svg/fix_it_logo.svg',
+                              width: _logoWidth,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: buildLoginForm(context),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: buildLoginForm(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

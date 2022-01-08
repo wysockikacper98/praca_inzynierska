@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EmergencyScreen extends StatelessWidget {
@@ -68,6 +70,8 @@ $bullet w awariach przydomowych przepompowni ścieków''',
       },
     ];
 
+    final bool _isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Awarie"),
@@ -78,6 +82,10 @@ $bullet w awariach przydomowych przepompowni ścieków''',
         itemBuilder: (ctx, index) {
           return ExpansionTile(
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            textColor:
+                _isDarkMode ? const Color(0xFF00664d) : const Color(0xFFffa166),
+            iconColor:
+                _isDarkMode ? const Color(0xFF00664d) : const Color(0xFFffa166),
             leading: Image.asset(
               data[index]['icon'],
               height: 60,
@@ -98,7 +106,7 @@ $bullet w awariach przydomowych przepompowni ścieków''',
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                child: Center(child: Icon(Icons.call)),
+                child: Center(child: Icon(Icons.call, color: Colors.white)),
                 style: ElevatedButton.styleFrom(primary: Colors.green),
                 onPressed: () {
                   callPhone('tel:' + data[index]['phone'].toString());
@@ -112,10 +120,13 @@ $bullet w awariach przydomowych przepompowni ścieków''',
   }
 
   AutoSizeText buildTitleInExpansionTile(String text) => AutoSizeText(
-        text,
+    text,
         maxLines: 1,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20),
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       );
 
   Future<void> callPhone(String url) async {
