@@ -11,6 +11,7 @@ import '../widgets/theme/theme_Provider.dart';
 import '../widgets/theme/theme_dark.dart';
 import '../widgets/theme/theme_light.dart';
 import 'orders/order_details_screen.dart';
+import 'orders/orders_screen.dart';
 import 'search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -156,6 +157,9 @@ class HomeScreen extends StatelessWidget {
       FirebaseMessaging.instance.onTokenRefresh
           .listen((event) => saveTokenToDatabase(userType, event));
 
+      // dev.debugger();
+
+      //Important: Notification
       LocalNotificationService.initialize(context);
 
       ///gives you the message on which user taps
@@ -163,6 +167,9 @@ class HomeScreen extends StatelessWidget {
       FirebaseMessaging.instance.getInitialMessage().then((message) {
         if (message != null) {
           if (message.data['name'] == OrderDetailsScreen.routeName) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.of(context).pushNamed(OrdersScreen.routeName);
+
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -179,6 +186,9 @@ class HomeScreen extends StatelessWidget {
       FirebaseMessaging.onMessageOpenedApp.listen((message) {
         if (message.notification != null) {
           if (message.data['name'] == OrderDetailsScreen.routeName) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            Navigator.of(context).pushNamed(OrdersScreen.routeName);
+
             Navigator.push(
               context,
               MaterialPageRoute(

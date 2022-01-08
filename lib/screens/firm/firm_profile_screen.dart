@@ -13,6 +13,7 @@ import '../../models/meeting.dart';
 import '../../models/users.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/firm/build_firm_info.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import '../calendar/meeting_data_source.dart';
 import '../comment/build_comment_section.dart';
 import '../full_screen_image.dart';
@@ -26,6 +27,9 @@ class FirmsAuth {
 
 class FirmProfileScreen extends StatelessWidget {
   static const routeName = '/firm-profile';
+  bool _initialize = false;
+  late Future<DocumentSnapshot<Map<String, dynamic>>> _future;
+  late Future<QuerySnapshot<Map<String, dynamic>>> _futureMeeting;
 
   Future<QuerySnapshot<Map<String, dynamic>>> getFirmMeeting(firmID) async {
     printColor(text: 'getFirmMeeting', color: PrintColor.cyan);
@@ -36,18 +40,32 @@ class FirmProfileScreen extends StatelessWidget {
         .get();
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getFirmData(firmID) async {
+  Future<DocumentSnapshot<Map<String, dynamic>>> getFirmData(
+      String firmID) async {
     printColor(text: 'getDataAboutFirm', color: PrintColor.magenta);
     return FirebaseFirestore.instance.collection('firms').doc(firmID).get();
+  }
+
+  initialize(String firmID) {
+    if (!_initialize) {
+      _future = getFirmData(firmID);
+      _futureMeeting = getFirmMeeting(firmID);
+      _initialize = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final FirmsAuth data =
         ModalRoute.of(context)!.settings.arguments as FirmsAuth;
+
+    initialize(data.firmID);
+
     final String userID = FirebaseAuth.instance.currentUser!.uid;
     final UserType userType =
         Provider.of<UserProvider>(context, listen: false).user!.type;
+    final bool _isDarkMode =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -64,11 +82,15 @@ class FirmProfileScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-        future: getFirmData(data.firmID),
+        future: _future,
         builder: (ctx,
             AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             var pictures = snapshot.data!.data()!['details']['pictures'];
+            final String firmAvatar = snapshot.data?.data()?['avatar'] ?? '';
+            final String userAvatar =
+                Provider.of<UserProvider>(context).user?.avatar ?? '';
+
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,18 +106,21 @@ class FirmProfileScreen extends StatelessWidget {
                     child:
                         Text(snapshot.data!.data()!['details']['description']),
                   ),
-                  // TODO: Localization do not implemented yet
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
-                  //   child: Text("Lokalizacja", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                  // ),
                   buildHeadline("Zdjęcia:"),
                   buildPictures(pictures, context),
                   buildHeadline("Kalendarz:"),
-                  buildCalendar(getFirmMeeting(data.firmID)),
+                  buildCalendar(_isDarkMode),
+                  buildCalendarLegend(),
                   SizedBox(height: 50),
                   if (userType != UserType.Firm)
-                    buildContactIcons(context, userID, snapshot),
+                    buildContactIcons(
+                      context,
+                      userID,
+                      snapshot,
+                      _isDarkMode,
+                      userAvatar,
+                      firmAvatar,
+                    ),
                   BuildCommentSection(
                     data.firmID,
                     calculateRating(
@@ -115,8 +140,14 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  Column buildContactIcons(BuildContext context, String userID,
-      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+  Column buildContactIcons(
+    BuildContext context,
+    String userID,
+    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+    bool _isDarkMode,
+    String userAvatar,
+    String firmAvatar,
+  ) {
     return Column(
       children: [
         Padding(
@@ -136,7 +167,11 @@ class FirmProfileScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: Icon(Icons.question_answer_outlined),
+              icon: Icon(
+                Icons.question_answer_outlined,
+                color:
+                    _isDarkMode ? Colors.white : Theme.of(context).primaryColor,
+              ),
               iconSize: 80,
               color: Theme.of(context).primaryColor,
               onPressed: () {
@@ -146,13 +181,19 @@ class FirmProfileScreen extends StatelessWidget {
                     context,
                     userID,
                     snapshot.data,
+                    userAvatar,
+                    firmAvatar,
                   ),
                   barrierDismissible: true,
                 );
               },
             ),
             IconButton(
-              icon: Icon(Icons.phone),
+              icon: Icon(
+                Icons.phone,
+                color:
+                    _isDarkMode ? Colors.white : Theme.of(context).primaryColor,
+              ),
               iconSize: 80,
               color: Theme.of(context).primaryColor,
               onPressed: () {
@@ -168,7 +209,11 @@ class FirmProfileScreen extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(Icons.email_outlined),
+              icon: Icon(
+                Icons.email_outlined,
+                color:
+                    _isDarkMode ? Colors.white : Theme.of(context).primaryColor,
+              ),
               iconSize: 80,
               color: Theme.of(context).primaryColor,
               onPressed: () {
@@ -188,13 +233,13 @@ class FirmProfileScreen extends StatelessWidget {
     );
   }
 
-  Padding buildCalendar(Future<QuerySnapshot<Map<String, dynamic>>> _future) {
+  Padding buildCalendar(bool _isDarkMode) {
     final DateTime date = DateTime.now();
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: FutureBuilder(
-        future: _future,
+        future: _futureMeeting,
         builder: (
           BuildContext context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
@@ -212,9 +257,30 @@ class FirmProfileScreen extends StatelessWidget {
               view: CalendarView.month,
               backgroundColor: Colors.white30,
               firstDayOfWeek: 1,
-              minDate: DateTime.utc(date.year, date.month),
+              showCurrentTimeIndicator: false,
+              minDate: DateTime.utc(date.year, date.month - 1),
+              selectionDecoration: BoxDecoration(
+                border: Border.all(
+                  color: _isDarkMode
+                      ? const Color(0xFF3F577B)
+                      : const Color(0xFF6D80A5),
+                  width: 2,
+                ),
+              ),
               showDatePickerButton: true,
               showNavigationArrow: true,
+              todayHighlightColor: _isDarkMode
+                  ? const Color(0xFF3F577B)
+                  : const Color(0xFF6D80A5),
+              todayTextStyle:
+                  TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              viewHeaderStyle: ViewHeaderStyle(
+                dayTextStyle: TextStyle(
+                  color: _isDarkMode ? Colors.white : Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
               monthViewSettings: MonthViewSettings(
                 showTrailingAndLeadingDates: false,
                 appointmentDisplayMode: MonthAppointmentDisplayMode.none,
@@ -229,21 +295,35 @@ class FirmProfileScreen extends StatelessWidget {
                 return Container(
                   decoration: BoxDecoration(
                     color: _background,
-                    border: _isDateNow(details.date)
-                        ? Border.all(
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 2.0,
-                          )
-                        : Border.all(
-                            color: Colors.transparent,
-                          ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      details.date.day.toString(),
-                      style: TextStyle(color: _textColor),
+                    border: Border.all(
+                      color: Colors.black12,
                     ),
                   ),
+                  child: _isDateNow(details.date)
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: _isDarkMode
+                                    ? const Color(0xFF3F577B)
+                                    : const Color(0xFF6D80A5),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Text(
+                              details.date.day.toString(),
+                              style: TextStyle(color: _textColor),
+                            ),
+                          ],
+                        )
+                      : Center(
+                          child: Text(
+                            details.date.day.toString(),
+                            style: TextStyle(color: _textColor),
+                          ),
+                        ),
                 );
               },
             );
@@ -308,7 +388,7 @@ class FirmProfileScreen extends StatelessWidget {
                     tag: tag,
                     child: Container(
                       child: Image.network(pictures[index]),
-                      color: Colors.white30,
+                      // color: Colors.white30,
                     ),
                   ),
                   onTap: () {
@@ -353,7 +433,12 @@ class FirmProfileScreen extends StatelessWidget {
   }
 
   AlertDialog buildConfirmNewMessageDialog(
-      BuildContext context, String userID, firm) {
+    BuildContext context,
+    String userID,
+    firm,
+    String userAvatar,
+    String firmAvatar,
+  ) {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     // print(firm.id);
     return userID != firm.id
@@ -371,7 +456,7 @@ class FirmProfileScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                   // createNewChat(context, getCurrentUser(), firm);
-                  createNewChat(context, user!, firm);
+                  createNewChat(context, user!, firm, userAvatar, firmAvatar);
                 },
               ),
             ],
@@ -467,6 +552,52 @@ class FirmProfileScreen extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget buildCalendarLegend() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        padding: EdgeInsets.all(10.0),
+        color: Colors.white30,
+        child: Column(
+          children: [
+            Container(
+              height: 20,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0x8039D353),
+                    const Color(0x80FF4D1A),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Dostępny'),
+                Text('Niedostępny'),
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Container(
+                  height: 20,
+                  width: 20,
+                  color: Colors.orange.shade100,
+                ),
+                SizedBox(width: 10),
+                Text('Dnie wolne od pracy'),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

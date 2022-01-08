@@ -2,11 +2,13 @@ import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:provider/provider.dart';
 
 import '../../helpers/colorful_print_messages.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../widgets/calculate_rating.dart';
 import '../../widgets/firm/build_firm_info.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import 'filter_screen.dart';
 import 'search_firms.dart';
 
@@ -86,6 +88,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final ThemeData _theme = Theme.of(context);
+    final bool _isDarkTheme =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -108,12 +112,15 @@ class _SearchScreenState extends State<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                buildFilterButton(_theme),
-                buildSortDropdown(_theme),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  buildFilterButton(_theme, _isDarkTheme),
+                  buildSortDropdown(_theme),
+                ],
+              ),
             ),
             SizedBox(height: 20),
             Padding(
@@ -147,17 +154,18 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Badge buildFilterButton(ThemeData _theme) {
+  Badge buildFilterButton(ThemeData _theme, bool _isDarkTheme) {
     return Badge(
       badgeContent: Text(_numberOfFilters.toString()),
       showBadge: _numberOfFilters > 0,
       animationType: BadgeAnimationType.slide,
-      child: TextButton(
+      child: ElevatedButton(
           child: Text(
             'Filtry',
-            style: _theme.textTheme.headline6!
-                .copyWith(color: _theme.colorScheme.primary),
-            // style: Theme.of(context).textTheme.subtitle1,
+            style: TextStyle(
+              color: _isDarkTheme ? Colors.white : Colors.black,
+              fontSize: 20,
+            ),
           ),
           onPressed: () {
             Navigator.of(context).push(
@@ -271,7 +279,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  //TODO: finish sorting firms
   void _sortFirm() {
     printColor(text: '_sortFirm called', color: PrintColor.black);
     if (_filterFirmsList != null && _filterFirmsList!.length > 0) {

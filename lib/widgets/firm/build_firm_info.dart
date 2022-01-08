@@ -15,7 +15,7 @@ ListTile buildFirmInfo(BuildContext context, firm, [bool disable = false]) {
     leading: CircleAvatar(
       radius: 30,
       backgroundColor: Colors.white,
-      backgroundImage: AssetImage('assets/images/fileNotFound.png'),
+      backgroundImage: AssetImage('assets/images/user.png'),
       foregroundImage: firm.data()['avatar'] != ''
           ? NetworkImage(firm.data()['avatar'])
           : null,

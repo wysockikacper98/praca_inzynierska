@@ -145,7 +145,8 @@ void handleFirebaseException(BuildContext context, FirebaseException error) {
   );
 }
 
-Future<void> createNewChat(BuildContext context, Users user, firm) async {
+Future<void> createNewChat(BuildContext context, Users user, firm,
+    String userAvatar, String firmAvatar) async {
   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
   String userID = FirebaseAuth.instance.currentUser!.uid;
 
@@ -178,6 +179,8 @@ Future<void> createNewChat(BuildContext context, Users user, firm) async {
       'updatedAt': DateTime.now(),
       'users': [userID, firm.id],
       'latestMessage': '',
+      'userAvatar': userAvatar,
+      'firmAvatar': firmAvatar,
     }).then((value) {
       print('Added chat with id:${value.id}');
       Navigator.push(

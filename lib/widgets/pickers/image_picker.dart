@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../helpers/colorful_print_messages.dart';
 import '../../models/firm.dart';
 import '../../models/users.dart';
 
@@ -106,6 +107,24 @@ Future<void> _pickedImage(File image, UserProvider provider) async {
       .doc(userID)
       .update({'avatar': url});
 
+  //update zdjecia w wiadomościach
+  final QuerySnapshot<Map<String, dynamic>> chats = await FirebaseFirestore
+      .instance
+      .collection('chats')
+      .where('users', arrayContains: userID)
+      .get();
+
+  chats.docs.forEach((element) {
+    printColor(
+      text: 'Updating user avatar in chat: ${element.id}',
+      color: PrintColor.magenta,
+    );
+    FirebaseFirestore.instance
+        .collection('chats')
+        .doc(element.id)
+        .update({'userAvatar': url});
+  });
+
   final data =
       await FirebaseFirestore.instance.collection('users').doc(userID).get();
   provider.user = Users.fromJson(data.data()!);
@@ -125,6 +144,26 @@ Future<void> _pickedImageFirm(
       .collection('firms')
       .doc(userID)
       .update({'avatar': url});
+  printColor(text: 'Siema $userID', color: PrintColor.red);
+  //update zdjecia firmy w wiadomościach
+  final QuerySnapshot<Map<String, dynamic>> chats = await FirebaseFirestore
+      .instance
+      .collection('chats')
+      .where('users', arrayContains: userID)
+      .get();
+
+  printColor(
+      text: 'Ilość udate avatarów: ${chats.size}', color: PrintColor.yellow);
+  chats.docs.forEach((element) {
+    printColor(
+      text: 'Updating firm avatar in chat: ${element.id}',
+      color: PrintColor.blue,
+    );
+    FirebaseFirestore.instance
+        .collection('chats')
+        .doc(element.id)
+        .update({'firmAvatar': url});
+  });
 
   final data =
       await FirebaseFirestore.instance.collection('firms').doc(userID).get();

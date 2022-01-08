@@ -157,7 +157,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       bold: snapshot.data!.data()!['title'],
                     ),
                     _buildDescription(context, snapshot),
-                    _buildLocation(context, snapshot),
+                    if (_userType == UserType.Firm)
+                      _buildLocation(context, snapshot),
                     _buildDateTitleAndButton(context, snapshot),
                     _buildDatePreview(snapshot),
                     SizedBox(height: 16),
@@ -211,7 +212,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 .subtitle1!
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          if (snapshot.data!.data()!['status'] == 'PENDING')
+          if (snapshot.data!.data()!['status'] == 'PENDING' &&
+              _userType == UserType.Firm)
             ElevatedButton.icon(
               icon: Icon(Icons.date_range_outlined),
               label: Text('Zmień datę'),
@@ -226,6 +228,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       ),
                       snapshot.data!.id,
                       refreshWidget,
+                      snapshot.data!.data()!,
                     ),
                   ),
                 );
@@ -499,7 +502,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       .subtitle1!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                IconButton(
+                ElevatedButton.icon(
+                  label: Text('Otwórz w Google Map'),
                   icon: Icon(Icons.directions_outlined),
                   onPressed: () async {
                     String query = Uri.encodeComponent(
@@ -542,9 +546,7 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.question_answer_outlined),
         iconSize: 80,
-        color: isDarkMode
-            ? const Color(0xFFBF5AF2)
-            : Theme.of(context).primaryColor,
+        color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,
@@ -566,9 +568,7 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.phone),
         iconSize: 80,
-        color: isDarkMode
-            ? const Color(0xFFBF5AF2)
-            : Theme.of(context).primaryColor,
+        color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,
@@ -588,9 +588,7 @@ Widget _buildContactButtons({
       IconButton(
         icon: Icon(Icons.email_outlined),
         iconSize: 80,
-        color: isDarkMode
-            ? const Color(0xFFBF5AF2)
-            : Theme.of(context).primaryColor,
+        color: isDarkMode ? Colors.white : Theme.of(context).primaryColor,
         onPressed: () {
           showDialog(
             context: context,

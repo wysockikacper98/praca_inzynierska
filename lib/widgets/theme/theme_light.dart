@@ -156,7 +156,6 @@ ThemeData themeLight() {
     primaryColor: pastelOrangeColor,
     primaryColorDark: Color(0xFF222222),
     toggleableActiveColor: kGreenColor,
-    tabBarTheme: tabBarTheme(),
     primaryIconTheme: IconThemeData(color: primaryColorLight),
     // iconTheme: IconThemeData(color: primaryColorLight),
     chipTheme: chipThemeData(),
@@ -204,18 +203,6 @@ TextStyle textDrawerStyle() {
 }
 
 //Buttons Styles Theme
-
-TabBarTheme tabBarTheme() {
-  return TabBarTheme(
-    indicator: BoxDecoration(
-      border: Border.all(color: Colors.grey),
-      borderRadius: BorderRadius.zero,
-      color: kOrangeColor.shade200,
-    ),
-    labelColor: Colors.blue,
-    unselectedLabelColor: Colors.grey,
-  );
-}
 
 TextButtonThemeData textButtonTheme() {
   return TextButtonThemeData(
@@ -267,17 +254,11 @@ CardTheme cardTheme() {
 
 AppBarTheme appBarTheme() {
   return AppBarTheme(
-    titleTextStyle: GoogleFonts.lato(
+    titleTextStyle: GoogleFonts.kalam(
       fontSize: 30,
-      color: pastelBlueColor,
+      color: Colors.black,
     ),
-    // TextStyle(
-    //   color: primaryColorLight,
-    //   fontSize: 30,
-    //   fontFamily: 'Dancing Script',
-    //   fontWeight: FontWeight.w700,
-    // ),
-    iconTheme: IconThemeData(size: 30, color: pastelBlueColor),
+    iconTheme: IconThemeData(size: 30, color: Colors.black),
     backgroundColor: pastelOrangeColor.shade400,
     centerTitle: true,
     elevation: 0.0,

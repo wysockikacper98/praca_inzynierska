@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                       leading: Icon(Icons.home),
                       title: Text('Strona główna'),
                       onTap: () {
-                        Navigator.of(context).pushReplacementNamed('/');
+                        Navigator.of(context).pop();
                       }),
                   ListTile(
                     leading: Icon(Icons.search),
@@ -143,7 +144,10 @@ class AppDrawer extends StatelessWidget {
                       if (snapshot.hasData) {
                         return Text(
                           '${snapshot.data!.appName} v${snapshot.data!.version}+${snapshot.data!.buildNumber} ',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          // style: Theme.of(context).textTheme.subtitle1,
+                          style: GoogleFonts.vt323(
+                            fontSize: 20,
+                          ),
                         );
                       } else
                         return Container();
@@ -176,9 +180,7 @@ class AppDrawer extends StatelessWidget {
                 isDarkMode
                     ? Icons.light_mode_sharp
                     : Icons.nightlight_round_sharp,
-                color: isDarkMode
-                    ? const Color(0xFF1F1F1F)
-                    : Theme.of(context).primaryColorLight,
+                color: Theme.of(context).primaryColorLight,
               ),
               onPressed: () =>
                   Provider.of<ThemeProvider>(context, listen: false)

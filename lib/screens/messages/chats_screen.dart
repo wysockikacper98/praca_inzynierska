@@ -78,6 +78,17 @@ class ChatsScreen extends StatelessWidget {
                           : DateFormat.yMMMd('pl_PL').format(lastMessageDate);
 
                   return ListTile(
+                    leading: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage('assets/images/user.png'),
+                      foregroundImage: userType == UserType.Firm
+                          ? chatDocs[index]['userAvatar'] != ''
+                              ? NetworkImage(chatDocs[index]['userAvatar'])
+                              : null
+                          : chatDocs[index]['firmAvatar'] != ''
+                              ? NetworkImage(chatDocs[index]['firmAvatar'])
+                              : null,
+                    ),
                     title: Text(currentChatName),
                     subtitle: Text(
                         chatDocs[index]['latestMessage']?.toString() ?? ''),

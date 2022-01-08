@@ -208,7 +208,6 @@ class _PickOrderDateState extends State<PickOrderDate> {
               ),
             ),
             SizedBox(height: 16),
-            // FIXME: Testowy kalenarz
             FutureBuilder(
               future: _future,
               builder: (

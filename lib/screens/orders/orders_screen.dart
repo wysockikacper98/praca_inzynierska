@@ -50,6 +50,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               Tab(text: 'Aktywne'),
               Tab(text: 'Zakończone'),
             ],
+            indicatorColor: const Color(0xFF3B557A),
           ),
         ),
         body: TabBarView(

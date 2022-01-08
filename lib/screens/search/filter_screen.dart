@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/useful_data.dart';
+import '../../widgets/theme/theme_Provider.dart';
 
 class FilterScreen extends StatefulWidget {
   final void Function(
@@ -72,6 +73,9 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     final ThemeData _theme = Theme.of(context);
+    final bool _isDarkMode =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -92,7 +96,7 @@ class _FilterScreenState extends State<FilterScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  buildCategories(context),
+                  buildCategories(context, _isDarkMode),
                   buildRating(),
                   buildPopularity(_theme),
                 ],
@@ -216,7 +220,7 @@ class _FilterScreenState extends State<FilterScreen> {
     });
   }
 
-  Column buildCategories(BuildContext context) {
+  Column buildCategories(BuildContext context, bool _isDarkMode) {
     return Column(
       children: [
         ListTile(
@@ -229,6 +233,7 @@ class _FilterScreenState extends State<FilterScreen> {
             icon: Icon(
               _editCategory ? Icons.expand_less : Icons.expand_more,
               size: 30.0,
+              color: _isDarkMode ? Colors.white : Colors.black,
             ),
             onPressed: () => setState(() {
               _editCategory = !_editCategory;

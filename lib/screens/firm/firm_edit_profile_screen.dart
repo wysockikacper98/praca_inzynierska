@@ -138,8 +138,9 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
           ),
           trailing: amountOfPictures < 5
               ? ElevatedButton.icon(
-                  label: Text(
-                      'Dodaj zdjecie ${Fraction(amountOfPictures, 5).toStringAsGlyph()}'),
+                  label: Text(amountOfPictures == 0
+                      ? 'Dodaj zdjecie'
+                      : 'Dodaj zdjecie ${Fraction(amountOfPictures, 5).toStringAsGlyph()}'),
                   icon: Icon(Icons.add_photo_alternate),
                   onPressed: () => addPictureToFirmProfile(context),
                 )

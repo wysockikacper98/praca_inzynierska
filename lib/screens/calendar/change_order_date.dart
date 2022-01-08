@@ -2,22 +2,28 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/colorful_print_messages.dart';
+import '../../helpers/firebase_firestore.dart';
 import '../../models/meeting.dart';
+import '../../models/notification.dart';
 import '../../widgets/theme/theme_Provider.dart';
+import '../orders/order_details_screen.dart';
 import '../orders/widget/alerts_dialog_for_orders.dart';
 import 'meeting_data_source.dart';
 
 class ChangeOrderDate extends StatefulWidget {
   final PickerDateRange _defaultPickedDate;
   final String _orderID;
-  final void Function() _refresh;
+  final void Function() _order;
+  final Map<String, dynamic> _snapshot;
 
-  ChangeOrderDate(this._defaultPickedDate, this._orderID, this._refresh);
+  ChangeOrderDate(
+      this._defaultPickedDate, this._orderID, this._order, this._snapshot);
 
   @override
   _ChangeOrderDateState createState() => _ChangeOrderDateState();
@@ -337,7 +343,26 @@ class _ChangeOrderDateState extends State<ChangeOrderDate> {
         'to': _pickedDate.endDate,
       });
 
-      widget._refresh();
+      printColor(
+          text:
+              'Wysłano powiadomienie\nOd: ${DateFormat.yMd('pl_PL').format(_pickedDate.startDate!)}, do: ${DateFormat.yMd('pl_PL').format(_pickedDate.endDate!)}',
+          color: PrintColor.cyan);
+
+      //send notification to user
+      sendPushMessage(
+        widget._snapshot['userID'],
+        NotificationData(
+          title: 'Zmieniono datę zamówienia',
+          body:
+              'Od: ${DateFormat.yMd('pl_PL').format(_pickedDate.startDate!)}, do: ${DateFormat.yMd('pl_PL').format(_pickedDate.endDate!)}',
+        ),
+        NotificationDetails(
+          name: OrderDetailsScreen.routeName,
+          details: widget._orderID,
+        ),
+      );
+
+      widget._order();
       Navigator.of(context).pop();
     } catch (e) {
       printColor(text: e.toString(), color: PrintColor.red);

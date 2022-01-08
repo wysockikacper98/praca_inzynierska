@@ -94,29 +94,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   monthName + ' ' + details.date.year.toString(),
                   style: TextStyle(fontSize: 18),
                 );
-                return Stack(
-                  children: [
-                    //TODO: dodać zdjęcia w wioku podglądu kalendarza
-                    Image(
-                      // image: ExactAssetImage(
-                      //     'assets/images/monthImages' + monthName + '.png'),
-                      image: ExactAssetImage('assets/images/tempPicture3.png'),
-                      fit: BoxFit.cover,
-                      width: details.bounds.width,
-                      height: details.bounds.height,
-                    ),
-                    Positioned(
-                      left: 55,
-                      right: 0,
-                      top: 20,
-                      bottom: 0,
-                      child: Text(
-                        monthName + ' ' + details.date.year.toString(),
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                );
+                // return Stack(
+                //   children: [
+                //     //TODO: dodać zdjęcia w wioku podglądu kalendarza
+                //     Image(
+                //       // image: ExactAssetImage(
+                //       //     'assets/images/monthImages' + monthName + '.png'),
+                //       image: ExactAssetImage('assets/images/tempPicture3.png'),
+                //       fit: BoxFit.cover,
+                //       width: details.bounds.width,
+                //       height: details.bounds.height,
+                //     ),
+                //     Positioned(
+                //       left: 55,
+                //       right: 0,
+                //       top: 20,
+                //       bottom: 0,
+                //       child: Text(
+                //         monthName + ' ' + details.date.year.toString(),
+                //         style: TextStyle(fontSize: 18),
+                //       ),
+                //     ),
+                //   ],
+                // );
+                //
               },
             );
           }

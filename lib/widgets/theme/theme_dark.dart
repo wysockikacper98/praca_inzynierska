@@ -27,7 +27,7 @@ const MaterialColor purpleColor = const MaterialColor(
     400: const Color(0xFFd189f5),
     500: const Color(0xFFBF5AF2),
     600: const Color(0xFFad2bee),
-    700: const Color(0xFF9311d4),
+    700: const Color(0xff9311d4),
     800: const Color(0xFF730da5),
     900: const Color(0xFF520a76),
   },
@@ -48,7 +48,7 @@ const MaterialColor greenColor = const MaterialColor(
     900: const Color(0xFF003326),
   },
 );
-// Important
+// Important: Global Dark Theme
 ThemeData themeDark() {
   return ThemeData(
     brightness: Brightness.dark,
@@ -96,8 +96,8 @@ ChipThemeData chipThemeData() {
     backgroundColor: Colors.grey.shade700,
     disabledColor: Colors.black38,
     checkmarkColor: Colors.white.withOpacity(0.8),
-    selectedColor: purpleColor.shade900,
-    secondarySelectedColor: purpleColor.shade900,
+    selectedColor: const Color(0xFF9737CB),
+    secondarySelectedColor: const Color(0xFF9737CB),
     padding: EdgeInsets.all(5.0),
     labelStyle: TextStyle(
       fontWeight: FontWeight.bold,
