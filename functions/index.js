@@ -32,7 +32,7 @@ exports.sendNewTripNotification = functions.https.onCall((data, context) => {
 //   functions.logger.log("User cleanup finished");
 // });
 // every 24 hours
-exports.scheduledFunction = functions.pubsub.schedule("every 24 hours")
+exports.scheduledFunction = functions.pubsub.schedule("every day 16:00")
   .onRun(async (context) => {
     const snapshot = await ordersRef.where("status", "!=", "COMPLETED").get();
     if (!snapshot.empty) {
@@ -40,22 +40,22 @@ exports.scheduledFunction = functions.pubsub.schedule("every 24 hours")
         if (doc.data()["status"] === "PROCESSING") {
           const dateDifference = dateDifferenceInDays(doc.data()["dateTo"].toDate());
           if (dateDifference === 2) {
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Opóźnienie zamówienia zostało zajerestrowane.", 'Niedotrzymanie terminu zakończenia poskutkowało zarejetrowaniem opóźnienia w systemie.', true);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Opóźnienie zamówienia zostało zajerestrowane.", 'Niedotrzymanie terminu zakończenia poskutkowało zarejetrowaniem opóźnienia w systemie.', false, true);
           } else if (dateDifference === 1) { // spóźniony jeden dzień
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Zamówienie nie zostało zakończone.", "Dalsze niedotrzymanie terminu poskutkuje zarejestrowaniem opóźnienia w sytemie.", false);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Zamówienie nie zostało zakończone.", "Dalsze niedotrzymanie terminu poskutkuje zarejestrowaniem opóźnienia w sytemie.", false, false);
           } else if (dateDifference === -1) { //dzień przed końcem zlecenia
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jutro ostatni dzień wykonywania pracy.", doc.data()["title"], false);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jutro ostatni dzień wykonywania pracy.", doc.data()["title"], false, false);
           }
 
 
         } else { // PENDING
           const dateDifference = dateDifferenceInDays(doc.data()["dateFrom"].toDate());
           if (dateDifference === -2) {
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Spóźnienie zostało zarejestrowane", "Niedotrzymanie terminu rozpoczęcia poskutkowało zarejetrowaniem opóźnienia w systemie.", true);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Spóźnienie zostało zarejestrowane", "Niedotrzymanie terminu rozpoczęcia poskutkowało zarejetrowaniem opóźnienia w systemie.", true, false);
           } else if (dateDifference === -1) { // spóźniony jeden dzień
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jednodniowe spóźnienie z rozpoczęciem prac.", "Kolejny dzień spóźnienia zostanie zarejestrowany w systemie", false);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jednodniowe spóźnienie z rozpoczęciem prac.", "Kolejny dzień spóźnienia zostanie zarejestrowany w systemie", false, false);
           } else if (dateDifference === 1) { //dzień przed rozpoczęciem zlecenia
-            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jutro pierwszy dzień wykonywania pracy.", doc.data()['title'], false);
+            sendNotificationToFirm(doc.data()["firmID"], doc.id, "Jutro pierwszy dzień wykonywania pracy.", doc.data()['title'], false, false);
 
           }
         }
@@ -64,13 +64,15 @@ exports.scheduledFunction = functions.pubsub.schedule("every 24 hours")
     return null;
   });
 
-async function sendNotificationToFirm(firmID, orderID, messageTitle, orderTitle, isLate) {
+async function sendNotificationToFirm(firmID, orderID, messageTitle, orderTitle, isLate, isExtended) {
   const doc = await firmRef.doc(firmID).get();
-
   if (doc.exists) {
     const token = doc.data()['tokens'];
-    if(isLate) {
+    if(isLate) { // zamówienia nie rozpoczęte i spóźnione 2 dni
       await firmRef.doc(firmID).update({late: FieldValue.increment(1)})
+    }
+    if(isExtended){ // zamówienia rozpoczęte nie zakończone 2 dni
+      await firmRef.doc(firmID).update({extended: FieldValue.increment(1)})
     }
     if(token != null) {
       admin.messaging()
