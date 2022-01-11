@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -121,6 +122,7 @@ class FirmProfileScreen extends StatelessWidget {
                       userAvatar,
                       firmAvatar,
                     ),
+                  buildPunctuality(_isDarkMode, snapshot.data!.data()!),
                   BuildCommentSection(
                     data.firmID,
                     calculateRating(
@@ -599,6 +601,64 @@ class FirmProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildPunctuality(bool _isDarkMode, Map<String, dynamic> data) {
+    final Color color100To80 = const Color(0x80FF4D1A);
+    final Color color80To60 = const Color(0x80FF9933);
+    final Color color60To40 = const Color(0x80CEA83B);
+    final Color color40To20 = const Color(0x809CB643);
+    final Color color20To0 = const Color(0x8039D353);
+
+    late final Color _iconColor;
+
+    final double lateAmount =
+        data['late'] == null ? 0 : data['late'] / data['ordersAmount'];
+    final double extendedAmount =
+        data['extended'] == null ? 0 : data['extended'] / data['ordersAmount'];
+    final double averageAmount = (lateAmount + extendedAmount) / 2;
+
+    if (averageAmount >= 0.8) {
+      _iconColor = color100To80;
+    } else if (averageAmount >= 0.6) {
+      _iconColor = color80To60;
+    } else if (averageAmount >= 0.4) {
+      _iconColor = color60To40;
+    } else if (averageAmount >= 0.2) {
+      _iconColor = color40To20;
+    } else {
+      _iconColor = color20To0;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildHeadline('Punktualność:'),
+        SizedBox(height: 10),
+        IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(Icons.watch_later, size: 48, color: _iconColor),
+              VerticalDivider(width: 48.0),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Spóźnione: ${(lateAmount * 100).round()}%',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    'Przedłużone: ${(extendedAmount * 100).round()}%',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

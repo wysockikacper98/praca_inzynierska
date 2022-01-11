@@ -405,12 +405,12 @@ End Date: ${range.endDate}
     return ElevatedButton.icon(
       icon: Icon(
         Icons.person_search,
-        color: Colors.black,
+        color: Colors.white,
       ),
       label: Text(
         _user != null ? "Zmień użytkownika" : "Wybierz użytkownika",
         style: TextStyle(
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
       style: ElevatedButton.styleFrom(
@@ -484,7 +484,8 @@ End Date: ${range.endDate}
       );
       _formKey.currentState!.save();
 
-      _order.firmID = FirebaseAuth.instance.currentUser!.uid.toString();
+      final String _currentUserUID = FirebaseAuth.instance.currentUser!.uid;
+      _order.firmID = _currentUserUID;
       _order.firmName = provider.firm!.firmName;
       _order.firmAvatar = provider.firm!.avatar!;
       _order.userID = _user!.id;
@@ -496,6 +497,11 @@ End Date: ${range.endDate}
       print("To jest obiekt to zapisu ${_order.toJson()}");
 
       await addOrderInFirebase(_order).then((value) async {
+        await FirebaseFirestore.instance
+            .collection('firms')
+            .doc(_currentUserUID)
+            .update({'ordersAmount': FieldValue.increment(1)});
+
         if (_order.dateFrom != null && _order.dateTo != null) {
           Meeting _meeting = Meeting(
               eventName: _order.title,
@@ -510,7 +516,7 @@ End Date: ${range.endDate}
           await addMeetingToUser(
             meeting: _meeting,
             userType: UserType.Firm,
-            userID: FirebaseAuth.instance.currentUser!.uid,
+            userID: _currentUserUID,
           ).catchError((error) {
             print('Failed to add meeting: $error');
           });

@@ -62,7 +62,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
     details: Details(
       pictures: List.empty(),
       prices: "Brak informacji",
-      description: "Dodaj opis firmy",
+      description: "Brak opisu firmy.",
     ),
   );
 

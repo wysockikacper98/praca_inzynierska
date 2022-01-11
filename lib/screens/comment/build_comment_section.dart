@@ -196,28 +196,3 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
     );
   }
 }
-
-/*
-*
-*
-  Column(
-      children: [
-        ...snapshot.data!.docs
-            .map(
-              (e) => ListTile(
-                leading: Text(
-                  DateFormat.yMMMMd('pl_PL')
-                      .format(e.data()['dateTime'].toDate()),
-                ),
-                trailing: RatingBarIndicator(
-                  itemSize: 20,
-                  itemCount: 5,
-                  rating: e.data()['rating'],
-                  itemBuilder: (_, __) => Icon(Icons.star, color: Colors.amber),
-                ),
-              ),
-            )
-            .toList(),
-      ],
-    );
-* */
