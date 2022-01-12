@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
 import '../../models/comment.dart';
 import '../../models/users.dart';
+import '../theme/theme_Provider.dart';
 
 class BuildAlertDialogAddComment extends StatefulWidget {
   final List<String> userAndFirmIds;

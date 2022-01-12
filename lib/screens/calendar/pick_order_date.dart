@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../helpers/colorful_print_messages.dart';
 import '../../models/meeting.dart';
+import '../../widgets/theme/theme_Provider.dart';
 import '../orders/widget/alerts_dialog_for_orders.dart';
 import 'meeting_data_source.dart';
 
@@ -129,7 +129,7 @@ class _PickOrderDateState extends State<PickOrderDate> {
             onPressed: () async {
               printColor(
                   text:
-                  'Start: ${_pickedDate.startDate} To:${_pickedDate.endDate}',
+                      'Start: ${_pickedDate.startDate} To:${_pickedDate.endDate}',
                   color: PrintColor.magenta);
 
               if (_pickedDate.startDate!
@@ -154,12 +154,12 @@ class _PickOrderDateState extends State<PickOrderDate> {
 
                 final TimeOfDay? timeTo = timeFrom != null
                     ? await showTimePicker(
-                  context: context,
-                  initialTime: timeFrom,
-                  helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
-                  builder: (BuildContext context, Widget? child) {
-                    return MediaQuery(
-                      data: MediaQuery.of(context)
+                        context: context,
+                        initialTime: timeFrom,
+                        helpText: 'WYBIERZ GODZINĘ ZAKOŃCZENIA',
+                        builder: (BuildContext context, Widget? child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context)
                                 .copyWith(alwaysUse24HourFormat: true),
                             child: Theme(
                               data: _isDarkMode
@@ -168,8 +168,8 @@ class _PickOrderDateState extends State<PickOrderDate> {
                               child: child!,
                             ),
                           );
-                  },
-                )
+                        },
+                      )
                     : null;
                 if (timeFrom != null && timeTo != null) {
                   if (timeOfDayIsAfter(
@@ -219,7 +219,7 @@ class _PickOrderDateState extends State<PickOrderDate> {
                     ' Wybierz kolor',
                     style: TextStyle(
                       color:
-                      _isSelectedColorLight ? Colors.black : Colors.white,
+                          _isSelectedColorLight ? Colors.black : Colors.white,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(primary: _selectedColor),
@@ -254,8 +254,10 @@ class _PickOrderDateState extends State<PickOrderDate> {
             SizedBox(height: 16),
             FutureBuilder(
               future: _future,
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,) {
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+              ) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else {
@@ -275,7 +277,7 @@ class _PickOrderDateState extends State<PickOrderDate> {
                       monthViewSettings: MonthViewSettings(
                         showAgenda: true,
                         appointmentDisplayMode:
-                        MonthAppointmentDisplayMode.indicator,
+                            MonthAppointmentDisplayMode.indicator,
                       ),
                       headerDateFormat: 'LLLL  yyy',
                       onTap: _updateSelectedDate,
@@ -322,7 +324,7 @@ class _PickOrderDateState extends State<PickOrderDate> {
                             ),
                           );
                         } else if (details.date
-                            .isAtSameMomentAs(_pickedDate.startDate!) &&
+                                .isAtSameMomentAs(_pickedDate.startDate!) &&
                             details.date
                                 .isAtSameMomentAs(_pickedDate.endDate!)) {
                           // Selected only one date

@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../widgets/theme/theme_Provider.dart';
 
 class EmergencyScreen extends StatelessWidget {
   static const String routeName = '/emergency-screen';

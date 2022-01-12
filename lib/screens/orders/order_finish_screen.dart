@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:praca_inzynierska/widgets/theme/theme_Provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/theme/theme_Provider.dart';
 import 'widget/widgets_for_order_screens.dart';
 
 class OrderFinishScreen extends StatelessWidget {
