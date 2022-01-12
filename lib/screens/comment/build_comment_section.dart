@@ -94,6 +94,14 @@ class _BuildCommentSectionState extends State<BuildCommentSection> {
       padding: EdgeInsets.all(widget.padding),
       child: Column(
         children: [
+          Container(
+            width: double.infinity,
+            child: Text(
+              'Oceny i komentarze:',
+              textAlign: TextAlign.start,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           Divider(height: 32.0),
           IntrinsicHeight(
             child: Row(

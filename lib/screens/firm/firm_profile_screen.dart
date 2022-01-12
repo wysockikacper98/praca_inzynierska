@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -122,7 +121,9 @@ class FirmProfileScreen extends StatelessWidget {
                       userAvatar,
                       firmAvatar,
                     ),
+                  buildHeadline('Punktualność:'),
                   buildPunctuality(_isDarkMode, snapshot.data!.data()!),
+                  SizedBox(height: 16),
                   BuildCommentSection(
                     data.firmID,
                     calculateRating(
@@ -247,13 +248,7 @@ class FirmProfileScreen extends StatelessWidget {
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
         ) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return SfCalendar(
-              view: CalendarView.month,
-              backgroundColor: Colors.white30,
-              firstDayOfWeek: 1,
-              minDate: DateTime.utc(date.year, date.month),
-              showDatePickerButton: true,
-            );
+            return Center(child: CircularProgressIndicator());
           } else {
             return SfCalendar(
               view: CalendarView.month,
@@ -631,34 +626,65 @@ class FirmProfileScreen extends StatelessWidget {
       _iconColor = color20To0;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildHeadline('Punktualność:'),
-        SizedBox(height: 10),
-        IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(Icons.watch_later, size: 48, color: _iconColor),
-              VerticalDivider(width: 48.0),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Spóźnione: ${(lateAmount * 100).round()}%',
-                    style: TextStyle(fontSize: 20),
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Spóźnionych:',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(
+                            '${(lateAmount * 100).round()}%',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Przedłużonych:',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(
+                            '${(extendedAmount * 100).round()}%',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Przedłużone: ${(extendedAmount * 100).round()}%',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
-            ],
+                ),
+                VerticalDivider(width: 32.0),
+                Expanded(
+                  flex: 1,
+                  child: Icon(Icons.watch_later, size: 48, color: _iconColor),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
