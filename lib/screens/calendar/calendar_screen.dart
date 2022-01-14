@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -90,34 +91,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ScheduleViewMonthHeaderDetails details,
               ) {
                 final String monthName = _getMonthDate(details.date.month);
-                return Text(
-                  monthName + ' ' + details.date.year.toString(),
-                  style: TextStyle(fontSize: 18),
-                );
-                // return Stack(
-                //   children: [
-                //     //TODO: dodać zdjęcia w wioku podglądu kalendarza
-                //     Image(
-                //       // image: ExactAssetImage(
-                //       //     'assets/images/monthImages' + monthName + '.png'),
-                //       image: ExactAssetImage('assets/images/tempPicture3.png'),
-                //       fit: BoxFit.cover,
-                //       width: details.bounds.width,
-                //       height: details.bounds.height,
-                //     ),
-                //     Positioned(
-                //       left: 55,
-                //       right: 0,
-                //       top: 20,
-                //       bottom: 0,
-                //       child: Text(
-                //         monthName + ' ' + details.date.year.toString(),
-                //         style: TextStyle(fontSize: 18),
-                //       ),
-                //     ),
-                //   ],
+                // return Text(
+                //   monthName + ' ' + details.date.year.toString(),
+                //   style: TextStyle(fontSize: 18),
                 // );
-                //
+                final String seasonPath =
+                    getAssetsImagePath(details.date.month);
+
+                return Stack(
+                  children: [
+                    //TODO: dodać zdjęcia w wioku podglądu kalendarza
+                    Image(
+                      image: ExactAssetImage(seasonPath),
+                      alignment: Alignment.topCenter,
+                      fit: BoxFit.cover,
+                      width: details.bounds.width,
+                    ),
+                    Positioned(
+                      left: 55,
+                      right: 0,
+                      top: 20,
+                      bottom: 0,
+                      child: Text(
+                        monthName + ' ' + details.date.year.toString(),
+                        style: GoogleFonts.amaticSc(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               },
             );
           }
@@ -154,5 +159,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
         return 'Grudzień';
     }
     return '';
+  }
+
+  String getAssetsImagePath(int month) {
+    // 3 -> 5 wiosna
+    // 6 -> 8 lato
+    // 9 -> 11 jesień
+    // 12 -> 2 zima
+    if (month >= 3 && month <= 5) {
+      return 'assets/seasons/spring.jpg';
+    } else if (month >= 6 && month <= 8) {
+      return 'assets/seasons/summer.jpg';
+    } else if (month >= 9 && month <= 11) {
+      return 'assets/seasons/fall.jpg';
+    } else {
+      return 'assets/seasons/winter.jpg';
+    }
   }
 }

@@ -307,12 +307,12 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
-                    "Lokalizacja:",
+                    "Adres:",
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   trailing: ElevatedButton.icon(
                     icon: Icon(Icons.location_on),
-                    label: Text('Wybierz lokalizację'),
+                    label: Text('Wybierz adres'),
                     onPressed: () {
                       locationPermissions().then((value) {
                         if (value == ph.PermissionStatus.granted) {
@@ -417,46 +417,47 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
                     _updatedFirm.address!.city = value!.trim();
                   },
                 ),
-                TextFormField(
-                  key: ValueKey('subAdministrativeArea'),
-                  controller: _subAdministrativeAreaController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    labelText: 'Powiat',
-                    hintText: 'Powiat',
-                  ),
-                  validator: (_) {
-                    return null;
-                  },
-                  onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {
-                    if (_updatedFirm.address == null) {
-                      _updatedFirm.address = Address.empty();
-                    }
-                    _updatedFirm.address!.subAdministrativeArea =
-                        value == null ? '' : value.trim();
-                  },
-                ),
-                TextFormField(
-                  key: ValueKey('administrativeArea'),
-                  controller: _administrativeAreaController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    labelText: 'Województwo',
-                    hintText: 'Województwo',
-                  ),
-                  validator: (_) {
-                    return null;
-                  },
-                  onChanged: (_) => makeDirty(),
-                  onSaved: (String? value) {
-                    if (_updatedFirm.address == null) {
-                      _updatedFirm.address = Address.empty();
-                    }
-                    _updatedFirm.address!.administrativeArea =
-                        value == null ? '' : value.trim();
-                  },
-                ),
+                //Niepotrzebne informacje
+                // TextFormField(
+                //   key: ValueKey('subAdministrativeArea'),
+                //   controller: _subAdministrativeAreaController,
+                //   textCapitalization: TextCapitalization.words,
+                //   decoration: InputDecoration(
+                //     labelText: 'Powiat',
+                //     hintText: 'Powiat',
+                //   ),
+                //   validator: (_) {
+                //     return null;
+                //   },
+                //   onChanged: (_) => makeDirty(),
+                //   onSaved: (String? value) {
+                //     if (_updatedFirm.address == null) {
+                //       _updatedFirm.address = Address.empty();
+                //     }
+                //     _updatedFirm.address!.subAdministrativeArea =
+                //         value == null ? '' : value.trim();
+                //   },
+                // ),
+                // TextFormField(
+                //   key: ValueKey('administrativeArea'),
+                //   controller: _administrativeAreaController,
+                //   textCapitalization: TextCapitalization.words,
+                //   decoration: InputDecoration(
+                //     labelText: 'Województwo',
+                //     hintText: 'Województwo',
+                //   ),
+                //   validator: (_) {
+                //     return null;
+                //   },
+                //   onChanged: (_) => makeDirty(),
+                //   onSaved: (String? value) {
+                //     if (_updatedFirm.address == null) {
+                //       _updatedFirm.address = Address.empty();
+                //     }
+                //     _updatedFirm.address!.administrativeArea =
+                //         value == null ? '' : value.trim();
+                //   },
+                // ),
                 SizedBox(height: 16.0),
                 ListTile(
                   contentPadding: EdgeInsets.zero,

@@ -69,7 +69,7 @@ class FirmProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profil Wykonawcy"),
+        title: AutoSizeText('Profil Wykonawcy', maxLines: 1),
         centerTitle: true,
         actions: [
           if (data.firmID == userID)

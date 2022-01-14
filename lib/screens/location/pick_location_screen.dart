@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart' as geo;
@@ -33,7 +34,7 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Wybór lokalizacji'),
+        title: AutoSizeText('Wybór lokalizacji', maxLines: 1),
         actions: [if (_isMapCreated) _nightModeToggler()],
       ),
       body: Column(
@@ -84,9 +85,9 @@ class _PickLocationScreenState extends State<PickLocationScreen> {
                   onPressed: (address == null || address!.zipCode == '')
                       ? null
                       : () {
-                          widget._updateAddress(address!);
-                          Navigator.of(context).pop();
-                        },
+                    widget._updateAddress(address!);
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),
