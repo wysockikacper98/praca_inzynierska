@@ -177,7 +177,7 @@ class _RegisterContractorScreenState extends State<RegisterContractorScreen> {
                         return null;
                       },
                       onSaved: (value) {
-                        _firm.nip = value!;
+                        _firm.nip = value!.replaceAll('-', '');
                       },
                     ),
                   ],

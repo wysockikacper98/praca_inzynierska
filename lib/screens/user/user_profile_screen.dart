@@ -53,12 +53,6 @@ class UserProfileScreen extends StatelessWidget {
                         SizedBox(height: 16),
                         _userInfo(user, context),
                         SizedBox(height: 16),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text('Komentarze:',
-                              style: Theme.of(context).textTheme.headline5),
-                        ),
-                        SizedBox(height: 16),
                         BuildCommentSection(
                           userID,
                           calculateRating(

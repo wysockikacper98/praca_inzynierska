@@ -92,6 +92,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                     TextFormField(
                       key: ValueKey('imie'),
                       decoration: InputDecoration(labelText: 'Imie'),
+                      textCapitalization: TextCapitalization.words,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
                           RegExp(RegexPatterns.nameOrSurnamePattern),
@@ -111,6 +112,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                     ),
                     TextFormField(
                       key: ValueKey('nazwisko'),
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(labelText: 'Nazwisko'),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
@@ -147,7 +149,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                         return null;
                       },
                       onSaved: (value) {
-                        _userTelephone = value!;
+                        _userTelephone = value!.replaceAll('-', '');
                       },
                     ),
                   ],

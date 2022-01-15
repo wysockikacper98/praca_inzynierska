@@ -1,11 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/firebase_firestore.dart';
 import '../../models/users.dart';
 import '../../widgets/pickers/image_picker.dart';
+import '../../widgets/theme/theme_Provider.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   static const routeName = '/user-edit-profile';
@@ -31,11 +34,9 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
   String? _surname;
   String? _phone;
 
-  Future<void> _trySubmit(
-    BuildContext context,
-    UserProvider provider,
-    GlobalKey<FormState> formKey,
-  ) async {
+  Future<void> _trySubmit(BuildContext context,
+      UserProvider provider,
+      GlobalKey<FormState> formKey,) async {
     final _isValid = formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
 
@@ -77,10 +78,12 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
     final sizeMediaQuery = MediaQuery.of(context).size;
     final width = sizeMediaQuery.width;
     final provider = Provider.of<UserProvider>(context);
+    final _isDarkMode =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profil Użytkownika"),
+        title: AutoSizeText('Edycja profil użytkownika', maxLines: 1),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -112,7 +115,9 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                   color: _userNameEdit
                       ? Theme.of(context).errorColor
                       : Theme.of(context).primaryColor,
-                  icon: _userNameEdit ? Icon(Icons.close) : Icon(Icons.edit),
+                  icon: _userNameEdit
+                      ? Icon(Icons.close)
+                      : Icon(Icons.edit, color: Colors.green),
                   onPressed: _userNameEdit
                       ? () {
                           setState(() {
@@ -124,84 +129,84 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           _surnameController.text = provider.user!.lastName;
                           setState(() {
                             _userNameEdit = !_userNameEdit;
-                          });
-                        },
+                    });
+                  },
                 ),
               ),
               !_userNameEdit
                   ? Text(
-                      provider.user!.firstName + ' ' + provider.user!.lastName,
-                      style: Theme.of(context).textTheme.headline6,
-                    )
+                provider.user!.firstName + ' ' + provider.user!.lastName,
+                style: Theme.of(context).textTheme.headline6,
+              )
                   : Form(
-                      key: _formPersonalDataKey,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: width * 0.80,
-                            child: TextFormField(
-                              key: ValueKey("imie"),
-                              controller: _nameController,
-                              decoration: InputDecoration(
-                                hintText: "Imie",
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: _nameController.clear,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value!.isEmpty || value.length < 3) {
-                                  return 'Proszę podać przynajmniej 3 znaki.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _name = value;
-                              },
-                            ),
+                key: _formPersonalDataKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("imie"),
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          hintText: "Imie",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: _nameController.clear,
                           ),
-                          Container(
-                            width: width * 0.80,
-                            child: TextFormField(
-                              key: ValueKey("nazwisko"),
-                              controller: _surnameController,
-                              decoration: InputDecoration(
-                                hintText: "Nazwisko",
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: _surnameController.clear,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value!.isEmpty || value.length < 3) {
-                                  return 'Proszę podać przynajmniej 3 znaki.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {
-                                _surname = value;
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          _isLoading
-                              ? Center(child: CircularProgressIndicator())
-                              : ElevatedButton(
-                                  child: SizedBox(
-                                    width: width * 0.8,
-                                    child: Text(
-                                      "Zapisz",
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _trySubmit(context, provider,
-                                        _formPersonalDataKey);
-                                  },
-                                ),
-                        ],
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty || value.length < 3) {
+                            return 'Proszę podać przynajmniej 3 znaki.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _name = value;
+                        },
                       ),
                     ),
+                    Container(
+                      width: width * 0.80,
+                      child: TextFormField(
+                        key: ValueKey("nazwisko"),
+                        controller: _surnameController,
+                        decoration: InputDecoration(
+                          hintText: "Nazwisko",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: _surnameController.clear,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty || value.length < 3) {
+                            return 'Proszę podać przynajmniej 3 znaki.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _surname = value;
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                      child: SizedBox(
+                        width: width * 0.8,
+                        child: Text(
+                          "Zapisz",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      onPressed: () {
+                        _trySubmit(context, provider,
+                            _formPersonalDataKey);
+                      },
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 15),
               ListTile(
                 title: Text('Numer Telefonu:'),
@@ -209,7 +214,9 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                   color: _userPhoneEdit
                       ? Theme.of(context).errorColor
                       : Theme.of(context).primaryColor,
-                  icon: _userPhoneEdit ? Icon(Icons.close) : Icon(Icons.edit),
+                  icon: _userPhoneEdit
+                      ? Icon(Icons.close)
+                      : Icon(Icons.edit, color: Colors.green),
                   onPressed: _userPhoneEdit
                       ? () {
                           setState(() {
@@ -221,7 +228,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                           setState(() {
                             _userPhoneEdit = !_userPhoneEdit;
                           });
-                        },
+                  },
                 ),
               ),
               !_userPhoneEdit
@@ -230,15 +237,18 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                       style: Theme.of(context).textTheme.headline6,
                     )
                   : Form(
-                      key: _formPhoneKey,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: width * 0.8,
-                            child: TextFormField(
-                              textAlign: TextAlign.center,
+                key: _formPhoneKey,
+                child: Column(
+                  children: [
+                    Container(
+                      width: width * 0.8,
+                      child: TextFormField(
+                        textAlign: TextAlign.center,
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                MaskedInputFormatter('000-000-000'),
+                              ],
                               decoration: InputDecoration(
                                 hintText: "Numer Telefonu",
                                 suffixIcon: IconButton(
@@ -246,39 +256,43 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                                   onPressed: _phoneController.clear,
                                 ),
                               ),
-                              validator: (value) {
-                                value = value!.replaceAll(' ', '');
+                              validator: (String? value) {
+                                if (value == null) {
+                                  return 'Pole jest wymagane';
+                                }
+                                value = value.replaceAll('-', '');
                                 if (int.tryParse(value) == null) {
                                   return 'Podaj numer telefonu';
-                                } else if (value.isEmpty || value.length < 9) {
+                                }
+                                if (value.isEmpty || value.length < 9) {
                                   return 'Podaj poprawny numer telefonu';
                                 }
                                 return null;
                               },
                               onSaved: (value) {
-                                _phone = value!.replaceAll(' ', '');
+                                _phone = value!.replaceAll('-', '');
                               },
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          _isLoading
-                              ? Center(child: CircularProgressIndicator())
-                              : ElevatedButton(
-                                  child: SizedBox(
-                                    width: width * 0.8,
-                                    child: Text(
-                                      "Zapisz",
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _trySubmit(
-                                        context, provider, _formPhoneKey);
-                                  },
-                                ),
-                        ],
                       ),
                     ),
+                    SizedBox(height: 20),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                      child: SizedBox(
+                        width: width * 0.8,
+                        child: Text(
+                          "Zapisz",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      onPressed: () {
+                        _trySubmit(
+                            context, provider, _formPhoneKey);
+                      },
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 50),
             ],
           ),

@@ -94,11 +94,12 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
     // await saveUserInfo(firm);
     return true;
   } on FirebaseAuthException catch (error) {
+    setLoading(false);
     handleFirebaseAuthError(context, error);
     authResult.user!.delete();
-    setLoading(false);
     return false;
   } catch (error) {
+    setLoading(false);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(error.toString()),
@@ -107,7 +108,6 @@ Future<bool> registerFirm(BuildContext context, Firm firm, String password,
       ),
     );
     authResult.user!.delete();
-    setLoading(false);
     return false;
   }
 }
