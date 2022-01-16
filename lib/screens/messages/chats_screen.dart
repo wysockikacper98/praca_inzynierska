@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,8 @@ class ChatsScreen extends StatelessWidget {
             .collection('chats')
             .where('users', arrayContains: userId)
             .snapshots(),
-        builder: (
-          ctx,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,
-        ) {
+        builder: (ctx,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot,) {
           if (chatSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -63,19 +62,19 @@ class ChatsScreen extends StatelessWidget {
                   );
 
                   final DateTime lastMessageDate =
-                      chatDocs[index]['updatedAt'].toDate();
+                  chatDocs[index]['updatedAt'].toDate();
 
                   final Duration lastMessageSendDuration =
-                      DateTime.now().difference(lastMessageDate);
+                  DateTime.now().difference(lastMessageDate);
 
                   final String timeToDisplay = lastMessageSendDuration <
-                          _durationToday
+                      _durationToday
                       ? DateFormat.Hm('pl_PL').format(lastMessageDate)
                       : lastMessageSendDuration < _durationCurrentWeek
-                          ? DateFormat.E('pl_PL')
-                              .add_Hm()
-                              .format(lastMessageDate)
-                          : DateFormat.yMMMd('pl_PL').format(lastMessageDate);
+                      ? DateFormat.E('pl_PL')
+                      .add_Hm()
+                      .format(lastMessageDate)
+                      : DateFormat.yMMMd('pl_PL').format(lastMessageDate);
 
                   return ListTile(
                     leading: CircleAvatar(
@@ -83,15 +82,18 @@ class ChatsScreen extends StatelessWidget {
                       backgroundImage: AssetImage('assets/images/user.png'),
                       foregroundImage: userType == UserType.Firm
                           ? chatDocs[index]['userAvatar'] != ''
-                              ? NetworkImage(chatDocs[index]['userAvatar'])
-                              : null
+                          ? NetworkImage(chatDocs[index]['userAvatar'])
+                          : null
                           : chatDocs[index]['firmAvatar'] != ''
-                              ? NetworkImage(chatDocs[index]['firmAvatar'])
-                              : null,
+                          ? NetworkImage(chatDocs[index]['firmAvatar'])
+                          : null,
                     ),
                     title: Text(currentChatName),
-                    subtitle: Text(
-                        chatDocs[index]['latestMessage']?.toString() ?? ''),
+                    subtitle: AutoSizeText(
+                      chatDocs[index]['latestMessage']?.toString() ?? '',
+                      maxLines: 1,
+                      minFontSize: 14,
+                      overflow: TextOverflow.ellipsis,),
                     trailing: Text(timeToDisplay),
                     onTap: () {
                       printColor(
@@ -120,11 +122,9 @@ class ChatsScreen extends StatelessWidget {
     );
   }
 
-  String getChatName(
-    List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs,
-    int index,
-    String userId,
-  ) {
+  String getChatName(List<QueryDocumentSnapshot<Map<String, dynamic>>> chatDocs,
+      int index,
+      String userId,) {
     return chatDocs[index]['users'][0] == userId
         ? chatDocs[index]['chatName'][1]
         : chatDocs[index]['chatName'][0];

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,27 +50,26 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> _getOrderDetails(
-    UserType userType,
-  ) async {
+      UserType userType,) async {
     printColor(text: '_getOrderDetails', color: PrintColor.cyan);
 
     final String currentUserID = FirebaseAuth.instance.currentUser!.uid;
     final String collection = userType == UserType.Firm ? 'users' : 'firms';
     final DocumentSnapshot<Map<String, dynamic>> orderDetails =
-        await FirebaseFirestore.instance
-            .collection('orders')
-            .doc(widget.orderID)
-            .get();
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(widget.orderID)
+        .get();
 
     userOrFirmID = userType == UserType.Firm
         ? orderDetails.data()!['userID']
         : orderDetails.data()!['firmID'];
 
     final DocumentSnapshot<Map<String, dynamic>> dataFromFirebase =
-        await FirebaseFirestore.instance
-            .collection(collection)
-            .doc(userOrFirmID)
-            .get();
+    await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(userOrFirmID)
+        .get();
 
     if (userType == UserType.Firm) {
       userToShowInDetails = Users.fromJson(dataFromFirebase.data()!);
@@ -106,7 +106,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     final bool _isDarkMode = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Szczegóły zamówienia')),
+      appBar: AppBar(
+        title: AutoSizeText('Szczegóły zamówienia', maxLines: 1),
+      ),
       body: FutureBuilder(
         future: _future,
         builder: (
@@ -127,17 +129,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     SizedBox(height: 10),
                     _userType == UserType.Firm
                         ? _createUserToShowInDetails(
-                            context,
-                            provider,
-                            userToShowInDetails,
-                            idList.first,
-                          )
+                      context,
+                      provider,
+                      userToShowInDetails,
+                      idList.first,
+                    )
                         : _createFirmToShowInDetails(
-                            context,
-                            provider,
-                            firmToShowInDetails,
-                            idList.last,
-                          ),
+                      context,
+                      provider,
+                      firmToShowInDetails,
+                      idList.last,
+                    ),
                     SizedBox(height: 16),
                     _buildOrderStatus(
                         snapshot.data!.data()!['status'], _isDarkMode),
@@ -183,10 +185,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     );
   }
 
-  Widget _buildDateTitleAndButton(
-    BuildContext context,
-    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  ) {
+  Widget _buildDateTitleAndButton(BuildContext context,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -226,10 +226,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     );
   }
 
-  Future<void> _startOrder(
-    BuildContext context,
-    String id,
-  ) async {
+  Future<void> _startOrder(BuildContext context,
+      String id,) async {
     Navigator.of(context).pop();
     FirebaseFirestore.instance
         .collection('orders')
@@ -238,10 +236,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             (_) => refreshWidget());
   }
 
-  Future<void> _finishOrder(
-    BuildContext context,
-    String id,
-  ) async {
+  Future<void> _finishOrder(BuildContext context,
+      String id,) async {
     Navigator.of(context).pop();
     await FirebaseFirestore.instance.collection('orders').doc(id).update({
       'status': Status.COMPLETED.toString().split('.').last,
@@ -251,8 +247,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   Widget _buildDatePreview(
-    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  ) {
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
     PickerDateRange _range = PickerDateRange(
         snapshot.data!.data()?['dateFrom'].toDate(),
         snapshot.data!.data()?['dateTo'].toDate());
@@ -281,10 +276,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
   }
 
-  Padding _buildDescription(
-    BuildContext context,
-    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  ) {
+  Padding _buildDescription(BuildContext context,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
@@ -302,7 +295,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             SizedBox(height: 16),
             Text(
               (snapshot.data!.data()!['description'] != null &&
-                      snapshot.data!.data()!['description'] != '')
+                  snapshot.data!.data()!['description'] != '')
                   ? snapshot.data!.data()!['description']
                   : 'Brak opisu',
               style: Theme.of(context).textTheme.bodyText2,
@@ -313,17 +306,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     );
   }
 
-  Widget _buildButtonsDependingOnStatus(
-    BuildContext context,
-    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-    UserType userType,
-    List<String> idList,
-  ) {
+  Widget _buildButtonsDependingOnStatus(BuildContext context,
+      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
+      UserType userType,
+      List<String> idList,) {
     final bool canShowComment = userType == UserType.Firm
         ? (snapshot.data!.data()!['canFirmComment'] != null &&
-            snapshot.data!.data()!['canFirmComment'] == true)
+        snapshot.data!.data()!['canFirmComment'] == true)
         : (snapshot.data!.data()!['canUserComment'] != null &&
-            snapshot.data!.data()!['canUserComment'] == true);
+        snapshot.data!.data()!['canUserComment'] == true);
 
     final double buttonWidth = MediaQuery.of(context).size.width * 0.9;
     switch (stringToStatus(snapshot.data!.data()!['status'])) {
@@ -560,8 +551,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         color: status == Status.PENDING
                             ? const Color(0xFF8C8C8C)
                             : isDarkMode
-                                ? const Color(0xFF00B589)
-                                : const Color(0xFFf2a48c),
+                            ? const Color(0xFF00B589)
+                            : const Color(0xFFf2a48c),
                       ),
                     ),
                     Flexible(
@@ -571,8 +562,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         color: status != Status.COMPLETED
                             ? const Color(0xFF8C8C8C)
                             : isDarkMode
-                                ? const Color(0xFF00B589)
-                                : const Color(0xFFf2a48c),
+                            ? const Color(0xFF00B589)
+                            : const Color(0xFFf2a48c),
                       ),
                     ),
                   ],
@@ -601,8 +592,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     color: status == Status.PENDING
                         ? const Color(0xFF8C8C8C)
                         : isDarkMode
-                            ? const Color(0xFF00B589)
-                            : const Color(0xFFf2a48c),
+                        ? const Color(0xFF00B589)
+                        : const Color(0xFFf2a48c),
                   ),
                 ),
               ),
@@ -616,8 +607,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     color: status != Status.COMPLETED
                         ? const Color(0xFF8C8C8C)
                         : isDarkMode
-                            ? const Color(0xFF00B589)
-                            : const Color(0xFFf2a48c),
+                        ? const Color(0xFF00B589)
+                        : const Color(0xFFf2a48c),
                   ),
                 ),
               ),
@@ -715,11 +706,10 @@ Widget _buildContactButtons({
   );
 }
 
-ListTile _createUserToShowInDetails(
-  BuildContext context,
-  UserProvider provider,
-  Users user,
-  String userID,
+ListTile _createUserToShowInDetails(BuildContext context,
+    UserProvider provider,
+    Users user,
+    String userID,
 ) {
   final double _rating = calculateRating(user.rating!, user.ratingNumber!);
   return ListTile(
@@ -773,11 +763,10 @@ ListTile _createUserToShowInDetails(
   );
 }
 
-ListTile _createFirmToShowInDetails(
-  BuildContext context,
-  UserProvider provider,
-  Firm firm,
-  String firmID,
+ListTile _createFirmToShowInDetails(BuildContext context,
+    UserProvider provider,
+    Firm firm,
+    String firmID,
 ) {
   final double _rating = calculateRating(firm.rating!, firm.ratingNumber!);
   return ListTile(

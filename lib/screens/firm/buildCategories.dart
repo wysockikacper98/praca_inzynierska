@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../widgets/theme/theme_Provider.dart';
 
 class BuildCategories extends StatefulWidget {
   final List<String> _selectedCategoriesList;
@@ -35,6 +38,8 @@ class _BuildCategoriesState extends State<BuildCategories> {
   @override
   Widget build(BuildContext context) {
     print('build -> BuildCategories');
+    final bool _isDarkMode =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Column(
       children: [
@@ -47,6 +52,7 @@ class _BuildCategoriesState extends State<BuildCategories> {
             color: Theme.of(context).primaryColor,
             icon: Icon(
               _editCategory ? Icons.expand_less : Icons.expand_more,
+              color: _isDarkMode ? Colors.white : const Color(0xFFFFBC92),
               size: 30.0,
             ),
             onPressed: () => setState(() {

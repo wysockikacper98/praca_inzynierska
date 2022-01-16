@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,7 @@ End Date: ${range.endDate}
       onTap: () => unfocusedContext(context),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Utwórz zamówienie"),
+          title: AutoSizeText('Utwórz zamówienie', maxLines: 1),
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -148,27 +149,27 @@ End Date: ${range.endDate}
                 _isLoading
                     ? CircularProgressIndicator()
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.cancel_outlined),
-                            label: Text('Anuluj'),
-                            style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).colorScheme.secondary,
-                            ),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          ElevatedButton.icon(
-                            icon: Icon(Icons.add_circle_outline_outlined),
-                            label: Text('Utwórz'),
-                            onPressed: _user != null
-                                ? () {
-                                    _trySubmit(context, provider);
-                                  }
-                                : null,
-                          ),
-                        ],
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.cancel_outlined),
+                      label: Text('Anuluj'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).colorScheme.secondary,
                       ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.add_circle_outline_outlined),
+                      label: Text('Utwórz'),
+                      onPressed: _user != null
+                          ? () {
+                        _trySubmit(context, provider);
+                      }
+                          : null,
+                    ),
+                  ],
+                ),
                 SizedBox(height: 50),
               ],
             ),
@@ -231,11 +232,9 @@ End Date: ${range.endDate}
     );
   }
 
-  Container buildDataAndTimePicker(
-    BuildContext context,
-    double _widthOfWidgets,
-    PickerDateRange? _range,
-  ) {
+  Container buildDataAndTimePicker(BuildContext context,
+      double _widthOfWidgets,
+      PickerDateRange? _range,) {
     return Container(
       width: _widthOfWidgets,
       child: Column(
@@ -318,7 +317,7 @@ End Date: ${range.endDate}
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: _width * 0.3,
+                width: _width * 0.35,
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: "Kod pocztowy"),
@@ -339,7 +338,7 @@ End Date: ${range.endDate}
               ),
               SizedBox(width: _width * 0.05),
               Container(
-                width: _width * 0.45,
+                width: _width * 0.40,
                 child: TextFormField(
                   decoration: InputDecoration(labelText: "Miejscowość"),
                   textCapitalization: TextCapitalization.words,
@@ -365,10 +364,8 @@ End Date: ${range.endDate}
     );
   }
 
-  DropdownButton<dynamic> buildDropdownButton(
-    BuildContext context,
-    FirmProvider provider,
-  ) {
+  DropdownButton<dynamic> buildDropdownButton(BuildContext context,
+      FirmProvider provider,) {
     return DropdownButton(
       value: _currentCategory,
       icon: Icon(
@@ -398,10 +395,8 @@ End Date: ${range.endDate}
     );
   }
 
-  ElevatedButton buildSearchForUser(
-    BuildContext context,
-    Stream<QuerySnapshot<Map<String, dynamic>>>? users,
-  ) {
+  ElevatedButton buildSearchForUser(BuildContext context,
+      Stream<QuerySnapshot<Map<String, dynamic>>>? users,) {
     return ElevatedButton.icon(
       icon: Icon(
         Icons.person_search,
@@ -436,7 +431,7 @@ End Date: ${range.endDate}
           radius: 30,
           backgroundImage: AssetImage('assets/images/user.png'),
           foregroundImage:
-              user['avatar'] != '' ? NetworkImage(user['avatar']) : null,
+          user['avatar'] != '' ? NetworkImage(user['avatar']) : null,
         ),
         title: Text(user['firstName'] + ' ' + user['lastName']),
         trailing: IconButton(
