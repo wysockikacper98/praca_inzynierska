@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -49,9 +50,9 @@ class SearchUsers extends SearchDelegate<Users?> {
 
         final result = snapshot.data!.docs.where((element) {
           return ((element['firstName'] + ' ' + element['lastName'])
-                  .toString()
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()) ||
               element['email']
                   .toString()
                   .toLowerCase()
@@ -64,7 +65,7 @@ class SearchUsers extends SearchDelegate<Users?> {
               leading: CircleAvatar(
                 radius: 30,
                 foregroundImage: current['avatar'] != ''
-                    ? NetworkImage(current['avatar'])
+                    ? CachedNetworkImageProvider(current['avatar'])
                     : null,
                 backgroundImage: AssetImage('assets/images/user.png'),
               ),

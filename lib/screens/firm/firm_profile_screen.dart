@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -384,7 +385,17 @@ class FirmProfileScreen extends StatelessWidget {
                   child: Hero(
                     tag: tag,
                     child: Container(
-                      child: Image.network(pictures[index]),
+                      child: CachedNetworkImage(
+                        imageUrl: pictures[index],
+                        //TODO: add Linear progres indicator
+                        // progressIndicatorBuilder: (_, url, download) {
+                        //   if (download.progress != null) {
+                        //     final percent = download.progress! * 100;
+                        //     return Text('$percent% done loading...');
+                        //   }
+                        //   return Text('Loaded');
+                        // },
+                      ),
                       // color: Colors.white30,
                     ),
                   ),

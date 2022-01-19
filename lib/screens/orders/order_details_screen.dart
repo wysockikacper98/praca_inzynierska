@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -834,6 +835,6 @@ Center buildErrorMessage(BuildContext context) {
   );
 }
 
-NetworkImage? networkImage(String? url) {
-  return (url != null && url != '') ? NetworkImage(url) : null;
+CachedNetworkImageProvider? networkImage(String? url) {
+  return (url != null && url != '') ? CachedNetworkImageProvider(url) : null;
 }

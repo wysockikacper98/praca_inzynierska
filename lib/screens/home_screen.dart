@@ -78,6 +78,15 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text("FixIT!"),
+          //Important: DELETE
+          // actions: [
+          //   ElevatedButton(child: Text('Click'), onPressed: ()async{
+          //     await FirebaseFirestore.instance.collection('firms').doc('aiq5kbSoAmNtlZFwvwxBuFWMcrA3').update(
+          //         {'rating': 9.0, 'ratingNumber': 2.0});
+          //   },),  ElevatedButton(child: Text('wyloguj'), onPressed: (){
+          //     FirebaseAuth.instance.signOut();
+          //   },),
+          // ],
         ),
         drawer: AppDrawer(),
         body: Column(

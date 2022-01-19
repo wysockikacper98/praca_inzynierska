@@ -27,6 +27,7 @@ class Message extends StatelessWidget {
 
     final userID = FirebaseAuth.instance.currentUser!.uid;
     final Users user = Provider.of<UserProvider>(context).user!;
+    final bool _isThisFirm = user.type == UserType.Firm;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,17 +44,18 @@ class Message extends StatelessWidget {
               PopupMenuItem(
                 child: ListTile(
                   leading: Icon(Icons.person),
-                  title: Text('Profil użytkownika'),
+                  title: Text(
+                      _isThisFirm ? 'Profil użytkownika' : 'Profil wykonawcy'),
                   onTap: () {
                     print('$addresseeID');
-                    user.type == UserType.Firm
+                    _isThisFirm
                         ? Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            UserProfileScreen(addresseeID),
-                      ),
-                    )
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserProfileScreen(addresseeID),
+                            ),
+                          )
                         : Navigator.of(context).pushReplacementNamed(
                       FirmProfileScreen.routeName,
                       arguments: FirmsAuth(addresseeID),

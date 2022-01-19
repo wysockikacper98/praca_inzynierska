@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,8 +18,9 @@ Widget imagePicker(UserProvider provider, double width) {
     children: [
       CircleAvatar(
         backgroundImage: (provider.user!.avatar == ''
-            ? AssetImage('assets/images/user.png')
-            : NetworkImage(provider.user!.avatar!)) as ImageProvider<Object>?,
+                ? AssetImage('assets/images/user.png')
+                : CachedNetworkImageProvider(provider.user!.avatar!))
+            as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,
       ),
@@ -44,7 +46,7 @@ Widget imagePickerFirm(
       CircleAvatar(
         backgroundImage: (firmProvider.firm!.avatar == ''
                 ? AssetImage('assets/images/user.png')
-                : NetworkImage(firmProvider.firm!.avatar!))
+                : CachedNetworkImageProvider(firmProvider.firm!.avatar!))
             as ImageProvider<Object>?,
         backgroundColor: Colors.orangeAccent.shade100,
         radius: width * 0.15,

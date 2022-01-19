@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -17,7 +18,7 @@ class UserProfileScreen extends StatelessWidget {
     printColor(text: 'UserProfileScreen($userID)', color: PrintColor.cyan);
 
     final _future =
-        FirebaseFirestore.instance.collection('users').doc(userID).get();
+    FirebaseFirestore.instance.collection('users').doc(userID).get();
 
     final width = MediaQuery.of(context).size.width;
 
@@ -31,7 +32,7 @@ class UserProfileScreen extends StatelessWidget {
               if (snapshot.hasData) {
                 final Users user = Users.fromJson(snapshot.data!.data()!);
                 final double calculatedRating =
-                    calculateRating(user.rating!, user.ratingNumber!);
+                calculateRating(user.rating!, user.ratingNumber!);
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -89,7 +90,7 @@ class UserProfileScreen extends StatelessWidget {
     return CircleAvatar(
       backgroundImage: (avatar == ''
           ? AssetImage('assets/images/user.png')
-          : NetworkImage(avatar)) as ImageProvider<Object>?,
+          : CachedNetworkImageProvider(avatar)) as ImageProvider<Object>?,
       backgroundColor: Colors.orangeAccent.shade100,
       radius: width * 0.15,
     );
@@ -101,10 +102,9 @@ class UserProfileScreen extends StatelessWidget {
 /// [ratingNumber] is mound of all ratings
 ///
 /// ### return [rating] ([ratingNumber])
-RichText ratingNumbers(
-  BuildContext context,
-  double rating,
-  int ratingNumber,
+RichText ratingNumbers(BuildContext context,
+    double rating,
+    int ratingNumber,
 ) {
   return RichText(
     text: TextSpan(

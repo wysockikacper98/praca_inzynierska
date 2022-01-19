@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -82,11 +83,13 @@ class ChatsScreen extends StatelessWidget {
                       backgroundImage: AssetImage('assets/images/user.png'),
                       foregroundImage: userType == UserType.Firm
                           ? chatDocs[index]['userAvatar'] != ''
-                          ? NetworkImage(chatDocs[index]['userAvatar'])
-                          : null
+                              ? CachedNetworkImageProvider(
+                                  chatDocs[index]['userAvatar'])
+                              : null
                           : chatDocs[index]['firmAvatar'] != ''
-                          ? NetworkImage(chatDocs[index]['firmAvatar'])
-                          : null,
+                              ? CachedNetworkImageProvider(
+                                  chatDocs[index]['firmAvatar'])
+                              : null,
                     ),
                     title: Text(currentChatName),
                     subtitle: AutoSizeText(

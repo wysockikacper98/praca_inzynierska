@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -99,7 +100,6 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
             IconButton(
               icon: Icon(Icons.save),
               onPressed: () {
-                makeClean();
                 _trySubmit();
               },
             ),
@@ -162,8 +162,10 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
                     child: Hero(
                       tag: tag,
                       child: Container(
-                        child: Image.network(
-                            firmProvider.firm!.details!.pictures![index]),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              firmProvider.firm!.details!.pictures![index],
+                        ),
                         color: Colors.white30,
                       ),
                     ),
@@ -613,6 +615,7 @@ class _FirmEditProfileScreenState extends State<FirmEditProfileScreen> {
       _updatedFirm.category = _categoriesList;
       print(_updatedFirm.category);
       await updateFirmInFirebase(context, _updatedFirm);
+      makeClean();
     }
   }
 }

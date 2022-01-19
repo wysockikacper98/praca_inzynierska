@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -149,27 +150,27 @@ End Date: ${range.endDate}
                 _isLoading
                     ? CircularProgressIndicator()
                     : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.cancel_outlined),
-                      label: Text('Anuluj'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.secondary,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.cancel_outlined),
+                            label: Text('Anuluj'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          ElevatedButton.icon(
+                            icon: Icon(Icons.add_circle_outline_outlined),
+                            label: Text('Utwórz'),
+                            onPressed: _user != null
+                                ? () {
+                                    _trySubmit(context, provider);
+                                  }
+                                : null,
+                          ),
+                        ],
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.add_circle_outline_outlined),
-                      label: Text('Utwórz'),
-                      onPressed: _user != null
-                          ? () {
-                        _trySubmit(context, provider);
-                      }
-                          : null,
-                    ),
-                  ],
-                ),
                 SizedBox(height: 50),
               ],
             ),
@@ -232,9 +233,11 @@ End Date: ${range.endDate}
     );
   }
 
-  Container buildDataAndTimePicker(BuildContext context,
-      double _widthOfWidgets,
-      PickerDateRange? _range,) {
+  Container buildDataAndTimePicker(
+    BuildContext context,
+    double _widthOfWidgets,
+    PickerDateRange? _range,
+  ) {
     return Container(
       width: _widthOfWidgets,
       child: Column(
@@ -268,6 +271,84 @@ End Date: ${range.endDate}
     if (_range.startDate!.year != _range.endDate!.year ||
         _range.startDate!.month != _range.endDate!.month ||
         _range.startDate!.day != _range.endDate!.day) {
+      //różne daty
+      //
+      // return Row(
+      //   children: [
+      //     Flexible(
+      //       flex: 3,
+      //       child: Card(
+      //         elevation: 10,
+      //         color: Colors.blue,
+      //         child: Container(
+      //           height: 100,
+      //           child: Column(
+      //             children: [
+      //               Row(
+      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                 children: [
+      //                   Text('OD:'),
+      //                   Text(DateFormat.y('pl_PL').format(_range.startDate!)),
+      //                 ],
+      //               ),
+      //               Text(DateFormat.EEEE('pl_PL').format(_range.startDate!)),
+      //               Text(DateFormat.d('pl_PL').format(_range.startDate!)),
+      //               Text(DateFormat.MMMM('pl_PL').format(_range.startDate!)),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     Spacer(flex: 1),
+      //     Flexible(
+      //       flex: 3,
+      //       child: Card(
+      //         elevation: 10,
+      //         color: Colors.blue,
+      //         child: Container(
+      //           padding: EdgeInsets.all(10),
+      //           child: Column(
+      //             children: [
+      //               Row(
+      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                 children: [
+      //                   Text(
+      //                     'DO:',
+      //                     style: TextStyle(
+      //                       fontWeight: FontWeight.bold,
+      //                       color: Colors.white54,
+      //                     ),
+      //                   ),
+      //                   Text(
+      //                     DateFormat.y('pl_PL').format(_range.endDate!),
+      //                     style: TextStyle(
+      //                       fontWeight: FontWeight.bold,
+      //                       fontSize: 20,
+      //                       color: Colors.white54,
+      //                     ),
+      //                   ),
+      //                 ],
+      //               ),
+      //               Text(
+      //                 DateFormat.EEEE('pl_PL').format(_range.endDate!),
+      //                 style: TextStyle(),
+      //               ),
+      //               Text(
+      //                 DateFormat.d('pl_PL').format(_range.endDate!),
+      //                 style: TextStyle(),
+      //               ),
+      //               Text(
+      //                 DateFormat.MMMM('pl_PL').format(_range.endDate!),
+      //                 style: TextStyle(),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // );
+
       return Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
@@ -317,7 +398,7 @@ End Date: ${range.endDate}
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: _width * 0.35,
+                width: _width * 0.30,
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: "Kod pocztowy"),
@@ -338,7 +419,7 @@ End Date: ${range.endDate}
               ),
               SizedBox(width: _width * 0.05),
               Container(
-                width: _width * 0.40,
+                width: _width * 0.45,
                 child: TextFormField(
                   decoration: InputDecoration(labelText: "Miejscowość"),
                   textCapitalization: TextCapitalization.words,
@@ -364,8 +445,10 @@ End Date: ${range.endDate}
     );
   }
 
-  DropdownButton<dynamic> buildDropdownButton(BuildContext context,
-      FirmProvider provider,) {
+  DropdownButton<dynamic> buildDropdownButton(
+    BuildContext context,
+    FirmProvider provider,
+  ) {
     return DropdownButton(
       value: _currentCategory,
       icon: Icon(
@@ -395,8 +478,10 @@ End Date: ${range.endDate}
     );
   }
 
-  ElevatedButton buildSearchForUser(BuildContext context,
-      Stream<QuerySnapshot<Map<String, dynamic>>>? users,) {
+  ElevatedButton buildSearchForUser(
+    BuildContext context,
+    Stream<QuerySnapshot<Map<String, dynamic>>>? users,
+  ) {
     return ElevatedButton.icon(
       icon: Icon(
         Icons.person_search,
@@ -430,8 +515,9 @@ End Date: ${range.endDate}
         leading: CircleAvatar(
           radius: 30,
           backgroundImage: AssetImage('assets/images/user.png'),
-          foregroundImage:
-          user['avatar'] != '' ? NetworkImage(user['avatar']) : null,
+          foregroundImage: user['avatar'] != ''
+              ? CachedNetworkImageProvider(user['avatar'])
+              : null,
         ),
         title: Text(user['firstName'] + ' ' + user['lastName']),
         trailing: IconButton(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -94,21 +95,21 @@ class AppDrawer extends StatelessWidget {
                   ),
                   provider.user!.type == UserType.Firm
                       ? ListTile(
-                          leading: Icon(Icons.today_outlined),
-                          title: Text('Kalendarz'),
-                          onTap: () {
-                            Navigator.of(context)
-                                .popAndPushNamed(CalendarScreen.routeName);
-                          },
-                        )
+                    leading: Icon(Icons.today_outlined),
+                    title: Text('Kalendarz'),
+                    onTap: () {
+                      Navigator.of(context)
+                          .popAndPushNamed(CalendarScreen.routeName);
+                    },
+                  )
                       : ListTile(
-                          leading: Icon(Icons.warning_outlined),
-                          title: Text('Awarie'),
-                          onTap: () {
-                            Navigator.of(context)
-                                .popAndPushNamed(EmergencyScreen.routeName);
-                          },
-                        ),
+                    leading: Icon(Icons.warning_outlined),
+                    title: Text('Awarie'),
+                    onTap: () {
+                      Navigator.of(context)
+                          .popAndPushNamed(EmergencyScreen.routeName);
+                    },
+                  ),
                   Divider(
                     height: 1,
                     thickness: 1,
@@ -160,8 +161,7 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildHeader(
-      BuildContext context, TextTheme textTheme, Users user, bool isDarkMode) {
+  Widget buildHeader(BuildContext context, TextTheme textTheme, Users user, bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -171,8 +171,9 @@ class AppDrawer extends StatelessWidget {
             CircleAvatar(
               radius: 30,
               backgroundImage: AssetImage('assets/images/user.png'),
-              foregroundImage:
-                  user.avatar != '' ? NetworkImage(user.avatar!) : null,
+              foregroundImage: user.avatar != ''
+                  ? CachedNetworkImageProvider(user.avatar!)
+                  : null,
             ),
             IconButton(
               iconSize: 30,
@@ -210,19 +211,19 @@ class AppDrawer extends StatelessWidget {
                 title: Text('Podgląd profilu'),
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context).popAndPushNamed(
-                          FirmProfileScreen.routeName,
-                          arguments:
-                              FirmsAuth(FirebaseAuth.instance.currentUser!.uid),
-                        )
+                  FirmProfileScreen.routeName,
+                  arguments:
+                  FirmsAuth(FirebaseAuth.instance.currentUser!.uid),
+                )
                     : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserProfileScreen(
-                                FirebaseAuth.instance.currentUser!.uid),
-                          ),
-                        );
-                      },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(
+                          FirebaseAuth.instance.currentUser!.uid),
+                    ),
+                  );
+                },
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -230,9 +231,9 @@ class AppDrawer extends StatelessWidget {
                 title: Text('Edycja profilu'),
                 onTap: user.type == UserType.Firm
                     ? () => Navigator.of(context)
-                        .popAndPushNamed(FirmEditProfileScreen.routeName)
+                    .popAndPushNamed(FirmEditProfileScreen.routeName)
                     : () => Navigator.of(context)
-                        .popAndPushNamed(UserEditProfileScreen.routeName),
+                    .popAndPushNamed(UserEditProfileScreen.routeName),
               ),
             ],
           ),

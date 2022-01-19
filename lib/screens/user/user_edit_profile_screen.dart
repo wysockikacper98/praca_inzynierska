@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../helpers/firebase_firestore.dart';
 import '../../models/users.dart';
 import '../../widgets/pickers/image_picker.dart';
-import '../../widgets/theme/theme_Provider.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   static const routeName = '/user-edit-profile';
@@ -78,8 +77,6 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
     final sizeMediaQuery = MediaQuery.of(context).size;
     final width = sizeMediaQuery.width;
     final provider = Provider.of<UserProvider>(context);
-    final _isDarkMode =
-        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
