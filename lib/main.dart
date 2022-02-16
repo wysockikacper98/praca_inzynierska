@@ -1,113 +1,113 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
-void main() {
+import 'models/firm.dart';
+import 'models/useful_data.dart';
+import 'models/users.dart';
+import 'screens/calendar/calendar_screen.dart';
+import 'screens/emergency_screen.dart';
+import 'screens/firm/firm_edit_profile_screen.dart';
+import 'screens/firm/firm_profile_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/login/login_screen.dart';
+import 'screens/login/pick_register_screen.dart';
+import 'screens/login/register_contractor_screen.dart';
+import 'screens/login/register_user_screen.dart';
+import 'screens/orders/create_order_screen.dart';
+import 'screens/orders/orders_screen.dart';
+import 'screens/search/search_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/user/user_edit_profile_screen.dart';
+import 'widgets/theme/theme_Provider.dart';
+import 'widgets/theme/theme_dark.dart';
+import 'widgets/theme/theme_light.dart';
+
+///Receive message when app is in background solution for on message
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print(message.data.toString());
+  print(message.notification!.title);
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  SharedPreferences.getInstance();
+  // SystemChrome.setSystemUIOverlayStyle(
+  //   SystemUiOverlayStyle(
+  // statusBarColor: Colors.transparent,
+  // systemNavigationBarColor: Colors.transparent,
+  //       ),
+  // );
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+    print("build -> main.dart");
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => UserProvider()),
+        ChangeNotifierProvider(create: (ctx) => FirmProvider()),
+        ChangeNotifierProvider(create: (ctx) => UsefulData()),
+      ],
+      child: ChangeNotifierProvider(
+          create: (context) => ThemeProvider(),
+          builder: (context, _) {
+            final themeProvider = Provider.of<ThemeProvider>(context);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+            return MaterialApp(
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                SfGlobalLocalizations.delegate
+              ],
+              supportedLocales: [
+                const Locale('pl'),
+                const Locale('en'),
+              ],
+              // locale: const Locale('en'),
+              locale: const Locale('pl'),
+              title: 'FixIT!',
+              debugShowCheckedModeBanner: false,
+              themeMode: themeProvider.themeMode,
+              darkTheme: themeDark(),
+              theme: themeLight(),
+              initialRoute: '/',
+              routes: {
+                '/': (ctx) => LoginScreen(),
+                HomeScreen.routeName: (ctx) => HomeScreen(),
+                LoginScreen.routeName: (ctx) => LoginScreen(),
+                PickRegisterScreen.routerName: (ctx) => PickRegisterScreen(),
+                RegisterUserScreen.routerName: (ctx) => RegisterUserScreen(),
+                RegisterContractorScreen.routeName: (ctx) =>
+                    RegisterContractorScreen(),
+                FirmProfileScreen.routeName: (ctx) => FirmProfileScreen(),
+                EmergencyScreen.routeName: (ctx) => EmergencyScreen(),
+                UserEditProfileScreen.routeName: (ctx) =>
+                    UserEditProfileScreen(),
+                FirmEditProfileScreen.routeName: (ctx) =>
+                    FirmEditProfileScreen(),
+                SearchScreen.routeName: (ctx) => SearchScreen(),
+                SettingsScreen.routeName: (ctx) => SettingsScreen(),
+                OrdersScreen.routeName: (ctx) => OrdersScreen(),
+                CreateOrderScreen.routeName: (ctx) => CreateOrderScreen(),
+                CalendarScreen.routeName: (ctx) => CalendarScreen(),
+              },
+            );
+          }),
     );
   }
 }
