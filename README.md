@@ -34,14 +34,14 @@ Each contractor's profile will serve as a page that advertises his company and i
 - Calendar.
 
 ## Screenshots
-
+<p float="left">
 <img src="/assets/readMeImages/HomeScreen.png" alt="Login screen" style="height: 400px;"/>
 <img src="/assets/readMeImages/ContractorScreenPart1.png" alt="Login screen" style="height: 400px;"/>
 <img src="/assets/readMeImages/ContractorScreenPart2.png" alt="Login screen" style="height: 400px;"/>
 <img src="/assets/readMeImages/OrderScreen.png" alt="Login screen" style="height: 400px;"/>
 <img src="/assets/readMeImages/CalendarMonthView.png" alt="Login screen" style="height: 400px;"/>
 <img src="/assets/readMeImages/CalendarWeekView.png" alt="Login screen" style="height: 400px;"/>
-
+</p>
 
 ## Room for Improvement
 - Extend application to other platforms.
